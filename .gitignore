@@ -1,0 +1,36 @@
+# FPC, Lazarus stuff
+*.compiled
+*.rsj
+*.rst
+*.o
+*.or
+*.ppu
+*.a
+*.lps
+*.lrs
+*.dbg
+
+
+# Other backups
+*.blend1
+*.blend2
+*~
+backup
+
+# Other unwanted
+*.apk
+*.log
+*.exe
+*.pro.user
+.DS_Store
+xcuserdata
+!xcshareddata
+bin/
+
+# fpmake stuff
+castle-game-engine-*.fpm
+fpmake
+/units/
+
+
+
