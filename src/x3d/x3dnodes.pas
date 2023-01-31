@@ -257,7 +257,7 @@ uses
 
   Math,
   CastleFilesUtils, StrUtils, CastleURIUtils, CastleCurves,
-  CastleLog, CastleScriptParser, URIParser, CastleDownload,
+  CastleLog, CastleScriptParser, CastleDownload,
   CastleNURBS, CastleQuaternions, CastleXMLUtils, X3DLoadInternalUtils;
 
 {$warnings on}
