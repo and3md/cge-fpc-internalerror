@@ -316,7 +316,6 @@ uses
 {$I x3dnodes_standard_interpolation_cubic_bezier.inc}
 {$I x3dnodes_standard_pointingdevicesensor.inc}
 {$I x3dnodes_standard_environmentalsensor.inc}
-//{$I x3dnodes_standard_environmentaleffects.inc}
 {$I x3dnodes_standard_h-anim.inc}
 {$I x3dnodes_standard_nurbs.inc}
 {$I x3dnodes_standard_dis.inc}
@@ -348,7 +347,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_appearance.inc}
 {$I auto_generated_node_helpers/x3dnodes_arc2d.inc}
 {$I auto_generated_node_helpers/x3dnodes_arcclose2d.inc}
-//{$ I auto_generated_node_helpers/x3dnodes_background.inc}
 {$I auto_generated_node_helpers/x3dnodes_balljoint.inc}
 {$I auto_generated_node_helpers/x3dnodes_blendmode.inc}
 {$I auto_generated_node_helpers/x3dnodes_booleanfilter.inc}
@@ -427,14 +425,10 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_kambiappearance.inc}
 {$I auto_generated_node_helpers/x3dnodes_kambiheadlight.inc}
 {$I auto_generated_node_helpers/x3dnodes_kambiinline.inc}
-// {$I auto_generated_node_helpers/x3dnodes_kambinavigationinfo.inc}
 {$I auto_generated_node_helpers/x3dnodes_kambioctreeproperties.inc}
 {$I auto_generated_node_helpers/x3dnodes_keysensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_layer.inc}
 {$I auto_generated_node_helpers/x3dnodes_layerset.inc}
-// {$I auto_generated_node_helpers/x3dnodes_layout.inc}
-// {$I auto_generated_node_helpers/x3dnodes_layoutgroup.inc}
-//{$I auto_generated_node_helpers/x3dnodes_layoutlayer.inc}
 {$I auto_generated_node_helpers/x3dnodes_linepicksensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_lineproperties.inc}
 {$I auto_generated_node_helpers/x3dnodes_lineset.inc}
@@ -452,12 +446,10 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_metadataset.inc}
 {$I auto_generated_node_helpers/x3dnodes_metadatastring.inc}
 {$I auto_generated_node_helpers/x3dnodes_motorjoint.inc}
-// {$I auto_generated_node_helpers/x3dnodes_movietexture.inc}
 {$I auto_generated_node_helpers/x3dnodes_multigeneratedtexturecoordinate.inc}
 {$I auto_generated_node_helpers/x3dnodes_multitexture.inc}
 {$I auto_generated_node_helpers/x3dnodes_multitexturecoordinate.inc}
 {$I auto_generated_node_helpers/x3dnodes_multitexturetransform.inc}
-//{$I auto_generated_node_helpers/x3dnodes_navigationinfo.inc}
 {$I auto_generated_node_helpers/x3dnodes_normal.inc}
 {$I auto_generated_node_helpers/x3dnodes_normalinterpolator.inc}
 {$I auto_generated_node_helpers/x3dnodes_nurbscurve.inc}
@@ -474,7 +466,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_orientationchaser.inc}
 {$I auto_generated_node_helpers/x3dnodes_orientationdamper.inc}
 {$I auto_generated_node_helpers/x3dnodes_orientationinterpolator.inc}
-//{$I auto_generated_node_helpers/x3dnodes_orthoviewpoint.inc}
 {$I auto_generated_node_helpers/x3dnodes_packagedshader.inc}
 {$I auto_generated_node_helpers/x3dnodes_particlesystem.inc}
 {$I auto_generated_node_helpers/x3dnodes_pickablegroup.inc}
@@ -507,7 +498,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_scalarchaser.inc}
 {$I auto_generated_node_helpers/x3dnodes_scalarinterpolator.inc}
 {$I auto_generated_node_helpers/x3dnodes_screeneffect.inc}
-// {$I auto_generated_node_helpers/x3dnodes_screenfontstyle.inc}
 {$I auto_generated_node_helpers/x3dnodes_screengroup.inc}
 {$I auto_generated_node_helpers/x3dnodes_script.inc}
 {$I auto_generated_node_helpers/x3dnodes_shaderpart.inc}
@@ -517,7 +507,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_signalpdu.inc}
 {$I auto_generated_node_helpers/x3dnodes_singleaxishingejoint.inc}
 {$I auto_generated_node_helpers/x3dnodes_sliderjoint.inc}
-// {$I auto_generated_node_helpers/x3dnodes_sound.inc}
 {$I auto_generated_node_helpers/x3dnodes_sphere.inc}
 {$I auto_generated_node_helpers/x3dnodes_spheresensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_splinepositioninterpolator.inc}
@@ -526,13 +515,10 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_spotlight.inc}
 {$I auto_generated_node_helpers/x3dnodes_squadorientationinterpolator.inc}
 {$I auto_generated_node_helpers/x3dnodes_staticgroup.inc}
-// {$I auto_generated_node_helpers/x3dnodes_stringsensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_surfaceemitter.inc}
 {$I auto_generated_node_helpers/x3dnodes_switch.inc}
 {$I auto_generated_node_helpers/x3dnodes_teapot.inc}
 {$I auto_generated_node_helpers/x3dnodes_texcoorddamper2d.inc}
-//{$I auto_generated_node_helpers/x3dnodes_text.inc}
-//{$I auto_generated_node_helpers/x3dnodes_text3d.inc}
 {$I auto_generated_node_helpers/x3dnodes_texturecoordinate.inc}
 {$I auto_generated_node_helpers/x3dnodes_texturecoordinate3d.inc}
 {$I auto_generated_node_helpers/x3dnodes_texturecoordinate4d.inc}
@@ -555,8 +541,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_twosidedmaterial.inc}
 {$I auto_generated_node_helpers/x3dnodes_universaljoint.inc}
 {$I auto_generated_node_helpers/x3dnodes_vectorinterpolator.inc}
-//{$I auto_generated_node_helpers/x3dnodes_viewpoint.inc}
-//{$I auto_generated_node_helpers/x3dnodes_viewpointgroup.inc}
 {$I auto_generated_node_helpers/x3dnodes_viewpointmirror.inc}
 {$I auto_generated_node_helpers/x3dnodes_viewport.inc}
 {$I auto_generated_node_helpers/x3dnodes_visibilitysensor.inc}
@@ -608,7 +592,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_x3dshadernode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dshapenode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dsoundnode.inc}
-//{$I auto_generated_node_helpers/x3dnodes_x3dsoundsourcenode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dtexture2dnode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dtexture3dnode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dtexturecoordinatenode.inc}
@@ -618,7 +601,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_x3dtouchsensornode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dtriggernode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dvertexattributenode.inc}
-//{$I auto_generated_node_helpers/x3dnodes_x3dviewpointnode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dviewportnode.inc}
 
 { unit init/fini ------------------------------------------------------------ }
