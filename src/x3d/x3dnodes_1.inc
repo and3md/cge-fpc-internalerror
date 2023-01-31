@@ -2260,8 +2260,6 @@ type
 function TVRML1SeparatorEnumerator.Enumerate(Node, Child: TX3DNode): Pointer;
 begin
   Result := nil;
-  if Child is TLocalFogNode then
-    State.LocalFog := TLocalFogNode(Child);
 end;
 
 procedure TAbstractSeparatorNode_1.BeforeTraverse(StateStack: TX3DGraphTraverseStateStack);

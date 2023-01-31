@@ -917,11 +917,11 @@ begin
    FdViewpoint.ChangesAlways := [chGeneratedTextureUpdateNeeded];
   AddField(FFdViewpoint);
 
-  FFdBackground := TSFNode.Create(Self, true, 'background', [TAbstractBackgroundNode]);
+  FFdBackground := TSFNode.Create(Self, true, 'background', []);
    FdBackground.ChangesAlways := [chGeneratedTextureUpdateNeeded];
   AddField(FFdBackground);
 
-  FFdFog := TSFNode.Create(Self, true, 'fog', [TFogNode]);
+  FFdFog := TSFNode.Create(Self, true, 'fog', []);
    FdFog.ChangesAlways := [chGeneratedTextureUpdateNeeded];
   AddField(FFdFog);
 

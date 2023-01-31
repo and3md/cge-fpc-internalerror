@@ -744,7 +744,7 @@ begin
    FdColor.ChangesAlways := [chGeometry];
   AddField(FFdColor);
 
-  FFdFogCoord := TSFNode.Create(Self, true, 'fogCoord', [TFogCoordinateNode]);
+  FFdFogCoord := TSFNode.Create(Self, true, 'fogCoord', []);
    FdFogCoord.ChangesAlways := [chGeometry];
   AddField(FFdFogCoord);
 
@@ -836,9 +836,7 @@ end;
 
 function TElevationGridNode.InternalFogCoord: TMFFloat;
 begin
-  if (FdFogCoord.Value <> nil) and
-     (FdFogCoord.Value is TFogCoordinateNode) then
-    Result := TFogCoordinateNode(FdFogCoord.Value).FdDepth else
+  if (FdFogCoord.Value <> nil) then
     Result := nil;
 end;
 

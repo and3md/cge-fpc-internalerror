@@ -146,7 +146,7 @@ begin
     IFS.ColorPerVertex := ColorPerVertex;
     IFS.Color := Color;
     IFS.CreaseAngle := CreaseAngle;
-    IFS.FogCoord := FogCoord;
+    //IFS.FogCoord := FogCoord;
     IFS.FdAttrib.AssignValue(FdAttrib);
   except FreeAndNil(Result); raise end;
 end;

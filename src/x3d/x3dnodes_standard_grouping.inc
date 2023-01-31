@@ -450,8 +450,8 @@ type
       CP^.Node := TClipPlaneNode(Child);
       CP^.Transform := State.Transform;
     end else
-    if Child is TLocalFogNode then
-      State.LocalFog := TLocalFogNode(Child) else
+//    if Child is TLocalFogNode then
+//      State.LocalFog := TLocalFogNode(Child) else
     if Child is TEffectNode then
     begin
       if State.Effects = nil then

@@ -205,7 +205,7 @@ type
   {$I x3dnodes_standard_interpolation_cubic_bezier.inc}
   {$I x3dnodes_standard_pointingdevicesensor.inc}
   {$I x3dnodes_standard_environmentalsensor.inc}
-  {$I x3dnodes_standard_environmentaleffects.inc}
+  // {$ I x3dnodes_standard_environmentaleffects.inc}
   {$I x3dnodes_standard_h-anim.inc}
   {$I x3dnodes_standard_nurbs.inc}
   {$I x3dnodes_standard_dis.inc}
@@ -274,7 +274,6 @@ uses
 {$I x3dnodes_x3dgraphtraversestate.inc}
 {$I x3dnodes_destructionnotification.inc}
 {$I x3dnodes_x3dnodescache.inc}
-//{$ I x3dnodes_x3dfonttexturescache.inc}
 {$I x3dnodes_x3dnodeclasseslist.inc}
 
 {$I x3dnodes_utils_extrusion.inc}
@@ -282,10 +281,8 @@ uses
 {$I x3dnodes_utils_cone_cylinder.inc}
 {$I x3dnodes_utils_sphere.inc}
 {$I x3dnodes_utils_box.inc}
-// { $ I x3dnodes_boundingboxes.inc}
 {$I x3dnodes_verticesandtrianglescounting.inc}
 {$I x3dnodes_coordpolygons.inc}
-//{ $I x3dnodes_eventsengine.inc}
 {$I x3dnodes_save.inc}
 {$I x3dnodes_load.inc}
 {$I x3dnodes_encoding_classic.inc}
@@ -314,18 +311,13 @@ uses
 {$I x3dnodes_standard_shape.inc}
 {$I x3dnodes_standard_geometry3d.inc}
 {$I x3dnodes_standard_geometry2d.inc}
-// {$ I x3dnodes_standard_text.inc}
-//{$ I x3dnodes_standard_sound.inc}
 {$I x3dnodes_standard_lighting.inc}
 {$I x3dnodes_standard_texturing.inc}
 {$I x3dnodes_standard_interpolation.inc}
 {$I x3dnodes_standard_interpolation_cubic_bezier.inc}
 {$I x3dnodes_standard_pointingdevicesensor.inc}
-//{$ I x3dnodes_standard_keydevicesensor.inc}
 {$I x3dnodes_standard_environmentalsensor.inc}
-// {$ I x3dnodes_standard_navigation.inc}
-{$I x3dnodes_standard_environmentaleffects.inc}
-//{$ I x3dnodes_standard_geospatial.inc}
+//{$I x3dnodes_standard_environmentaleffects.inc}
 {$I x3dnodes_standard_h-anim.inc}
 {$I x3dnodes_standard_nurbs.inc}
 {$I x3dnodes_standard_dis.inc}
@@ -336,7 +328,6 @@ uses
 {$I x3dnodes_standard_texturing3d.inc}
 {$I x3dnodes_standard_cubemaptexturing.inc}
 {$I x3dnodes_standard_layering.inc}
-//{$ I x3dnodes_standard_layout.inc}
 {$I x3dnodes_standard_rigidbodyphysics.inc}
 {$I x3dnodes_standard_picking.inc}
 {$I x3dnodes_standard_followers.inc}
@@ -358,10 +349,8 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_appearance.inc}
 {$I auto_generated_node_helpers/x3dnodes_arc2d.inc}
 {$I auto_generated_node_helpers/x3dnodes_arcclose2d.inc}
-// {$ I auto_generated_node_helpers/x3dnodes_audioclip.inc}
- {$I auto_generated_node_helpers/x3dnodes_background.inc}
+//{$ I auto_generated_node_helpers/x3dnodes_background.inc}
 {$I auto_generated_node_helpers/x3dnodes_balljoint.inc}
-//{$ I auto_generated_node_helpers/x3dnodes_billboard.inc}
 {$I auto_generated_node_helpers/x3dnodes_blendmode.inc}
 {$I auto_generated_node_helpers/x3dnodes_booleanfilter.inc}
 {$I auto_generated_node_helpers/x3dnodes_booleansequencer.inc}
@@ -377,7 +366,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_clipplane.inc}
 {$I auto_generated_node_helpers/x3dnodes_collidableoffset.inc}
 {$I auto_generated_node_helpers/x3dnodes_collidableshape.inc}
-// {$I auto_generated_node_helpers/x3dnodes_collision.inc}
 {$I auto_generated_node_helpers/x3dnodes_collisioncollection.inc}
 {$I auto_generated_node_helpers/x3dnodes_collisionsensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_collisionspace.inc}
@@ -418,21 +406,9 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_floatvertexattribute.inc}
 {$I auto_generated_node_helpers/x3dnodes_fog.inc}
 {$I auto_generated_node_helpers/x3dnodes_fogcoordinate.inc}
-// {$I auto_generated_node_helpers/x3dnodes_fontstyle.inc}
 {$I auto_generated_node_helpers/x3dnodes_forcephysicsmodel.inc}
 {$I auto_generated_node_helpers/x3dnodes_generatedcubemaptexture.inc}
 {$I auto_generated_node_helpers/x3dnodes_generatedshadowmap.inc}
-// {$I auto_generated_node_helpers/x3dnodes_geocoordinate.inc}
-// {$ I auto_generated_node_helpers/x3dnodes_geoelevationgrid.inc}
-// { $I auto_generated_node_helpers/x3dnodes_geolocation.inc}
-// {$I auto_generated_node_helpers/x3dnodes_geolod.inc}
-// {$I auto_generated_node_helpers/x3dnodes_geometadata.inc}
-// {$I auto_generated_node_helpers/x3dnodes_geoorigin.inc}
-// {$I auto_generated_node_helpers/x3dnodes_geopositioninterpolator.inc}
-// {$I auto_generated_node_helpers/x3dnodes_geoproximitysensor.inc}
-// {$I auto_generated_node_helpers/x3dnodes_geotouchsensor.inc}
-// {$I auto_generated_node_helpers/x3dnodes_geotransform.inc}
-// {$I auto_generated_node_helpers/x3dnodes_geoviewpoint.inc}
 {$I auto_generated_node_helpers/x3dnodes_group.inc}
 {$I auto_generated_node_helpers/x3dnodes_hanimdisplacer.inc}
 {$I auto_generated_node_helpers/x3dnodes_hanimhumanoid.inc}
@@ -701,7 +677,7 @@ initialization
   //RegisterKeyDeviceSensorNodes;
   RegisterEnvironmentalSensorNodes;
   //RegisterNavigationNodes;
-  RegisterEnvironmentalEffectsNodes;
+  //RegisterEnvironmentalEffectsNodes;
   //RegisterGeospatialNodes;
   RegisterHAnimNodes;
   RegisterNURBSNodes;

@@ -205,7 +205,7 @@
 
     { Local fog settings. When @nil, it means use global fog (or no fog,
       if no global fog defined in file). }
-    LocalFog: TLocalFogNode;
+    // LocalFog: TLocalFogNode;
 
     { Effects (TEffectNode) affecting this state. }
     Effects: TX3DNodeList;
@@ -352,7 +352,7 @@ begin
   InsidePrototype := 0;
   InsideIgnoreCollision := 0;
   InsideInvisible := 0;
-  LocalFog := nil;
+  //LocalFog := nil;
 
   PointingDeviceSensors.Count := 0;
   FreeAndNil(Lights);
@@ -386,7 +386,7 @@ begin
   InsideIgnoreCollision := Source.InsideIgnoreCollision;
   InsideInvisible := Source.InsideInvisible;
   Humanoid := Source.Humanoid;
-  LocalFog := Source.LocalFog;
+//  LocalFog := Source.LocalFog;
 
   PointingDeviceSensors.Assign(Source.PointingDeviceSensors);
 
@@ -443,8 +443,7 @@ begin
   Result :=
     (IgnoreTransform or TMatrix4.PerfectlyEquals(Transform, SecondValue.Transform)) and
     TMatrix4.PerfectlyEquals(TextureTransform, SecondValue.TextureTransform) and
-    (ShapeNode = SecondValue.ShapeNode) and
-    (LocalFog = SecondValue.LocalFog);
+    (ShapeNode = SecondValue.ShapeNode) ;
 
   if Result then
   begin

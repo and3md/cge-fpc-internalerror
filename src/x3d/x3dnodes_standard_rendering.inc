@@ -1265,7 +1265,7 @@ begin
    FdCoord.ChangesAlways := [chGeometry];
   AddField(FFdCoord);
 
-  FFdFogCoord := TSFNode.Create(Self, true, 'fogCoord', [TFogCoordinateNode]);
+  FFdFogCoord := TSFNode.Create(Self, true, 'fogCoord', []);
    FdFogCoord.ChangesAlways := [chGeometry];
   AddField(FFdFogCoord);
 
@@ -1330,9 +1330,7 @@ end;
 
 function TAbstractComposedGeometryNode.InternalFogCoord: TMFFloat;
 begin
-  if (FdFogCoord.Value <> nil) and
-     (FdFogCoord.Value is TFogCoordinateNode) then
-    Result := TFogCoordinateNode(FdFogCoord.Value).FdDepth else
+  if (FdFogCoord.Value <> nil) then
     Result := nil;
 end;
 
@@ -1501,7 +1499,7 @@ begin
    FdCoord.ChangesAlways := [chGeometry];
   AddField(FFdCoord);
 
-  FFdFogCoord := TSFNode.Create(Self, true, 'fogCoord', [TFogCoordinateNode]);
+  FFdFogCoord := TSFNode.Create(Self, true, 'fogCoord', []);
    FdFogCoord.ChangesAlways := [chGeometry];
   AddField(FFdFogCoord);
 
@@ -1561,9 +1559,7 @@ end;
 
 function TIndexedLineSetNode.InternalFogCoord: TMFFloat;
 begin
-  if (FdFogCoord.Value <> nil) and
-     (FdFogCoord.Value is TFogCoordinateNode) then
-    Result := TFogCoordinateNode(FdFogCoord.Value).FdDepth else
+  if (FdFogCoord.Value <> nil) then
     Result := nil;
 end;
 
@@ -1724,7 +1720,7 @@ begin
    FdCoord.ChangesAlways := [chGeometry];
   AddField(FFdCoord);
 
-  FFdFogCoord := TSFNode.Create(Self, true, 'fogCoord', [TFogCoordinateNode]);
+  FFdFogCoord := TSFNode.Create(Self, true, 'fogCoord', []);
    FdFogCoord.ChangesAlways := [chGeometry];
   AddField(FFdFogCoord);
 
@@ -1767,9 +1763,7 @@ end;
 
 function TLineSetNode.InternalFogCoord: TMFFloat;
 begin
-  if (FdFogCoord.Value <> nil) and
-     (FdFogCoord.Value is TFogCoordinateNode) then
-    Result := TFogCoordinateNode(FdFogCoord.Value).FdDepth else
+  if (FdFogCoord.Value <> nil) then
     Result := nil;
 end;
 
@@ -1851,7 +1845,7 @@ begin
    FdCoord.ChangesAlways := [chGeometry];
   AddField(FFdCoord);
 
-  FFdFogCoord := TSFNode.Create(Self, true, 'fogCoord', [TFogCoordinateNode]);
+  FFdFogCoord := TSFNode.Create(Self, true, 'fogCoord', []);
    FdFogCoord.ChangesAlways := [chGeometry];
   AddField(FFdFogCoord);
 end;
@@ -1895,9 +1889,7 @@ end;
 
 function TPointSetNode.InternalFogCoord: TMFFloat;
 begin
-  if (FdFogCoord.Value <> nil) and
-     (FdFogCoord.Value is TFogCoordinateNode) then
-    Result := TFogCoordinateNode(FdFogCoord.Value).FdDepth else
+  if (FdFogCoord.Value <> nil) then
     Result := nil;
 end;
 

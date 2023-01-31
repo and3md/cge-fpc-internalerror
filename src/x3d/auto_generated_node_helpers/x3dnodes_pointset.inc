@@ -30,8 +30,8 @@
     procedure SetColor(const Value: TAbstractColorNode);
     function GetCoord: TAbstractCoordinateNode;
     procedure SetCoord(const Value: TAbstractCoordinateNode);
-    function GetFogCoord: TFogCoordinateNode;
-    procedure SetFogCoord(const Value: TFogCoordinateNode);
+//    function GetFogCoord: TFogCoordinateNode;
+//    procedure SetFogCoord(const Value: TFogCoordinateNode);
   public
     { Set X3D field "attrib". } { }
     procedure SetAttrib(const Value: array of TAbstractVertexAttributeNode);
@@ -40,7 +40,7 @@
     { X3D field "coord". } { }
     property Coord: TAbstractCoordinateNode read GetCoord write SetCoord;
     { X3D field "fogCoord". } { }
-    property FogCoord: TFogCoordinateNode read GetFogCoord write SetFogCoord;
+//    property FogCoord: TFogCoordinateNode read GetFogCoord write SetFogCoord;
 
 {$endif read_interface}
 
@@ -84,19 +84,6 @@ end;
 procedure TPointSetNode.SetCoord(const Value: TAbstractCoordinateNode);
 begin
   FdCoord.Send(Value);
-end;
-
-function TPointSetNode.GetFogCoord: TFogCoordinateNode;
-begin
-  if FdFogCoord.Value is TFogCoordinateNode then
-    Result := TFogCoordinateNode(FdFogCoord.Value)
-  else
-    Result := nil;
-end;
-
-procedure TPointSetNode.SetFogCoord(const Value: TFogCoordinateNode);
-begin
-  FdFogCoord.Send(Value);
 end;
 
 {$endif read_implementation}

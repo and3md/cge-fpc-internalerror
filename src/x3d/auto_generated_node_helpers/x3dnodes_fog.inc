@@ -42,24 +42,5 @@
 
 { TFogNode ----------------------------------------------- }
 
-function TFogNode.GetColor: TCastleColorRGB;
-begin
-  Result := FdColor.Value;
-end;
-
-procedure TFogNode.SetColor(const Value: TCastleColorRGB);
-begin
-  FdColor.Send(Value);
-end;
-
-function TFogNode.GetVisibilityRange: Single;
-begin
-  Result := FdVisibilityRange.Value;
-end;
-
-procedure TFogNode.SetVisibilityRange(const Value: Single);
-begin
-  FdVisibilityRange.Send(Value);
-end;
 
 {$endif read_implementation}

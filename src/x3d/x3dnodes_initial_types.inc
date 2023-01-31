@@ -36,7 +36,7 @@
   ///TX3DEventsEngine = class;
   TClipPlaneNode = class;
   THAnimHumanoidNode = class;
-  TLocalFogNode = class;
+  // TLocalFogNode = class;
   TEffectNode = class;
   TX3DRootNode = class;
   TX3DGraphTraverseState = class;
@@ -61,7 +61,7 @@
   TTransformNode = class;
   TAbstractCoordinateNode = class;
   TAbstractNormalNode = class;
-  TFogCoordinateNode = class;
+  // TFogCoordinateNode = class;
   TAbstractTextureCoordinateNode = class;
 
   TX3DNodeClass = class of TX3DNode;

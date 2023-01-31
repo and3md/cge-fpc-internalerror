@@ -54,54 +54,5 @@
 
 { TAbstractBackgroundNode ----------------------------------------------- }
 
-procedure TAbstractBackgroundNode.SetGroundAngle(const Value: array of Single);
-begin
-  FdGroundAngle.Send(Value);
-end;
-
-procedure TAbstractBackgroundNode.SetGroundAngle(const Value: TSingleList);
-begin
-  FdGroundAngle.Send(Value);
-end;
-
-procedure TAbstractBackgroundNode.SetGroundColor(const Value: array of TCastleColorRGB);
-begin
-  FdGroundColor.Send(Value);
-end;
-
-procedure TAbstractBackgroundNode.SetGroundColor(const Value: TVector3List);
-begin
-  FdGroundColor.Send(Value);
-end;
-
-procedure TAbstractBackgroundNode.SetSkyAngle(const Value: array of Single);
-begin
-  FdSkyAngle.Send(Value);
-end;
-
-procedure TAbstractBackgroundNode.SetSkyAngle(const Value: TSingleList);
-begin
-  FdSkyAngle.Send(Value);
-end;
-
-procedure TAbstractBackgroundNode.SetSkyColor(const Value: array of TCastleColorRGB);
-begin
-  FdSkyColor.Send(Value);
-end;
-
-procedure TAbstractBackgroundNode.SetSkyColor(const Value: TVector3List);
-begin
-  FdSkyColor.Send(Value);
-end;
-
-function TAbstractBackgroundNode.GetTransparency: Single;
-begin
-  Result := FdTransparency.Value;
-end;
-
-procedure TAbstractBackgroundNode.SetTransparency(const Value: Single);
-begin
-  FdTransparency.Send(Value);
-end;
 
 {$endif read_implementation}

@@ -46,34 +46,5 @@
 
 { TLocalFogNode ----------------------------------------------- }
 
-function TLocalFogNode.GetColor: TCastleColorRGB;
-begin
-  Result := FdColor.Value;
-end;
-
-procedure TLocalFogNode.SetColor(const Value: TCastleColorRGB);
-begin
-  FdColor.Send(Value);
-end;
-
-function TLocalFogNode.GetEnabled: boolean;
-begin
-  Result := FdEnabled.Value;
-end;
-
-procedure TLocalFogNode.SetEnabled(const Value: boolean);
-begin
-  FdEnabled.Send(Value);
-end;
-
-function TLocalFogNode.GetVisibilityRange: Single;
-begin
-  Result := FdVisibilityRange.Value;
-end;
-
-procedure TLocalFogNode.SetVisibilityRange(const Value: Single);
-begin
-  FdVisibilityRange.Send(Value);
-end;
 
 {$endif read_implementation}

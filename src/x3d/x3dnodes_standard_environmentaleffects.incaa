@@ -118,7 +118,7 @@
     strict private FFdTopUrl: TMFString;
     public property FdTopUrl: TMFString read FFdTopUrl;
 
-    {$I auto_generated_node_helpers/x3dnodes_background.inc}
+    //{$ I auto_generated_node_helpers/x3dnodes_background.inc}
   end;
 
   { Simulate atmospheric fog effects (for the whole scene) by blending

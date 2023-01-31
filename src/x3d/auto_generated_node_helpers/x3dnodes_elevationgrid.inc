@@ -28,8 +28,8 @@
   strict private
     function GetColor: TAbstractColorNode;
     procedure SetColor(const Value: TAbstractColorNode);
-    function GetFogCoord: TFogCoordinateNode;
-    procedure SetFogCoord(const Value: TFogCoordinateNode);
+//    function GetFogCoord: TFogCoordinateNode;
+//    procedure SetFogCoord(const Value: TFogCoordinateNode);
     function GetNormal: TAbstractNormalNode;
     procedure SetNormal(const Value: TAbstractNormalNode);
     function GetTexCoord: TAbstractTextureCoordinateNode;
@@ -56,7 +56,7 @@
     { X3D field "color". } { }
     property Color: TAbstractColorNode read GetColor write SetColor;
     { X3D field "fogCoord". } { }
-    property FogCoord: TFogCoordinateNode read GetFogCoord write SetFogCoord;
+//    property FogCoord: TFogCoordinateNode read GetFogCoord write SetFogCoord;
     { X3D field "normal". } { }
     property Normal: TAbstractNormalNode read GetNormal write SetNormal;
     { X3D field "texCoord". } { }
@@ -111,19 +111,6 @@ end;
 procedure TElevationGridNode.SetColor(const Value: TAbstractColorNode);
 begin
   FdColor.Send(Value);
-end;
-
-function TElevationGridNode.GetFogCoord: TFogCoordinateNode;
-begin
-  if FdFogCoord.Value is TFogCoordinateNode then
-    Result := TFogCoordinateNode(FdFogCoord.Value)
-  else
-    Result := nil;
-end;
-
-procedure TElevationGridNode.SetFogCoord(const Value: TFogCoordinateNode);
-begin
-  FdFogCoord.Send(Value);
 end;
 
 function TElevationGridNode.GetNormal: TAbstractNormalNode;

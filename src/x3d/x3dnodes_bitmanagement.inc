@@ -148,7 +148,7 @@ begin
   FFdSize := TSFVec2f.Create(Self, true, 'size', Vector2(-1, -1));
   AddField(FFdSize);
 
-  FFdBackground := TSFNode.Create(Self, true, 'background', [TAbstractBackgroundNode]);
+  FFdBackground := TSFNode.Create(Self, true, 'background', []);
   AddField(FFdBackground);
 
   FFdViewport := TSFNode.Create(Self, true, 'viewport', [TAbstractViewportNode]);
@@ -188,10 +188,10 @@ begin
   FFdSize := TSFVec2f.Create(Self, true, 'size', Vector2(-1, -1));
   AddField(FFdSize);
 
-  FFdBackground := TSFNode.Create(Self, true, 'background', [TAbstractBackgroundNode]);
+  FFdBackground := TSFNode.Create(Self, true, 'background', []);
   AddField(FFdBackground);
 
-  FFdFog := TSFNode.Create(Self, true, 'fog', [TFogNode]);
+  FFdFog := TSFNode.Create(Self, true, 'fog', []);
   AddField(FFdFog);
 
   FFdNavigationInfo := TSFNode.Create(Self, true, 'navigationInfo', []);

@@ -30,8 +30,8 @@
     procedure SetColor(const Value: TAbstractColorNode);
     function GetCoord: TAbstractCoordinateNode;
     procedure SetCoord(const Value: TAbstractCoordinateNode);
-    function GetFogCoord: TFogCoordinateNode;
-    procedure SetFogCoord(const Value: TFogCoordinateNode);
+//    function GetFogCoord: TFogCoordinateNode;
+//    procedure SetFogCoord(const Value: TFogCoordinateNode);
     function GetNormal: TAbstractNormalNode;
     procedure SetNormal(const Value: TAbstractNormalNode);
     function GetTexCoord: TAbstractTextureCoordinateNode;
@@ -50,7 +50,7 @@
     { X3D field "coord". } { }
     property Coord: TAbstractCoordinateNode read GetCoord write SetCoord;
     { X3D field "fogCoord". } { }
-    property FogCoord: TFogCoordinateNode read GetFogCoord write SetFogCoord;
+//    property FogCoord: TFogCoordinateNode read GetFogCoord write SetFogCoord;
     { X3D field "normal". } { }
     property Normal: TAbstractNormalNode read GetNormal write SetNormal;
     { X3D field "texCoord". } { }
@@ -108,19 +108,6 @@ end;
 procedure TAbstractComposedGeometryNode.SetCoord(const Value: TAbstractCoordinateNode);
 begin
   FdCoord.Send(Value);
-end;
-
-function TAbstractComposedGeometryNode.GetFogCoord: TFogCoordinateNode;
-begin
-  if FdFogCoord.Value is TFogCoordinateNode then
-    Result := TFogCoordinateNode(FdFogCoord.Value)
-  else
-    Result := nil;
-end;
-
-procedure TAbstractComposedGeometryNode.SetFogCoord(const Value: TFogCoordinateNode);
-begin
-  FdFogCoord.Send(Value);
 end;
 
 function TAbstractComposedGeometryNode.GetNormal: TAbstractNormalNode;

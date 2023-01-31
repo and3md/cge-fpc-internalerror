@@ -42,19 +42,6 @@
         <UnitName Value="UMinX3d"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/castlearraysgenerator.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleArraysGenerator"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/castlearraysgenerator_geometry3d.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/castlearraysgenerator_rendering.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/castlefields_internalglobals.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -163,39 +150,6 @@
         <UnitName Value="CastleMaterialProperties"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/castleraytracer.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleRayTracer"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/castlescenecore.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleSceneCore"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/castlescenecore_collisions.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/castlescenecore_physics.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/castleshapeinternalshadowvolumes.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleShapeInternalShadowVolumes"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/castleshapes.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleShapes"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/castleterrain.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleTerrain"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/octreeconf.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -213,170 +167,6 @@
         <Filename Value="src/x3d/x3dfields.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="X3DFields"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dload.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X3DLoad"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternal3ds.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X3DLoadInternal3DS"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalcollada.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X3DLoadInternalCollada"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalcollada_cameras.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalcollada_childrenlist.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalcollada_controllers.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalcollada_effects.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalcollada_geometries.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalcollada_images.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalcollada_indexes.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalcollada_integerparser.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalcollada_librarynodes.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalcollada_lights.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalcollada_materials.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalcollada_matrix.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalcollada_node.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalcollada_primitives.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalcollada_read_helpers.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalcollada_scenes.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalcollada_source.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalcollada_sources.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalgeo.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X3DLoadInternalGEO"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalgltf.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X3DLoadInternalGLTF"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalmd3.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X3DLoadInternalMD3"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalobj.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X3DLoadInternalOBJ"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalspine.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X3DLoadInternalSpine"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalspine_animations.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalspine_atlas.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalspine_attachments.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalspine_bones.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalspine_bonetimelines.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalspine_drawordertimelines.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalspine_json.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalspine_simpletextureloader.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalspine_skeleton.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalspine_skins.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalspine_slots.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalspine_slottimelines.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dloadinternalspine_textureloader.inc"/>
-        <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="src/x3d/x3dloadinternalstl.pas"/>
@@ -410,10 +200,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dnodes_boundingboxes.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dnodes_castle.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -439,10 +225,6 @@
       </Unit>
       <Unit>
         <Filename Value="src/x3d/x3dnodes_encoding_xml.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dnodes_eventsengine.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
@@ -526,10 +308,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dnodes_standard_environmentaleffects.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dnodes_standard_environmentalsensor.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -550,10 +328,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dnodes_standard_geospatial.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dnodes_standard_grouping.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -570,23 +344,11 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dnodes_standard_keydevicesensor.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dnodes_standard_layering.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dnodes_standard_layout.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dnodes_standard_lighting.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dnodes_standard_navigation.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
@@ -630,14 +392,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dnodes_standard_sound.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dnodes_standard_text.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dnodes_standard_texturing.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -675,10 +429,6 @@
       </Unit>
       <Unit>
         <Filename Value="src/x3d/x3dnodes_vrml1state.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dnodes_x3dfonttexturescache.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
