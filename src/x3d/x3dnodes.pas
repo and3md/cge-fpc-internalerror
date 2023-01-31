@@ -255,21 +255,6 @@ implementation
 uses
   { Fonts for Text, FontStyle, AsciiText nodes }
   CastleTextureFont_DjvSans_20,
-  {$ifdef CASTLE_EMBED_ALL_3D_FONT_VARIATIONS}
-  CastleTextureFont_DjvSansB_20,
-  CastleTextureFont_DjvSansO_20,
-  CastleTextureFont_DjvSansBO_20,
-
-  CastleTextureFont_DjvMono_20,
-  CastleTextureFont_DjvMonoB_20,
-  CastleTextureFont_DjvMonoO_20,
-  CastleTextureFont_DjvMonoBO_20,
-
-  CastleTextureFont_DjvSerif_20,
-  CastleTextureFont_DjvSerifB_20,
-  CastleTextureFont_DjvSerifI_20,
-  CastleTextureFont_DjvSerifBI_20,
-  {$endif CASTLE_EMBED_ALL_3D_FONT_VARIATIONS}
 
   Math, CastleInternalZStream, X3DCameraUtils,
   CastleFilesUtils, StrUtils, CastleURIUtils, CastleUnicode, CastleCurves,
@@ -365,6 +350,8 @@ uses
 {$I x3dnodes_castle.inc}
 {$I x3dnodes_instantreality.inc}
 {$I x3dnodes_bitmanagement.inc}
+
+
 
 { Auto-generated nodes code }
 {$I auto_generated_node_helpers/x3dnodes_anchor.inc}
