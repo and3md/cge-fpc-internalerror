@@ -534,8 +534,7 @@ type
 
 implementation
 
-uses Math,
-  CastleStringUtils;
+uses Math;
 
 { TBaseTrianglesOctreeNode -----------------------------------------------
 
