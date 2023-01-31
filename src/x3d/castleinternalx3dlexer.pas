@@ -384,7 +384,7 @@ function StringToX3DXmlMulti(const s: string): string;
 implementation
 
 uses CastleLog{,
-  X3DFields}, X3DLoadInternalUtils;
+  X3DFields}, X3DLoadInternalUtils;// remove this X3DLoadInternalUtils include to get rid of internal error
 
 const
   { utf8 specific constants below }
