@@ -1,0 +1,41 @@
+# TAbstractX3DViewpointNode.GravityUp
+Specify the gravity vector explicitly.
+See https://castle-engine.io/x3d_implementation_navigation_extensions.php .
+@deprecated
+
+# TTransformNode.Center
+Pivot around which the @link(Rotation) and @link(Scale) are performed.
+
+# TTransformNode.Rotation
+Rotate the children in 3D, around a given axis by a given angle.
+Rotation is done around @link(Center).
+
+# TTransformNode.Scale
+Scale in 3D. Scaling is done around @link(Center)
+and with orientation given by @link(ScaleOrientation).
+
+We do the best we can to work with @italic(any) scale value,
+even negative or zero. But usually, it's best to keep the scale
+positive. See the @link(TCastleTransform.Scale) documentation for some
+good guidelines about the scale.
+
+# TTransformNode.ScaleOrientation
+Orientation in which 3D @link(Scale) is performed.
+
+# TTransformNode.Translation
+Translate (move) the children.
+
+# TAbstractShapeNode.Render
+Is the shape visible.
+See https://castle-engine.io/x3d_implementation_shape_extensions.php#section_ext_shape_render
+
+# TCommonSurfaceShaderNode.DiffuseTexture
+The texture controlling the diffuse color, multiplied by @link(DiffuseFactor).
+
+# TCommonSurfaceShaderNode.MultiDiffuseAlphaTexture
+The texture controlling the diffuse (rgb) and alpha (alpha channel).
+Diffuse color is multiplied by @link(DiffuseFactor), alpha is
+(or rather: should be) multiplied by @link(AlphaFactor).
+
+# TCommonSurfaceShaderNode.NormalTexture
+Normalmap for bump mapping (the texture controlling the normals).
