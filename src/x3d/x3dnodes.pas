@@ -403,8 +403,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_extrusion.inc}
 {$I auto_generated_node_helpers/x3dnodes_fillproperties.inc}
 {$I auto_generated_node_helpers/x3dnodes_floatvertexattribute.inc}
-{$I auto_generated_node_helpers/x3dnodes_fog.inc}
-{$I auto_generated_node_helpers/x3dnodes_fogcoordinate.inc}
 {$I auto_generated_node_helpers/x3dnodes_forcephysicsmodel.inc}
 {$I auto_generated_node_helpers/x3dnodes_generatedcubemaptexture.inc}
 {$I auto_generated_node_helpers/x3dnodes_generatedshadowmap.inc}
@@ -441,7 +439,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_lineproperties.inc}
 {$I auto_generated_node_helpers/x3dnodes_lineset.inc}
 {$I auto_generated_node_helpers/x3dnodes_loadsensor.inc}
-{$I auto_generated_node_helpers/x3dnodes_localfog.inc}
 {$I auto_generated_node_helpers/x3dnodes_lod.inc}
 {$I auto_generated_node_helpers/x3dnodes_logger.inc}
 {$I auto_generated_node_helpers/x3dnodes_material.inc}
@@ -536,7 +533,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_texcoorddamper2d.inc}
 //{$I auto_generated_node_helpers/x3dnodes_text.inc}
 //{$I auto_generated_node_helpers/x3dnodes_text3d.inc}
-{$I auto_generated_node_helpers/x3dnodes_texturebackground.inc}
 {$I auto_generated_node_helpers/x3dnodes_texturecoordinate.inc}
 {$I auto_generated_node_helpers/x3dnodes_texturecoordinate3d.inc}
 {$I auto_generated_node_helpers/x3dnodes_texturecoordinate4d.inc}
@@ -570,7 +566,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_worldinfo.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dappearancechildnode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dappearancenode.inc}
-{$I auto_generated_node_helpers/x3dnodes_x3dbackgroundnode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dbindablenode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dchasernode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dchildnode.inc}
