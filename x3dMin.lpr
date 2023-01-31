@@ -14,12 +14,9 @@ uses
   CastleInternalNodeInterpolator, CastleInternalNormals,
   CastleInternalShadowMaps, CastleInternalShapeOctree,
   CastleInternalTriangleOctree, CastleInternalX3DLexer,
-  CastleMaterialProperties, {CastleRayTracer, CastleSceneCore,}
+  CastleMaterialProperties,
   X3DCameraUtils,
-  X3DCastleScript, X3DFields, {X3DLoad, X3DLoadInternal3DS,
-  X3DLoadInternalCollada, X3DLoadInternalGEO, X3DLoadInternalGLTF,
-  X3DLoadInternalMD3, X3DLoadInternalOBJ, X3DLoadInternalSpine,
-  X3DLoadInternalSTL,} X3DLoadInternalUtils, X3DNodes, X3DTime, X3DTriangles
+  X3DCastleScript, X3DFields, X3DLoadInternalUtils, X3DNodes, X3DTime, X3DTriangles
   { you can add units after this };
 
 {$R *.res}
