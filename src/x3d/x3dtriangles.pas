@@ -21,7 +21,7 @@ unit X3DTriangles;
 
 interface
 
-uses SysUtils, Generics.Collections,
+uses SysUtils,
   CastleVectors, CastleUtils, X3DNodes, CastleBoxes,
   CastleInternalOctree, CastleTriangles;
 
