@@ -15,7 +15,6 @@ uses
   CastleInternalShadowMaps, CastleInternalShapeOctree,
   CastleInternalTriangleOctree, CastleInternalX3DLexer,
   CastleMaterialProperties,
-  X3DCameraUtils,
   X3DCastleScript, X3DFields, X3DLoadInternalUtils, X3DNodes, X3DTime, X3DTriangles
   { you can add units after this };
 

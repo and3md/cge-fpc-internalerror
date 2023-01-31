@@ -154,11 +154,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dcamerautils.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X3DCameraUtils"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dcastlescript.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="X3DCastleScript"/>

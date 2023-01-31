@@ -255,7 +255,7 @@ uses
   { Fonts for Text, FontStyle, AsciiText nodes }
   CastleTextureFont_DjvSans_20,
 
-  Math, X3DCameraUtils,
+  Math,
   CastleFilesUtils, StrUtils, CastleURIUtils, CastleUnicode, CastleCurves,
   CastleLog, CastleScriptParser, CastleDataURI, URIParser, CastleDownload,
   CastleNURBS, CastleQuaternions, CastleXMLUtils, X3DLoadInternalUtils;
