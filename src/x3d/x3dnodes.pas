@@ -256,7 +256,7 @@ uses
   CastleTextureFont_DjvSans_20,
 
   Math,
-  CastleFilesUtils, StrUtils, CastleURIUtils, CastleUnicode, CastleCurves,
+  CastleFilesUtils, StrUtils, CastleURIUtils, CastleCurves,
   CastleLog, CastleScriptParser, CastleDataURI, URIParser, CastleDownload,
   CastleNURBS, CastleQuaternions, CastleXMLUtils, X3DLoadInternalUtils;
 
