@@ -205,7 +205,6 @@ type
   {$I x3dnodes_standard_interpolation_cubic_bezier.inc}
   {$I x3dnodes_standard_pointingdevicesensor.inc}
   {$I x3dnodes_standard_environmentalsensor.inc}
-  // {$ I x3dnodes_standard_environmentaleffects.inc}
   {$I x3dnodes_standard_h-anim.inc}
   {$I x3dnodes_standard_nurbs.inc}
   {$I x3dnodes_standard_dis.inc}
