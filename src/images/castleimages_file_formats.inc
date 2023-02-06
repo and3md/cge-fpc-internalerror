@@ -41,12 +41,6 @@ type
     { Image formats below are supported by FPImage. }
     ifJPEG, ifGIF, ifTGA, ifXPM, ifPSD, ifPCX, ifPNM,
 
-    { We handle fully DDS (DirectDraw Surface) image format.
-      See also TCompositeImage class in CastleCompositeImage unit,
-      that exposes even more features of the DDS image format. }
-    ifDDS,
-    ifKTX,
-
     { High-dynamic range image format, originally used by Radiance.
       See e.g. the pfilt and ximage programs from the Radiance package
       for processing such images.
@@ -160,15 +154,6 @@ function LoadIPL(Stream: TStream;
 function LoadRGBE(Stream: TStream;
   const AllowedImageClasses: array of TEncodedImageClass): TEncodedImage; forward;
 
-{ Load DDS image file into a single 2D image. This simply returns the first
-  image found in DDS file, which should be the main image.
-  If you want to investigate other images in DDS, you have to use TCompositeImage
-  class. }
-function LoadDDS(Stream: TStream;
-  const AllowedImageClasses: array of TEncodedImageClass): TEncodedImage; forward;
-function LoadKTX(Stream: TStream;
-  const AllowedImageClasses: array of TEncodedImageClass): TEncodedImage; forward;
-
 { Saving image (format-specific) --------------------------------------------
 
   SaveXxx. Each file format may have specialized SaveXxx that allows
@@ -198,8 +183,6 @@ procedure SavePPM(Img: TEncodedImage; Stream: TStream; binary: boolean); overloa
 procedure SavePPM(Img: TEncodedImage; Stream: TStream); { binary = true } overload; forward;
 { }
 procedure SaveRGBE(Img: TEncodedImage; Stream: TStream); forward;
-
-procedure SaveDDS(Img: TEncodedImage; Stream: TStream); forward;
 
 { File formats list ---------------------------------------------------------- }
 
@@ -394,22 +377,6 @@ const
       ExtsCount: 3; Exts: ('pnm', 'pgm', 'pbm');
       Load: @LoadPNM; LoadedClasses: lcRGB_RGBA;
       Save: nil; SavedClasses: scRGB; ),
-
-    { Direct Draw Surface } { }
-    ( FormatName: 'DDS image';
-      MimeTypesCount: 1;
-      MimeTypes: ('image/x-dds', '', '', '', '', '');
-      ExtsCount: 1; Exts: ('dds', '', '');
-      Load: @LoadDDS; LoadedClasses: lcG_GA_RGB_RGBA_GPUCompressed;
-      Save: @SaveDDS; SavedClasses: scG_GA_RGB_RGBA_GPUCompressed; ),
-
-    { Khronos KTX } { }
-    ( FormatName: 'Khronos KTX image';
-      MimeTypesCount: 1;
-      MimeTypes: ('image/ktx', '', '', '', '', '');
-      ExtsCount: 1; Exts: ('ktx', '', '');
-      Load: @LoadKTX; LoadedClasses: lcG_GA_RGB_RGBA_GPUCompressed;
-      Save: nil; SavedClasses: scG_GA_RGB_RGBA_GPUCompressed; ),
 
     { Image formats not well known. }
 

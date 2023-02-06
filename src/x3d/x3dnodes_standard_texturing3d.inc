@@ -19,7 +19,6 @@
   private
     FTextureLoaded: boolean;
     FTextureImage: TEncodedImage;
-    FTextureComposite: TCompositeImage;
     procedure SetTextureLoaded(const Value: boolean);
   strict protected
     { This does the actual loading of texture data.
@@ -65,7 +64,6 @@
       read FTextureLoaded write SetTextureLoaded;
 
     property TextureImage: TEncodedImage read FTextureImage;
-    property TextureComposite: TCompositeImage read FTextureComposite;
 
     {$I auto_generated_node_helpers/x3dnodes_x3dtexture3dnode.inc}
   end;
@@ -231,7 +229,6 @@ begin
       LoadTextureData else
     begin
         FreeAndNil(FTextureImage);
-        FreeAndNil(FTextureComposite);
     end;
 
     FTextureLoaded := Value;
@@ -390,24 +387,9 @@ begin
     except
       on E: Exception do
       begin
-        FTextureComposite := nil;
         WritelnWarning('VRML/X3D', Format('Error when loading ImageTexture3D file "%s": %s', [FullUrl, E.Message]));
         Continue;
       end;
-    end;
-
-    if FTextureComposite = nil then
-    begin
-      //X3DCache.TextureImage_DecReference(FTextureImage, FTextureComposite);
-      WritelnWarning('VRML/X3D', Format('Only composite formats (DDS, KTX...) are supported for ImageTexture3D node, but URL is "%s"', [FullUrl]));
-      Continue;
-    end;
-
-    if FTextureComposite.CompositeType <> ctVolume then
-    begin
-      //X3DCache.TextureImage_DecReference(FTextureImage, FTextureComposite);
-      WritelnWarning('VRML/X3D', Format('Composite image "%s" given for ImageTexture3D doesn''t describe a volume (3d) texture', [FullUrl]));
-      Continue;
     end;
 
     Exit;

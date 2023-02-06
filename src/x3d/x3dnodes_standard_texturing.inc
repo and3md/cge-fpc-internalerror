@@ -85,10 +85,6 @@
       IsTextureImage checks this also. }
     FTextureImage: TEncodedImage;
 
-    { Only if FTextureImage is <> nil, then FTextureComposite may also be <> nil,
-      it this image is part of Composite file. }
-    FTextureComposite: TCompositeImage;
-
     FAlphaChannelData: TAlphaChannel;
 
     FIsTextureLoaded: boolean;
@@ -165,7 +161,6 @@
       @groupBegin }
     function TextureImage: TEncodedImage;
     function IsTextureImage: boolean;
-    function TextureComposite: TCompositeImage;
     function IsTextureVideo: boolean;
     { @groupEnd }
 
@@ -582,7 +577,6 @@ begin
   if FTextureImage <> nil then
   begin
       FreeAndNil(FTextureImage);
-      FreeAndNil(FTextureComposite);
   end;
 end;
 
@@ -597,15 +591,6 @@ end;
 function TAbstractTexture2DNode.IsTextureImage: boolean;
 begin
   Result := (TextureImage <> nil) and (not TextureImage.IsEmpty);
-end;
-
-function TAbstractTexture2DNode.TextureComposite: TCompositeImage;
-begin
-  { Setting IsTextureLoaded property will initialize
-    FTextureImage, FTextureComposite. }
-  IsTextureLoaded := true;
-
-  Result := FTextureComposite;
 end;
 
 function TAbstractTexture2DNode.IsTextureVideo: boolean;

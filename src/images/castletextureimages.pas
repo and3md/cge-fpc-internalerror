@@ -35,7 +35,7 @@ unit CastleTextureImages;
 interface
 
 uses Generics.Collections,
-  CastleImages, CastleCompositeImage, CastleUtils;
+  CastleImages, CastleUtils;
 
 const
   { Image classes that are handled by absolutely all OpenGL versions. }
@@ -74,9 +74,6 @@ const
   it just doesn't return Composite object instance).
 
   @groupBegin }
-function LoadTextureImage(const URL: string;
-  out Composite: TCompositeImage;
-  const LoadOptions: TLoadImageOptions = []): TEncodedImage; overload;
 function LoadTextureImage(const URL: string;
   const LoadOptions: TLoadImageOptions = []): TEncodedImage; overload;
 { @groupEnd }
@@ -138,34 +135,10 @@ implementation
 
 uses SysUtils, CastleStringUtils, CastleLog, CastleURIUtils;
 
-function LoadTextureImage(const URL: string; out Composite: TCompositeImage;
-  const LoadOptions: TLoadImageOptions): TEncodedImage;
-begin
-  if not TCompositeImage.MatchesURL(URL) then
-  begin
-    Result := LoadEncodedImage(URL, TextureImageClasses, LoadOptions);
-    Composite := nil;
-  end else
-  begin
-    Composite := TCompositeImage.Create;
-    try
-      Composite.LoadFromFile(URL, LoadOptions);
-      Composite.OwnsFirstImage := false;
-      Result := Composite.Images[0];
-    except
-      FreeAndNil(Composite);
-      raise;
-    end;
-  end;
-end;
-
 function LoadTextureImage(const URL: string;
   const LoadOptions: TLoadImageOptions): TEncodedImage;
-var
-  Composite: TCompositeImage;
 begin
-  Result := LoadTextureImage(URL, Composite, LoadOptions);
-  Composite.Free;
+  Result := nil;
 end;
 
 end.

@@ -370,10 +370,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dnodes_standard_scripting.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dnodes_standard_shaders.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -531,15 +527,6 @@
         <Filename Value="src/files/castleinternaldirectoryinformation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleInternalDirectoryInformation"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/images/castlecompositeimage.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleCompositeImage"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/images/castlecompositeimage_ktx.inc"/>
-        <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="src/3d/castleboxes.pas"/>
@@ -820,14 +807,6 @@
         <UnitName Value="CastleTriangulate"/>
       </Unit>
       <Unit>
-        <Filename Value="src/images/castlecompositeimage_dds.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/images/castlecompositeimage_format_handler.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/images/castleimages_draw.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -846,10 +825,6 @@
       </Unit>
       <Unit>
         <Filename Value="src/images/images_bmp.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/images/images_composite.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>

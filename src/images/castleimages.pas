@@ -1901,7 +1901,7 @@ implementation
 
 uses ExtInterpolation, FPCanvas, FPImgCanv,
   CastleProgress, CastleStringUtils, CastleFilesUtils, CastleLog,
-  CastleCompositeImage, CastleDownload, CastleURIUtils, CastleTimeUtils;
+  CastleDownload, CastleURIUtils, CastleTimeUtils;
 
 { parts ---------------------------------------------------------------------- }
 
@@ -1917,7 +1917,6 @@ uses ExtInterpolation, FPCanvas, FPImgCanv,
 {$I images_ipl.inc}
 {$I images_rgbe_fileformat.inc}
 {$I images_external_tool.inc}
-{$I images_composite.inc}
 
 { Colors ------------------------------------------------------------------ }
 
@@ -2886,7 +2885,7 @@ begin
     tcETC1:
       FSize := FDepth * DivRoundUp(FWidth, 4) * DivRoundUp(FHeight, 4) * 8;
 
-    else raise EInvalidDDS.CreateFmt('Cannot calculate size for texture compressed with %s',
+    else raise Exception.CreateFmt('Cannot calculate size for texture compressed with %s',
       [TextureCompressionInfo[Compression].Name]);
   end;
 

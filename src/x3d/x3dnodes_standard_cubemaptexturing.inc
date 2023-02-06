@@ -139,7 +139,6 @@
 
       Although the loaded image is not saved here, we do save the AlphaChannel
       type. Our AlphaChannel method will reflect last loaded image. }
-    function LoadImage: TCompositeImage;
 
     {$I auto_generated_node_helpers/x3dnodes_imagecubemaptexture.inc}
   end;
@@ -321,58 +320,6 @@ class function TImageCubeMapTextureNode.URNMatching(const URN: string): boolean;
 begin
   Result := (inherited URNMatching(URN)) or
     (URN = URNX3DNodes + ClassX3DType);
-end;
-
-function TImageCubeMapTextureNode.LoadImage: TCompositeImage;
-var
-  I: Integer;
-  FullUrl: string;
-begin
-  Result := TCompositeImage.Create;
-  try
-    for I := 0 to FdUrl.Items.Count - 1 do
-    begin
-      FullUrl := PathFromBaseUrl(FdUrl.Items[I]);
-
-      if not TCompositeImage.MatchesURL(FullUrl) then
-      begin
-        WritelnWarning('VRML/X3D', Format('Only composite (DDS, KTX...) format is supported for ImageCubeMapTexture node, but URL is "%s"', [FullUrl]));
-        Continue;
-      end;
-
-      try
-        Result.LoadFromFile(FullUrl);
-      except
-        on E: Exception do
-        begin
-          Result.Close;
-          WritelnWarning('VRML/X3D', Format('Error when loading composite file "%s": %s', [FullUrl, E.Message]));
-          Continue;
-        end;
-      end;
-
-      FAlphaChannelData := Result.Images[0].AlphaChannel;
-
-      if Result.CompositeType <> ctCubeMap then
-      begin
-        Result.Close;
-        WritelnWarning('VRML/X3D', Format('Composite image "%s" given for ImageCubeMapTexture doesn''t describe a cube map texture', [FullUrl]));
-        Continue;
-      end;
-
-      if Result.CubeMapSides <> AllCubeMapSides then
-      begin
-        Result.Close;
-        WritelnWarning('VRML/X3D', Format('Composite image "%s" given for ImageCubeMapTexture doesn''t contain all cube map sides', [FullUrl]));
-        Continue;
-      end;
-
-      Exit;
-    end;
-
-    { If we got here, then no URL was good. So set Result to @nil. }
-    FreeAndNil(Result);
-  except FreeAndNil(Result); raise end;
 end;
 
 function TImageCubeMapTextureNode.AlphaChannelData: TAlphaChannel;
