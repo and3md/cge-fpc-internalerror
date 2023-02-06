@@ -24,16 +24,6 @@
 
   { Base for all nodes which specify sources for texture images. }
   TAbstractTextureNode = class(TAbstractAppearanceChildNode)
-  strict private
-    function GetAlphaChannelField: TAutoAlphaChannel;
-    procedure SetAlphaChannelField(const Value: TAutoAlphaChannel);
-  strict protected
-    { Alpha channel detected from image contents (or children nodes),
-      ignoring our FdAlphaChannel field.
-      Actually set only when image data is loaded
-      (e.g. TAbstractTexture2DNode.IsTextureLoaded in case of TAbstractTexture2DNode
-      descendant). }
-    function AlphaChannelData: TAlphaChannel; virtual;
   public
     procedure CreateNode; override;
 
@@ -58,11 +48,9 @@
     { Alpha channel of the loaded texture data.
       Looks at loaded texture data, and at alphaChannel field
       (see https://castle-engine.io/x3d_extensions.php#section_ext_alpha_channel_detection ) }
-    function AlphaChannelFinal: TAlphaChannel;
 
     strict private FFdAlphaChannel: TSFStringEnum;
     public property FdAlphaChannel: TSFStringEnum read FFdAlphaChannel;
-    property AlphaChannelField: TAutoAlphaChannel read GetAlphaChannelField write SetAlphaChannelField;
 
     {$I auto_generated_node_helpers/x3dnodes_x3dtexturenode.inc}
   end;
@@ -83,13 +71,9 @@
 
       Note that this may still have zero size (IsEmpty = @true),
       IsTextureImage checks this also. }
-    FTextureImage: TEncodedImage;
-
-    FAlphaChannelData: TAlphaChannel;
 
     FIsTextureLoaded: boolean;
     procedure SetIsTextureLoaded(Value: boolean);
-    procedure FreeAndNilTextureData;
   strict protected
     FTextureUsedFullUrl: string;
 
@@ -133,7 +117,6 @@
     procedure SetRepeatS(const Value: boolean); virtual; abstract;
     procedure SetRepeatT(const Value: boolean); virtual; abstract;
 
-    function AlphaChannelData: TAlphaChannel; override;
   public
     procedure CreateNode; override;
     destructor Destroy; override;
@@ -159,7 +142,6 @@
       TextureImage may have any class allowed by LoadTextureImage.
 
       @groupBegin }
-    function TextureImage: TEncodedImage;
     function IsTextureImage: boolean;
     function IsTextureVideo: boolean;
     { @groupEnd }
@@ -290,8 +272,6 @@
     strict private FFdTexture: TMFNode;
     public property FdTexture: TMFNode read FFdTexture;
 
-    function AlphaChannelData: TAlphaChannel; override;
-
     {$I auto_generated_node_helpers/x3dnodes_multitexture.inc}
   end;
 
@@ -358,9 +338,6 @@
     class function ClassX3DType: string; override;
     class function URNMatching(const URN: string): boolean; override;
 
-    strict private FFdImage: TSFImage;
-    public property FdImage: TSFImage read FFdImage;
-
     function TextureDescription: string; override;
 
     {$I auto_generated_node_helpers/x3dnodes_pixeltexture.inc}
@@ -407,11 +384,6 @@
 
   { Adjust the texture application properties. }
   TTexturePropertiesNode = class(TAbstractNode)
-  strict private
-    function GetMinificationFilter: TAutoMinificationFilter;
-    procedure SetMinificationFilter(const Value: TAutoMinificationFilter);
-    function GetMagnificationFilter: TAutoMagnificationFilter;
-    procedure SetMagnificationFilter(const Value: TAutoMagnificationFilter);
   public
     procedure CreateNode; override;
     class function ClassX3DType: string; override;
@@ -452,12 +424,6 @@
 
     strict private FFdGUITexture: TSFBool;
     public property FdGUITexture: TSFBool read FFdGUITexture;
-
-    property MagnificationFilter: TAutoMagnificationFilter
-      read GetMagnificationFilter write SetMagnificationFilter;
-
-    property MinificationFilter: TAutoMinificationFilter
-      read GetMinificationFilter write SetMinificationFilter;
 
     {$I auto_generated_node_helpers/x3dnodes_textureproperties.inc}
   end;
@@ -516,41 +482,12 @@ begin
    FdCrossOrigin.ChangesAlways := [];
   AddField(FFdCrossOrigin);
 
-  FFdAlphaChannel := TSFStringEnum.Create(Self, false, 'alphaChannel', AlphaToString, Ord(acAuto));
-   FdAlphaChannel.ChangesAlways := [chVisibleVRML1State];
-  AddField(FFdAlphaChannel);
-
   DefaultContainerField := 'texture';
 end;
 
 function TAbstractTextureNode.TextureDescription: string;
 begin
   Result := X3DType;
-end;
-
-function TAbstractTextureNode.AlphaChannelData: TAlphaChannel;
-begin
-  Result := acNone;
-end;
-
-function TAbstractTextureNode.AlphaChannelFinal: TAlphaChannel;
-var
-  Res: TAutoAlphaChannel;
-begin
-  Res := AlphaChannelField;
-  if Res = acAuto then
-    Result := AlphaChannelData else
-    Result := Res;
-end;
-
-function TAbstractTextureNode.GetAlphaChannelField: TAutoAlphaChannel;
-begin
-  Result := TAutoAlphaChannel(FdAlphaChannel.EnumValue);
-end;
-
-procedure TAbstractTextureNode.SetAlphaChannelField(const Value: TAutoAlphaChannel);
-begin
-  FdAlphaChannel.SendEnumValue(Ord(Value));
 end;
 
 { TAbstractTexture2DNode ----------------------------------------------------------- }
@@ -568,29 +505,12 @@ end;
 
 destructor TAbstractTexture2DNode.Destroy;
 begin
-  FreeAndNilTextureData;
   inherited;
-end;
-
-procedure TAbstractTexture2DNode.FreeAndNilTextureData;
-begin
-  if FTextureImage <> nil then
-  begin
-      FreeAndNil(FTextureImage);
-  end;
-end;
-
-function TAbstractTexture2DNode.TextureImage: TEncodedImage;
-begin
-  { Setting IsTextureLoaded property will initialize FTextureImage. }
-  IsTextureLoaded := true;
-
-  Result := FTextureImage;
 end;
 
 function TAbstractTexture2DNode.IsTextureImage: boolean;
 begin
-  Result := (TextureImage <> nil) and (not TextureImage.IsEmpty);
+  Result := false;
 end;
 
 function TAbstractTexture2DNode.IsTextureVideo: boolean;
@@ -604,8 +524,6 @@ procedure TAbstractTexture2DNode.SetIsTextureLoaded(Value: boolean);
   var
     WasCacheUsed: boolean;
   begin
-    FreeAndNilTextureData;
-
     LoadTextureData(WasCacheUsed);
   end;
 
@@ -619,7 +537,6 @@ begin
     end else
     begin
       { unload the texture }
-      FreeAndNilTextureData;
     end;
 
     FIsTextureLoaded := Value;
@@ -632,11 +549,6 @@ begin
   FTextureUsedFullUrl := '';
 
   WritelnWarning('VRML/X3D', Format('Loading textures from "%s" node not implemented', [X3DType]));
-end;
-
-function TAbstractTexture2DNode.AlphaChannelData: TAlphaChannel;
-begin
-  Result := FAlphaChannelData;
 end;
 
 { TAbstractX3DTexture2DNode ------------------------------------------------------ }
@@ -708,13 +620,6 @@ end;
 
 procedure TImageTextureNode.LoadTextureData(out WasCacheUsed: boolean);
 
-  function LoadOptions: TLoadImageOptions;
-  begin
-    Result := [];
-    if FlipVertically then
-      Include(Result, liFlipVertically);
-  end;
-
 var
   I: Integer;
   FullUrl, ErrorMessage: string;
@@ -736,7 +641,6 @@ begin
     begin
       FullUrl := PathFromBaseUrl(FdUrl.Items[I]);
       try
-        FTextureImage := nil;
         WasCacheUsed := true;
         if WarnAboutAbsoluteFilenames and
            AbsoluteFileURI(FdUrl.Items[I]) and
@@ -819,21 +723,6 @@ begin
     (URN = URNX3DNodes + ClassX3DType);
 end;
 
-function TMultiTextureNode.AlphaChannelData: TAlphaChannel;
-var
-  ChildTex: TX3DNode;
-  I: Integer;
-begin
-  Result := acNone;
-  for I := 0 to FdTexture.Count - 1 do
-  begin
-    ChildTex := FdTexture[I];
-    if (ChildTex <> nil) and
-       (ChildTex is TAbstractTextureNode) then
-      AlphaMaxVar(Result, TAbstractTextureNode(ChildTex).AlphaChannelFinal);
-  end;
-end;
-
 procedure TMultiTextureCoordinateNode.CreateNode;
 begin
   inherited;
@@ -883,10 +772,6 @@ end;
 procedure TPixelTextureNode.CreateNode;
 begin
   inherited;
-
-  FFdImage := TSFImage.Create(Self, true, 'image', nil);
-   FdImage.ChangesAlways := [chTextureImage];
-  AddField(FFdImage);
   { X3D specification comment: 0 0 }
   end;
 
@@ -906,21 +791,11 @@ procedure TPixelTextureNode.LoadTextureData(out WasCacheUsed: boolean);
 begin
   WasCacheUsed := false;
 
-  if not FdImage.Value.IsEmpty then
-  begin
-    FTextureImage := FdImage.Value.MakeCopy;
-    FAlphaChannelData := FdImage.Value.AlphaChannel;
-  end;
 end;
 
 function TPixelTextureNode.TextureDescription: string;
 begin
-  if not FdImage.Value.IsEmpty then
-    result := Format('inlined image (width = %d; height = %d; with alpha = %s)',
-      [ FdImage.Value.Width,
-        FdImage.Value.Height,
-        BoolToStr(FdImage.Value.HasAlpha, true) ]) else
-    result := 'none';
+  result := 'none';
 end;
 
 procedure TTextureCoordinateNode.CreateNode;
@@ -1063,102 +938,6 @@ class function TTexturePropertiesNode.URNMatching(const URN: string): boolean;
 begin
   Result := (inherited URNMatching(URN)) or
     (URN = URNX3DNodes + ClassX3DType);
-end;
-
-function TTexturePropertiesNode.GetMinificationFilter: TAutoMinificationFilter;
-var
-  S: string;
-begin
-  S := UpperCase(FdMinificationFilter.Value);
-
-  if S = 'AVG_PIXEL' then Result := minLinear else
-  if S = 'AVG_PIXEL_AVG_MIPMAP' then Result := minLinearMipmapLinear else
-  if S = 'AVG_PIXEL_NEAREST_MIPMAP' then Result := minLinearMipmapNearest else
-  if S = 'NEAREST_PIXEL_AVG_MIPMAP' then Result := minNearestMipmapLinear else
-  if S = 'NEAREST_PIXEL_NEAREST_MIPMAP' then Result := minNearestMipmapNearest else
-  if S = 'NEAREST_PIXEL' then Result := minNearest else
-
-  if S = 'DEFAULT' then Result := minDefault else
-  if S = 'FASTEST' then Result := minFastest else
-  if S = 'NICEST' then Result := minNicest else
-
-  if S = 'NEAREST' then
-  begin
-    WritelnWarning('VRML/X3D', Format('"%s" is not allowed texture minification, this is an InstantReality extension, please fix to "NEAREST_PIXEL"', [S]));
-    Result := minNearest;
-  end else
-
-  if S = 'LINEAR' then
-  begin
-    WritelnWarning('VRML/X3D', Format('"%s" is not allowed texture minification, this is an InstantReality extension, please fix to "AVG_PIXEL"', [S]));
-    Result := minLinear;
-  end else
-
-  begin
-    Result := minDefault;
-    WritelnWarning('VRML/X3D', Format('Unknown texture minification filter "%s"', [S]));
-  end;
-end;
-
-procedure TTexturePropertiesNode.SetMinificationFilter(const Value: TAutoMinificationFilter);
-const
-  Names: array [TAutoMinificationFilter] of string = (
-    'NEAREST_PIXEL',
-    'AVG_PIXEL',
-    'NEAREST_PIXEL_NEAREST_MIPMAP',
-    'NEAREST_PIXEL_AVG_MIPMAP',
-    'AVG_PIXEL_NEAREST_MIPMAP',
-    'AVG_PIXEL_AVG_MIPMAP',
-    'DEFAULT',
-    'FASTEST',
-    'NICEST'
-  );
-begin
-  FdMinificationFilter.Send(Names[Value]);
-end;
-
-function TTexturePropertiesNode.GetMagnificationFilter: TAutoMagnificationFilter;
-var
-  S: string;
-begin
-  S := UpperCase(FdMagnificationFilter.Value);
-
-  if S = 'AVG_PIXEL' then Result := magLinear else
-  if S = 'NEAREST_PIXEL' then Result := magNearest else
-
-  if S = 'DEFAULT' then Result := magDefault else
-  if S = 'FASTEST' then Result := magFastest else
-  if S = 'NICEST' then Result := magNicest else
-
-  if S = 'NEAREST' then
-  begin
-    WritelnWarning('VRML/X3D', Format('"%s" is not allowed texture magnification, this is an InstantReality extension, please fix to "NEAREST_PIXEL"', [S]));
-    Result := magNearest;
-  end else
-
-  if S = 'LINEAR' then
-  begin
-    WritelnWarning('VRML/X3D', Format('"%s" is not allowed texture magnification, this is an InstantReality extension, please fix to "AVG_PIXEL"', [S]));
-    Result := magLinear;
-  end else
-
-  begin
-    Result := magDefault;
-    WritelnWarning('VRML/X3D', Format('Unknown texture minification filter "%s"', [S]));
-  end;
-end;
-
-procedure TTexturePropertiesNode.SetMagnificationFilter(const Value: TAutoMagnificationFilter);
-const
-  Names: array [TAutoMagnificationFilter] of string = (
-    'NEAREST_PIXEL',
-    'AVG_PIXEL',
-    'DEFAULT',
-    'FASTEST',
-    'NICEST'
-  );
-begin
-  FdMagnificationFilter.Send(Names[Value]);
 end;
 
 procedure TTextureTransformNode.CreateNode;

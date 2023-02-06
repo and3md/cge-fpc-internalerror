@@ -18,7 +18,6 @@
   TAbstractTexture3DNode = class(TAbstractTextureNode)
   private
     FTextureLoaded: boolean;
-    FTextureImage: TEncodedImage;
     procedure SetTextureLoaded(const Value: boolean);
   strict protected
     { This does the actual loading of texture data.
@@ -63,17 +62,11 @@
     property TextureLoaded: boolean
       read FTextureLoaded write SetTextureLoaded;
 
-    property TextureImage: TEncodedImage read FTextureImage;
-
     {$I auto_generated_node_helpers/x3dnodes_x3dtexture3dnode.inc}
   end;
 
   { 3D texture defined as a collection of 2D texture sources at various depths. }
   TComposedTexture3DNode = class(TAbstractTexture3DNode)
-  strict private
-    FAlphaChannelData: TAlphaChannel;
-  strict protected
-    function AlphaChannelData: TAlphaChannel; override;
   public
     procedure CreateNode; override;
     class function ClassX3DType: string; override;
@@ -89,10 +82,7 @@
 
   { 3D texture loaded from a single file like DDS. }
   TImageTexture3DNode = class(TAbstractTexture3DNode, IAbstractUrlObject)
-  strict private
-    FAlphaChannelData: TAlphaChannel;
   strict protected
-    function AlphaChannelData: TAlphaChannel; override;
     procedure LoadTextureData; override;
   public
     procedure CreateNode; override;
@@ -107,10 +97,6 @@
 
   { 3D texture defined as an explicit array of pixel values inside the X3D file. }
   TPixelTexture3DNode = class(TAbstractTexture3DNode)
-  strict private
-    FAlphaChannelData: TAlphaChannel;
-  strict protected
-    function AlphaChannelData: TAlphaChannel; override;
   public
     procedure CreateNode; override;
     class function ClassX3DType: string; override;
@@ -227,10 +213,6 @@ begin
   begin
     if Value then
       LoadTextureData else
-    begin
-        FreeAndNil(FTextureImage);
-    end;
-
     FTextureLoaded := Value;
   end;
 end;
@@ -259,96 +241,14 @@ begin
 end;
 
 procedure TComposedTexture3DNode.LoadTextureData;
-
-  { Load one slice (child texture). Returns @nil and makes WritelnWarning if failed. }
-  function LoadOneSlice(const Index: Integer): TCastleImage;
-  var
-    Tex: TAbstractTexture2DNode;
-  begin
-    if not ((FdTexture[Index] <> nil) and
-            (FdTexture[Index] is TAbstractTexture2DNode)) then
-    begin
-      WritelnWarning('VRML/X3D', Format('ComposedTexture3D slice %d is not a valid 2D texture node',
-        [Index]));
-      Exit(nil);
-    end;
-
-    Tex := TAbstractTexture2DNode(FdTexture[Index]);
-    if not Tex.IsTextureImage then
-    begin
-      Exit(nil); { Tex.IsTextureImage already did proper WritelnWarning }
-    end;
-
-    if not (Tex.TextureImage is TCastleImage) then
-    begin
-      WritelnWarning('VRML/X3D', Format('ComposedTexture3D slice %d is a GPU-compressed texture, not allowed (we need to be able to glue 2D textures for 3D texture)',
-        [Index]));
-      Exit(nil);
-    end;
-
-    Result := TCastleImage(Tex.TextureImage);
-
-    { If any slice has full-range alpha, then assume whole texture does. }
-    AlphaMaxVar(FAlphaChannelData, Tex.AlphaChannelFinal);
-  end;
-
 var
   I: Integer;
-  Slice: TCastleImage;
 begin
   if FdTexture.Count = 0 then
   begin
     WritelnWarning('VRML/X3D', 'ComposedTexture3D has no textures');
     Exit;
   end;
-
-  FAlphaChannelData := acNone;
-
-  { First Slice is treated specially, as it determines width/height/class
-    of the resulting image. }
-
-  Slice := LoadOneSlice(0);
-  if Slice = nil then Exit;
-
-  FTextureImage := TCastleImageClass(Slice.ClassType).Create(
-    Slice.Width, Slice.Height, FdTexture.Count);
-
-  try
-    Move(Slice.RawPixels^, TCastleImage(FTextureImage).RawPixels^,
-      Slice.Width * Slice.Height * Slice.PixelSize);
-
-    for I := 1 to FdTexture.Count - 1 do
-    begin
-      Slice := LoadOneSlice(I);
-      if Slice = nil then
-      begin
-        FreeAndNil(FTextureImage);
-        Exit;
-      end;
-
-      if (Slice.Width <> FTextureImage.Width) or
-         (Slice.Height <> FTextureImage.Height) or
-         (Slice.ClassType <> FTextureImage.ClassType) then
-      begin
-        WritelnWarning('VRML/X3D', Format('ComposedTexture3D slice %d doesn''t have matching size/type (%d x %d of %s), all slices must have the same size/type (first slice had %d x %d of %s)',
-          [I, Slice        .Width, Slice        .Height, Slice        .ClassName,
-              FTextureImage.Width, FTextureImage.Height, FTextureImage.ClassName]));
-        FreeAndNil(FTextureImage);
-        Exit;
-      end;
-
-      Move(Slice.RawPixels^, TCastleImage(FTextureImage).PixelPtr(0, 0, I)^,
-        Slice.Width * Slice.Height * Slice.PixelSize);
-    end;
-  except
-    FreeAndNil(FTextureImage);
-    raise;
-  end;
-end;
-
-function TComposedTexture3DNode.AlphaChannelData: TAlphaChannel;
-begin
-  Result := FAlphaChannelData;
 end;
 
 procedure TImageTexture3DNode.CreateNode;
@@ -394,11 +294,6 @@ begin
 
     Exit;
   end;
-end;
-
-function TImageTexture3DNode.AlphaChannelData: TAlphaChannel;
-begin
-  Result := FAlphaChannelData;
 end;
 
 procedure TPixelTexture3DNode.CreateNode;
@@ -448,57 +343,6 @@ begin
     Exit;
   end;
 
-  case TexComponents of
-    0: { 0 components is allowed by the spec, and results in an empty image };
-    1: begin
-         FTextureImage := TGrayscaleImage.Create(Width, Height, Depth);
-         G := TGrayscaleImage(FTextureImage).Pixels;
-         for I := 0 to Width * Height * Depth - 1 do
-         begin
-           DecodeX3DColor(FdImage.Items.Items[4 + I], G^);
-           Inc(G);
-         end;
-       end;
-    2: begin
-         FTextureImage := TGrayscaleAlphaImage.Create(Width, Height, Depth);
-         GA := TGrayscaleAlphaImage(FTextureImage).Pixels;
-         for I := 0 to Width * Height * Depth - 1 do
-         begin
-           DecodeX3DColor(FdImage.Items.Items[4 + I], GA^);
-           Inc(GA);
-         end;
-       end;
-    3: begin
-         FTextureImage := TRGBImage.Create(Width, Height, Depth);
-         RGB := TRGBImage(FTextureImage).Pixels;
-         for I := 0 to Width * Height * Depth - 1 do
-         begin
-           DecodeX3DColor(FdImage.Items.Items[4 + I], RGB^);
-           Inc(RGB);
-         end;
-       end;
-    4: begin
-         FTextureImage := TRGBAlphaImage.Create(Width, Height, Depth);
-         RGBA := TRGBAlphaImage(FTextureImage).Pixels;
-         for I := 0 to Width * Height * Depth - 1 do
-         begin
-           DecodeX3DColor(FdImage.Items.Items[4 + I], RGBA^);
-           Inc(RGBA);
-         end;
-       end;
-    else
-    begin
-      WritelnWarning('VRML/X3D', 'PixelTexture3D.image has invalid components count (must be between 0..4)');
-      Exit;
-    end;
-  end;
-
-  FAlphaChannelData := FTextureImage.AlphaChannel;
-end;
-
-function TPixelTexture3DNode.AlphaChannelData: TAlphaChannel;
-begin
-  Result := FAlphaChannelData;
 end;
 
 procedure TTextureCoordinate3DNode.CreateNode;

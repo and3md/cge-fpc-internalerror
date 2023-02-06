@@ -22,8 +22,7 @@ uses
   CastleVectorsInternalSingle, CastleUnicode, CastleBoxes, CastleFrustum,
   CastleInternalOctree, CastleNURBS, CastleQuaternions, CastleTriangles,
   CastleTriangulate,
-  CastleImages, CastleInternalFPWritePNG,
-  CastleTextureImages, CastleDownload, CastleFilesUtils,
+  CastleDownload, CastleFilesUtils,
   CastleFindFiles, CastleInternalDirectoryInformation, CastleURIUtils,
   CastleXMLUtils, CastleDataURI
   { you can add units after this };

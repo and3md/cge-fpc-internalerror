@@ -459,9 +459,6 @@
     strict private FFdFilename: TSFString;
     public property FdFilename: TSFString read FFdFilename;
 
-    strict private FFdImage: TSFImage;
-    public property FdImage: TSFImage read FFdImage;
-
     strict private FFdWrapS: TSFEnum;
     public property FdWrapS: TSFEnum read FFdWrapS;
 
@@ -1605,10 +1602,6 @@ begin
    FdFilename.ChangesAlways := [chVisibleVRML1State, chTextureImage];
   AddField(FFdFilename);
 
-  FFdImage := TSFImage.Create(Self, true, 'image', nil);
-   FdImage.ChangesAlways := [chVisibleVRML1State, chTextureImage];
-  AddField(FFdImage);
-
   {$warnings off} // using deprecated knowingly, it should be internal
   FFdWrapS := TSFEnum.Create(Self, true, 'wrapS', ['REPEAT', 'CLAMP'], TEXWRAP_REPEAT);
   {$warnings on}
@@ -1646,7 +1639,6 @@ begin
   if FdFilename.Value <> '' then
   try
     FullUrl := PathFromBaseUrl(FdFilename.Value);
-    FTextureImage := nil;
     FTextureUsedFullUrl := FullUrl;
     CacheUsed := true;
     Exit;
@@ -1657,32 +1649,17 @@ begin
         [E.ClassName, 'texture', URIDisplay(FullUrl), E.Message]));
   end;
 
-  { Still not loaded (maybe FdFilename.Value is ''
-    or loading image raised exception)? So try to use inlined texture. }
-  if not FdImage.Value.IsEmpty then
-    FTextureImage := FdImage.Value.MakeCopy;
 end;
 
 function TTexture2Node_1.TextureDescription: string;
 
   function InlinedDescr: string;
   begin
-    Result := Format('inlined (width = %d; height = %d; with alpha = %s)',
-      [ FdImage.Value.Width,
-        FdImage.Value.Height,
-        BoolToStr(FdImage.Value.HasAlpha, true) ]);
+    Result := 'inlined (width = %d; height = %d; with alpha = %s)';
   end;
 
 begin
-  if FdFilename.Value <> '' then
-  begin
-    Result := 'file "' +PathFromBaseUrl(FdFilename.Value) +'"';
-    if not FdImage.Value.IsEmpty then
-      Result := Result + (' (and '+InlinedDescr+')');
-  end else
-  if not FdImage.Value.IsEmpty then
-    Result := InlinedDescr else
-    Result := 'none';
+  Result := 'file "' +PathFromBaseUrl(FdFilename.Value) +'"';
 end;
 
 {$warnings off} // using deprecated TEXWRAP_xxx knowingly, it should be internal

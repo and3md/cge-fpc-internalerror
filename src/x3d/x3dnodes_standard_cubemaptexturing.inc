@@ -24,10 +24,6 @@
 
   { Cube environment map texture defined as a six individual 2D texture nodes. }
   TComposedCubeMapTextureNode = class(TAbstractEnvironmentTextureNode)
-  strict private
-    FAlphaChannelData: TAlphaChannel;
-  strict protected
-    function AlphaChannelData: TAlphaChannel; override;
   public
     procedure CreateNode; override;
     class function ClassX3DType: string; override;
@@ -113,10 +109,6 @@
 
   { Cube environment map texture loaded from a single file, like DDS. }
   TImageCubeMapTextureNode = class(TAbstractEnvironmentTextureNode, IAbstractUrlObject)
-  strict private
-    FAlphaChannelData: TAlphaChannel;
-  strict protected
-    function AlphaChannelData: TAlphaChannel; override;
   public
     procedure CreateNode; override;
     class function ClassX3DType: string; override;
@@ -216,19 +208,11 @@ function TComposedCubeMapTextureNode.LoadSides: boolean;
       SideTex := TAbstractTexture2DNode(SideField.Value);
       Result := SideTex.IsTextureImage;
 
-      if Result and not (SideTex.TextureImage is TCastleImage) then
-      begin
-        WritelnWarning('VRML/X3D', 'ComposedCubeMapTexture cannot contain images compressed GPU-compression algorithms, as we have to rotate images within, and we cannot do this (fast) with compressed textures');
-        Result := false;
-      end;
     end;
 
-    { If any slice has full-range alpha, then assume whole texture does. }
-    AlphaMaxVar(FAlphaChannelData, SideTex.AlphaChannelFinal);
   end;
 
 begin
-  FAlphaChannelData := acNone;
   Result :=
     SideLoaded(FdBack) and
     SideLoaded(FdBottom) and
@@ -236,11 +220,6 @@ begin
     SideLoaded(FdLeft) and
     SideLoaded(FdRight) and
     SideLoaded(FdTop);
-end;
-
-function TComposedCubeMapTextureNode.AlphaChannelData: TAlphaChannel;
-begin
-  Result := FAlphaChannelData;
 end;
 
 procedure TGeneratedCubeMapTextureNode.CreateNode;
@@ -320,11 +299,6 @@ class function TImageCubeMapTextureNode.URNMatching(const URN: string): boolean;
 begin
   Result := (inherited URNMatching(URN)) or
     (URN = URNX3DNodes + ClassX3DType);
-end;
-
-function TImageCubeMapTextureNode.AlphaChannelData: TAlphaChannel;
-begin
-  Result := FAlphaChannelData;
 end;
 
 procedure RegisterCubeMapTexturingNodes;

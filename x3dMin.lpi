@@ -489,11 +489,6 @@
         <UnitName Value="CastleColors"/>
       </Unit>
       <Unit>
-        <Filename Value="src/images/castleimages.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleImages"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/files/castlefilesutils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleFilesUtils"/>
@@ -532,11 +527,6 @@
         <Filename Value="src/3d/castleboxes.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleBoxes"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/images/castletextureimages.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleTextureImages"/>
       </Unit>
       <Unit>
         <Filename Value="src/3d/castletriangles.pas"/>
@@ -806,59 +796,6 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleTriangulate"/>
       </Unit>
-      <Unit>
-        <Filename Value="src/images/castleimages_draw.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/images/castleimages_file_formats.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/images/castleimages_paint.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/images/castleinternalfpwritepng.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleInternalFPWritePNG"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/images/images_bmp.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/images/images_external_tool.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/images/images_fpimage.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/images/images_ipl.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/images/images_modulatergb_implement.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/images/images_ppm.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/images/images_rgbe_fileformat.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/images/images_s3tc_flip_vertical.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/images/images_transformrgb_implement.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -867,8 +804,8 @@
       <Filename Value="x3dMin"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="$(ProjOutDir);src/base;src/images;src/files;src/3d;src/castlescript;src/fonts;src/x3d"/>
-      <OtherUnitFiles Value="src/base;src/images;src/files;src/3d;src/castlescript;src/x3d"/>
+      <IncludeFiles Value="$(ProjOutDir);src/base;src/files;src/3d;src/castlescript;src/fonts;src/x3d"/>
+      <OtherUnitFiles Value="src/base;src/files;src/3d;src/castlescript;src/x3d"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>

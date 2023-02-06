@@ -22,7 +22,7 @@ interface
 
 uses Classes, SysUtils, DOM, Generics.Collections,
   CastleVectors, CastleInternalX3DLexer, CastleUtils, CastleClassUtils,
-  CastleImages, CastleStringUtils, CastleInterfaces,
+  CastleStringUtils, CastleInterfaces,
   CastleInternalDoubleLists, X3DTime, CastleColors, CastleQuaternions;
 
 {$define read_interface}

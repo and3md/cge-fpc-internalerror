@@ -52,7 +52,6 @@ begin
     TSFEnum,
     TSFBool,     TMFBool,
     TSFFloat,    TMFFloat,
-    TSFImage,
     TSFLong,     TMFLong,
     TSFInt32,    TMFInt32,
 

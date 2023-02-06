@@ -403,7 +403,7 @@ end;
 
 constructor TSFImageEvent.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
 begin
-  inherited Create(AParentNode, AName, TSFImage, AInEvent);
+  /// inherited Create(AParentNode, AName, TSFImage, AInEvent);
 end;
 
 { TSFLongEvent --------------------------------------------------------------- }
