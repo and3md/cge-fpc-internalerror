@@ -532,11 +532,6 @@
         <UnitName Value="CastleInterfaces"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castleinternalgzio.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleInternalGzio"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castleprogress.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleProgress"/>
