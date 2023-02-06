@@ -24,7 +24,7 @@ uses
   CastleTriangulate, CastleInternalFreeType, CastleInternalFreeTypeH,
   CastleInternalFtFont, CastleTextureFontData, CastleTextureFont_DjvSans_20,
   CastleCompositeImage, CastleImages, CastleInternalFPWritePNG,
-  CastleTextureImages, CastleVideos, CastleDownload, CastleFilesUtils,
+  CastleTextureImages, CastleDownload, CastleFilesUtils,
   CastleFindFiles, CastleInternalDirectoryInformation, CastleURIUtils,
   CastleXMLUtils, CastleDataURI
   { you can add units after this };

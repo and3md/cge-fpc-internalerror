@@ -879,11 +879,6 @@
         <UnitName Value="CastleInternalFPWritePNG"/>
       </Unit>
       <Unit>
-        <Filename Value="src/images/castlevideos.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleVideos"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/images/images_bmp.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>

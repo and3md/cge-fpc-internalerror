@@ -89,18 +89,7 @@
       it this image is part of Composite file. }
     FTextureComposite: TCompositeImage;
 
-    { Analogous to FTextureImage, this is the loaded video file.
-      Assigned here, should always have TVideo.Loaded = @true. }
-    FTextureVideo: TVideo;
-
     FAlphaChannelData: TAlphaChannel;
-
-    { Non-nil only if FTextureImage, FTextureComposite or FTextueVideo
-      should be freed using
-      UsedCache (TextureImage_DecReference or Video_DecReference).
-      Also loaded FTextureVideo should always have it's own Cache property set
-      to this. }
-    UsedCache: TTexturesVideosCache;
 
     FIsTextureLoaded: boolean;
     procedure SetIsTextureLoaded(Value: boolean);
@@ -177,7 +166,6 @@
     function TextureImage: TEncodedImage;
     function IsTextureImage: boolean;
     function TextureComposite: TCompositeImage;
-    function TextureVideo: TVideo;
     function IsTextureVideo: boolean;
     { @groupEnd }
 
@@ -576,7 +564,6 @@ procedure TAbstractTexture2DNode.CreateNode;
 begin
   inherited;
 
-  UsedCache := nil;
   FIsTextureLoaded := false;
 
   FFdTextureProperties := TSFNode.Create(Self, false, 'textureProperties', [TTexturePropertiesNode]);
@@ -594,25 +581,8 @@ procedure TAbstractTexture2DNode.FreeAndNilTextureData;
 begin
   if FTextureImage <> nil then
   begin
-    if UsedCache <> nil then
-    begin
-      UsedCache.TextureImage_DecReference(FTextureImage, FTextureComposite);
-      UsedCache := nil;
-    end else
-    begin
       FreeAndNil(FTextureImage);
       FreeAndNil(FTextureComposite);
-    end;
-  end;
-
-  if FTextureVideo <> nil then
-  begin
-    if UsedCache <> nil then
-    begin
-      UsedCache.Video_DecReference(FTextureVideo);
-      UsedCache := nil;
-    end else
-      FreeAndNil(FTextureVideo);
   end;
 end;
 
@@ -638,19 +608,9 @@ begin
   Result := FTextureComposite;
 end;
 
-function TAbstractTexture2DNode.TextureVideo: TVideo;
-begin
-  { Setting IsTextureLoaded property will initialize FTextureVideo. }
-  IsTextureLoaded := true;
-
-  Result := FTextureVideo;
-end;
-
 function TAbstractTexture2DNode.IsTextureVideo: boolean;
 begin
-  Result := (TextureVideo <> nil) and
-    (TextureVideo.Width <> 0) and
-    (TextureVideo.Height <> 0);
+  Result := false
 end;
 
 procedure TAbstractTexture2DNode.SetIsTextureLoaded(Value: boolean);
@@ -662,8 +622,6 @@ procedure TAbstractTexture2DNode.SetIsTextureLoaded(Value: boolean);
     FreeAndNilTextureData;
 
     LoadTextureData(WasCacheUsed);
-    if WasCacheUsed then
-      UsedCache := nil;
   end;
 
 begin

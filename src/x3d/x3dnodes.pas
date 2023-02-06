@@ -171,7 +171,7 @@ uses SysUtils, Generics.Collections, Classes, XMLRead, DOM,
   X3DFields, CastleImages, CastleColors,
   X3DTime,
   CastleScript, X3DCastleScript, CastleCompositeImage,
-  CastleTextureImages, CastleStringUtils, CastleBoxes, CastleMaterialProperties, CastleVideos,
+  CastleTextureImages, CastleStringUtils, CastleBoxes, CastleMaterialProperties,
   CastleInternalOctree, CastleProjection;
 
 {$define read_interface}
@@ -183,7 +183,6 @@ type
   {$I x3dnodes_clipplane.inc}
   {$I x3dnodes_x3dgraphtraversestate.inc}
   {$I x3dnodes_destructionnotification.inc}
-  {$I x3dnodes_x3dnodescache.inc}
   {$I x3dnodes_x3dnode.inc}
   {$I x3dnodes_generatedtextures.inc}
   {$I x3dnodes_x3dnodeclasseslist.inc}
@@ -272,7 +271,6 @@ uses
 {$I x3dnodes_clipplane.inc}
 {$I x3dnodes_x3dgraphtraversestate.inc}
 {$I x3dnodes_destructionnotification.inc}
-{$I x3dnodes_x3dnodescache.inc}
 {$I x3dnodes_x3dnodeclasseslist.inc}
 
 {$I x3dnodes_utils_extrusion.inc}
@@ -599,13 +597,10 @@ procedure X3DNodesFinalization;
 begin
   FreeAndNil(VRML1DefaultState);
   FreeAndNil(TraverseSingleStack);
-  TextureCache := nil;
   FreeAndNil(X3DCache);
 
   FreeAndNil(NodesManager);
   FreeAndNil(AnyNodeDestructionNotifications);
-
-  FreeAndNil(CurrentlyLoading);
 end;
 
 initialization
@@ -665,8 +660,6 @@ initialization
   VRML1DefaultState := TVRML1State.Create;
   VRML1DefaultState.CreateNodes;
   TraverseSingleStack := TX3DGraphTraverseStateStack.Create;
-
-  CurrentlyLoading := TCastleStringList.Create;
 finalization
   { Because of various finalization order (some stuff may be owned
     e.g. by CastleWindow.Application, and freed at CastleWindow finalization,

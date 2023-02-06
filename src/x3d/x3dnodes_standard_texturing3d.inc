@@ -17,7 +17,6 @@
   { Base type for all node types that specify 3D sources for texture images. }
   TAbstractTexture3DNode = class(TAbstractTextureNode)
   private
-    UsedCache: TTexturesVideosCache;
     FTextureLoaded: boolean;
     FTextureImage: TEncodedImage;
     FTextureComposite: TCompositeImage;
@@ -231,13 +230,8 @@ begin
     if Value then
       LoadTextureData else
     begin
-      if UsedCache <> nil then
-        UsedCache.TextureImage_DecReference(FTextureImage, FTextureComposite) else
-      begin
         FreeAndNil(FTextureImage);
         FreeAndNil(FTextureComposite);
-      end;
-      UsedCache := nil;
     end;
 
     FTextureLoaded := Value;
@@ -416,8 +410,6 @@ begin
       Continue;
     end;
 
-    { Success }
-    UsedCache := nil;
     Exit;
   end;
 end;
