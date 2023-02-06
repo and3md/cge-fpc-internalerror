@@ -463,22 +463,9 @@ procedure Save3D(Node: TX3DNode;
   const URL, Generator, Source: string; const Version: TX3DVersion;
   const Encoding: TX3DEncoding;
   const ForceConvertingToX3D: boolean);
-var
-  Stream: TStream;
-  Gzipped: boolean;
-  StreamOptions: TSaveStreamOptions;
 begin
   { calculate StreamOptions to include gzip compression when necessary }
-  StreamOptions := [];
-  URIMimeType(URL, Gzipped);
-  if Gzipped then
-    Include(StreamOptions, ssoGzip);
 
-  Stream := URLSaveStream(URL, StreamOptions);
-  try
-    Save3D(Node, Stream, Generator, Source, Version,
-      Encoding, ForceConvertingToX3D);
-  finally Stream.Free end;
 end;
 
 procedure Save3D(Node: TX3DNode;
@@ -508,11 +495,6 @@ var
   Encoding: TX3DEncoding;
 begin
   { guess Encoding from URL }
-  Mime := URIMimeType(URL);
-  if (Mime = 'model/vrml') or
-     (Mime = 'model/x3d+vrml') then
-    Encoding := xeClassic else
-    Encoding := xeXML;
   Save3D(Node, URL, Generator, Source, Encoding);
 end;
 

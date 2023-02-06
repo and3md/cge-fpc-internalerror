@@ -78,26 +78,6 @@ end;
 
 procedure TX3DImport.ParseXML(Element: TDOMElement; Reader: TX3DReaderNames);
 begin
-  if not Element.AttributeString('inlineDEF', InlineNodeName) then
-  begin
-    WritelnWarning('VRML/X3D', 'Missing IMPORT "inlineDEF" attribute');
-    Exit;
-  end;
-
-  if not Element.AttributeString('importedDEF', ImportedNodeName) then
-  begin
-    WritelnWarning('VRML/X3D', 'Missing IMPORT "importedDEF" attribute, looking for older "exportedDEF"');
-    if not Element.AttributeString('exportedDEF', ImportedNodeName) then
-    begin
-      WritelnWarning('VRML/X3D', 'Missing IMPORT attribute: neighter "importedDEF" nor older "exportedDEF" found');
-      Exit;
-    end;
-  end;
-
-  if not Element.AttributeString('AS', ImportedNodeAlias) then
-    ImportedNodeAlias := ImportedNodeName;
-
-  Reader.DoImport(Self);
 end;
 
 procedure TX3DImport.SaveToStream(Writer: TX3DWriter);
@@ -155,16 +135,6 @@ end;
 
 procedure TX3DExport.ParseXML(Element: TDOMElement; Reader: TX3DReaderNames);
 begin
-  if not Element.AttributeString('localDEF', ExportedNodeName) then
-  begin
-    WritelnWarning('VRML/X3D', 'Missing EXPORT "localDEF" attribute');
-    Exit;
-  end;
-
-  if not Element.AttributeString('AS', ExportedNodeAlias) then
-    ExportedNodeAlias := ExportedNodeName;
-
-  Reader.DoExport(Self);
 end;
 
 procedure TX3DExport.SaveToStream(Writer: TX3DWriter);

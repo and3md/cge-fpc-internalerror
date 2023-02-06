@@ -1646,7 +1646,7 @@ begin
     on E: Exception do
       { Remember that WritelnWarning *may* raise an exception. }
       WritelnWarning('Texture', Format(SLoadError,
-        [E.ClassName, 'texture', URIDisplay(FullUrl), E.Message]));
+        [E.ClassName, 'texture', FullUrl, E.Message]));
   end;
 
 end;

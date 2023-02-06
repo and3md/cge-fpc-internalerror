@@ -69,43 +69,12 @@ begin
     Exit;
   end;
 
-  if not Element.AttributeString('nodeField', NodeField) then
-  begin
-    WritelnWarning('VRML/X3D', 'Missing "nodeField" inside <connect> element');
-    Exit;
-  end;
-
-  if not Element.AttributeString('protoField', ProtoField) then
-  begin
-    WritelnWarning('VRML/X3D', 'Missing "protoField" inside <connect> element');
-    Exit;
-  end;
-
   Result := true;
 end;
 
 procedure ParseISStatement(Node: TX3DNode; ISElement: TDOMElement;
   var PositionInParent: Integer);
-var
-  I: TXMLElementIterator;
-  NodeField, ProtoField: string;
-  NodeFieldOrEvent: TX3DFieldOrEvent;
 begin
-  I := ISElement.ChildrenIterator;
-  try
-    while I.GetNext do
-      if ParseConnectElement(I.Current, NodeField, ProtoField) then
-      begin
-        NodeFieldOrEvent := Node.FieldOrEvent(NodeField);
-        if NodeFieldOrEvent <> nil then
-        begin
-          NodeFieldOrEvent.IsClauseNamesAdd(ProtoField);
-          NodeFieldOrEvent.PositionInParent := PositionInParent;
-          Inc(PositionInParent);
-        end else
-          WritelnWarning('VRML/X3D', Format('<connect> element "nodeField" doesn''t indicate any known field/event name: "%s"', [NodeField]));
-      end;
-  finally FreeAndNil(I) end;
 end;
 
 (*
@@ -138,162 +107,8 @@ function ParseXMLNode(Element: TDOMElement;
   out ContainerField: string; Reader: TX3DReaderNames;
   NilIfUnresolvedUSE: boolean): TX3DNode;
 
-  procedure ParseNamedNode(const NodeName: string);
-  var
-    NodeClass: TX3DNodeClass;
-    X3DType: string;
-    ProtoName: string;
-    Proto: TX3DPrototypeBase;
-    ProtoIter: TXMLElementIterator;
-    FieldActualValue, FieldName: string;
-    FieldIndex: Integer;
-    PositionInParent: Integer;
-  begin
-    X3DType := Element.TagName8;
-
-    if X3DType = 'ProtoInstance' then
-    begin
-      if not Element.AttributeString('name', ProtoName) then
-        raise EX3DXmlError.Create('<ProtoInstance> doesn''t specify "name" of the prototype');
-
-      Proto := Reader.Prototypes.Bound(ProtoName);
-      if Proto = nil then
-        raise EX3DXmlError.CreateFmt('<ProtoInstance> specifies unknown prototype name "%s"', [ProtoName]);
-
-      if (Proto is TX3DExternalPrototype) and
-         (TX3DExternalPrototype(Proto).ReferencedClass <> nil) then
-        Result := TX3DExternalPrototype(Proto).ReferencedClass.Create(NodeName, Reader.BaseUrl) else
-        Result := TX3DPrototypeNode.CreatePrototypeNode(NodeName, Reader.BaseUrl, Proto);
-
-      Reader.Nodes.Bind(Result, false);
-
-      { parse field values from <fieldValue> elements }
-      ProtoIter := Element.ChildrenIterator;
-      try
-        PositionInParent := 0;
-
-        while ProtoIter.GetNext do
-        begin
-          if ProtoIter.Current.TagName = 'fieldValue' then
-          begin
-            if not ProtoIter.Current.AttributeString('name', FieldName) then
-            begin
-              WritelnWarning('VRML/X3D', 'X3D XML: missing "name" attribute for <fieldValue> element');
-              Continue;
-            end;
-
-            FieldIndex := Result.IndexOfField(FieldName);
-            if FieldIndex = -1 then
-            begin
-              WritelnWarning('VRML/X3D', Format('X3D XML: <fieldValue> element references unknown field name "%s"', [FieldName]));
-              Continue;
-            end;
-
-            if ProtoIter.Current.AttributeString('value', FieldActualValue) then
-              Result.Fields[FieldIndex].ParseXMLAttribute(FieldActualValue, Reader) else
-              Result.Fields[FieldIndex].ParseXMLElement(ProtoIter.Current, Reader);
-
-            Result.Fields[FieldIndex].PositionInParent := PositionInParent;
-          end else
-          if ProtoIter.Current.TagName = 'IS' then
-          begin
-            ParseISStatement(Result, ProtoIter.Current, PositionInParent);
-          end else
-          begin
-            WritelnWarning('VRML/X3D', Format('X3D XML: only <fieldValue> or <IS> elements expected in prototype instantiation, but "%s" found', [ProtoIter.Current.TagName]));
-          end;
-
-          Inc(PositionInParent);
-        end;
-      finally FreeAndNil(ProtoIter) end;
-
-      { If it was normal (non-external) prototype, then instantiate
-        it now (this sort-of expands prototype "macro" in place). }
-      if Result is TX3DPrototypeNode then
-      try
-        Result := TX3DPrototypeNode(Result).Instantiate;
-      except
-        on E: EX3DPrototypeInstantiateError do
-          { Just write E.Message and silence the exception.
-            Result will simply remain as TX3DPrototypeNode instance in this case. }
-          WritelnWarning('VRML/X3D', E.Message);
-      end;
-    end else
-    begin
-      NodeClass := NodesManager.X3DTypeToClass(X3DType, Reader.Version);
-      if NodeClass <> nil then
-      begin
-        Result := NodeClass.Create(NodeName, Reader.BaseUrl);
-        Reader.Nodes.Bind(Result, false);
-        Result.ParseXML(Element, Reader);
-      end else
-      begin
-        Result := TX3DUnknownNode.CreateUnknown(NodeName, Reader.BaseUrl, X3DType);
-
-        { In classic VRML parser, we had special TX3DUnknownNode.Parse
-          that performed the "magic" trick of
-          ParseIgnoreToMatchingCurlyBracket. This is not needed for
-          X3D XML, we can simply omit the node by not looking
-          at it's attributes. All we need to do is to make
-          WritelnWarning warning. }
-
-        WritelnWarning('VRML/X3D', 'Unknown X3D node type "' + X3DType + '"');
-      end;
-    end;
-
-    Reader.Nodes.Bind(Result, true);
-  end;
-
-var
-  NodeName, S: string;
-  UsedNodeFinished: boolean;
 begin
   Result := nil;
-  try
-    if Element.AttributeString('USE', NodeName) then
-    begin
-      NodeName := DecodeX3DName(NodeName);
-      { get appropriate node }
-      Result := Reader.Nodes.Bound(NodeName, UsedNodeFinished);
-      if (Result = nil) or (not UsedNodeFinished) then
-      begin
-        if Result = nil then
-          S := Format('Incorrect USE clause: node name "%s" undefined', [NodeName]) else
-        begin
-          S := Format('Cycles in VRML/X3D graph: USE clause inside node "%s" refers to the same node', [NodeName]);
-          Result := nil; { return nil in case of cycles }
-        end;
-        if NilIfUnresolvedUSE then
-          WritelnWarning('VRML/X3D', S) else
-          raise EX3DXmlNotAllowedError.Create(S);
-      end;
-    end else
-    begin
-      if Element.AttributeString(SAttrDEF, NodeName) then
-      begin
-        NodeName := DecodeX3DName(NodeName);
-        ParseNamedNode(NodeName)
-      end else
-        ParseNamedNode('');
-    end;
-
-    { calculate ContainerField.
-
-      Note that we do not diffentiate here between the case of <USE>
-      element and real node element --- because that's the intention
-      of X3D specification, in both situations element may have
-      containerField attribute.
-
-      We either use DefaultContainerField, or explicit containerField value.
-      Note that containerField doesn't have to be preserved
-      (see demo_models/x3d/container_field_def_use.x3d).
-      Each USE occurrence must specify suitable containerField or use class default. }
-    if Result <> nil then
-      ContainerField := Result.DefaultContainerField else
-      ContainerField := ''; { will not be used anyway }
-    Element.AttributeString(SAttrContainerField, ContainerField);
-
-  except FreeAndNil(Result); raise end;
 end;
 
 { This parses a sequence of X3D statements: any number of nodes,
@@ -319,17 +134,10 @@ var
   end;
 
   procedure ParseProfile;
-  var
-    Profile: string;
   begin
-    { parse "profile" attribute }
-    if X3DHeaderElement.AttributeString('profile', Profile) then
-    begin
-      Result.Profile := Profile;
-    end else
-      { We allow PROFILE to be omitted.
-        Actually, we do not use profile for anything right now. }
-      WritelnWarning('VRML/X3D', 'X3D "profile" attribute missing');
+    { We allow PROFILE to be omitted.
+      Actually, we do not use profile for anything right now. }
+    WritelnWarning('VRML/X3D', 'X3D "profile" attribute missing');
   end;
 
   procedure ParseHead;
@@ -340,8 +148,6 @@ var
     begin
       MetaName := '';
       MetaContent := '';
-      Element.AttributeString('name', MetaName);
-      Element.AttributeString('content', MetaContent);
       Result.Meta[MetaName] := MetaContent;
     end;
 
@@ -350,13 +156,7 @@ var
       ComponentName: string;
       ComponentLevel: Integer;
     begin
-      if Element.AttributeString('name', ComponentName) then
-      begin
-        if not Element.AttributeInteger('level', ComponentLevel) then
-          ComponentLevel := 1;
-        Result.Components[ComponentName] := ComponentLevel;
-      end else
-        WritelnWarning('VRML/X3D', Format('X3D XML: <component> element without required "name" attribute',
+      WritelnWarning('VRML/X3D', Format('X3D XML: <component> element without required "name" attribute',
           [Element.TagName]));
     end;
 
@@ -365,48 +165,14 @@ var
       Category, Name: string;
       ConversionFactor: Float;
     begin
-      if not Element.AttributeString('category', Category) then
-      begin
-        WritelnWarning('X3D', 'Missing <unit> category');
-        Exit;
-      end;
-
-      if not Element.AttributeString('name', Name) then
-      begin
-        WritelnWarning('X3D', 'Missing <unit> category');
-        Exit;
-      end;
-
-      if not Element.AttributeFloat('conversionFactor', ConversionFactor) then
-      begin
-        WritelnWarning('X3D', 'Missing <unit> category');
-        Exit;
-      end;
-
-      Reader.UnitConversion(Category, Name, ConversionFactor);
     end;
 
   var
     Head: TDOMElement;
-    I: TXMLElementIterator;
   begin
-    Head := X3DHeaderElement.ChildElement('head', false);
+    Head := nil;
     if Head = nil then Exit;
 
-    I := Head.ChildrenIterator;
-    try
-      while I.GetNext do
-      begin
-        if I.Current.TagName = 'meta' then
-          ParseMeta(I.Current) else
-        if I.Current.TagName = 'component' then
-          ParseComponent(I.Current) else
-        if I.Current.TagName = 'unit' then
-          ParseUnit(I.Current) else
-          WritelnWarning('VRML/X3D', Format('X3D XML: unrecognized element "%s" in <head>',
-            [I.Current.TagName]));
-      end;
-    finally FreeAndNil(I) end;
     Result.Scale := Reader.LengthConversionFactor;
   end;
 
@@ -485,8 +251,6 @@ var
       ParseNodeStatement;
   end;
 
-var
-  I: TXMLElementIterator;
 begin
   Result := CreateRootNode;
   try
@@ -496,33 +260,11 @@ begin
       ParseHead;
     end;
 
-    I := Element.ChildrenIterator;
-    try
-      PositionInParent := 0;
-
-      while I.GetNext do
-      begin
-        ParseStatement(I.Current);
-        Inc(PositionInParent);
-      end;
-    finally FreeAndNil(I) end;
   except FreeAndNil(Result); raise end;
 end;
 
 function LoadX3DXml(const URL: string; Gzipped: boolean): TX3DRootNode;
-var
-  Stream: TStream;
-  StreamOptions: TStreamOptions;
 begin
-  StreamOptions := [];
-  if Gzipped then
-    Include(StreamOptions, soGzip);
-  Stream := Download(URL, StreamOptions);
-  try
-    Result := LoadX3DXml(Stream, AbsoluteURI(URL));
-  finally
-    FreeAndNil(Stream);
-  end;
 end;
 
 function LoadX3DXml(Stream: TStream; const URL: string): TX3DRootNode;
@@ -535,8 +277,6 @@ begin
       in case of errors. }
     { ReadXMLFile always sets TXMLDocument param (possibly to nil),
       even in case of exception. So place it inside try..finally. }
-    ReadXMLFile(Doc, Stream, AbsoluteURI(URL));
-    Result := LoadX3DXml(Doc.DocumentElement, URL);
   finally FreeAndNil(Doc); end;
 end;
 
@@ -552,28 +292,11 @@ begin
   Check(X3DElement.TagName = 'X3D', 'Root element of X3D file must be <X3D>');
 
   { parse "version" attribute }
-  if X3DElement.AttributeString('version', VersionStr) then
-  begin
-    DeFormat(VersionStr, '%d.%d', [@Version.Major, @Version.Minor]);
-    if Version.Major < 3 then
-    begin
-      WritelnWarning('VRML/X3D', Format('X3D version number too low (%d.%d)', [Version.Major, Version.Minor]));
-      Version := X3DVersion; { some sensible version number }
-    end;
-  end else
   begin
     Version := X3DVersion; { some sensible version number }
     WritelnWarning('VRML/X3D', Format('Missing X3D version number, assuming %d.%d', [Version.Major, Version.Minor]));
   end;
 
-  SceneElement := X3DElement.ChildElement('Scene', true);
-
-  { X3D XML requires AutoRemove = true below }
-  Reader := TX3DReaderNames.Create(true, URL, Version);
-  try
-    Result := ParseStatements(SceneElement, true, X3DElement, Reader);
-    Reader.ExtractNames(Result.FPrototypeNames, Result.FExportedNames, Result.FImportedNames);
-  finally FreeAndNil(Reader) end;
 end;
 
 {$endif read_implementation}

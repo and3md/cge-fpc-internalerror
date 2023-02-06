@@ -1632,10 +1632,6 @@ begin
     Blender exports relative paths by prefixing them by "//"
     (that's a general convention used internally by Blender, AFAIK).
     Here we simply remove this "//". }
-  if BlenderRelativePath(RelativePath) then
-    Result := CombineURI(BaseUrl, SEnding(RelativePath, 3))
-  else
-    Result := CombineURI(BaseUrl, RelativePath);
 end;
 
 procedure TX3DNode.Parse(Lexer: TX3DLexer; Reader: TX3DReaderNames);
@@ -1900,194 +1896,15 @@ var
       if (Attr.Name = SAttrContainerField) or
          (Attr.Name = SAttrDEF) then
         Continue;
-
-      Index := IndexOfField(Attr.NodeName8);
-      if Index >= 0 then
-      begin
-        Fields[Index].ParseXMLAttribute(Attr.NodeValue8, Reader);
-        { Note that saving PositionInParent from XML attributes order
-          isn't really useful, as FPC DOM unit already sorted
-          Element.Attributes (TDOMNamedNodeMap) by name. }
-        Fields[Index].PositionInParent := Position;
-        Inc(Position);
-      end else
-        WritelnWarning('VRML/X3D', 'Unknown X3D field name (unhandled X3D XML attribute) "' + Attr.NodeName8 + '" in node "' + X3DType + '"');
     end;
   end;
 
   procedure ParseXMLChildrenNodes;
-  var
-    FieldIndex: Integer;
-    Child: TX3DNode;
-    ContainerField: string;
-    SF: TSFNode;
-    MF: TMFNode;
-    Route: TX3DRoute;
-    I: TXMLElementIterator;
-    Proto: TX3DPrototype;
-    ExternProto: TX3DExternalPrototype;
-    IDecl: TX3DInterfaceDeclaration;
-    Import: TX3DImport;
-    ExportItem: TX3DExport;
   begin
-    I := Element.ChildrenIterator;
-    try
-      while I.GetNext do
-      begin
-        if I.Current.TagName = 'ROUTE' then
-        begin
-          Route := TX3DRoute.Create;
-          Route.PositionInParent := Position;
-          AddRoute(Route);
-          Route.ParseXML(I.Current, Reader);
-        end else
-        if I.Current.TagName = 'IS' then
-        begin
-          ParseISStatement(Self, I.Current, Position);
-        end else
-        if I.Current.TagName = 'IMPORT' then
-        begin
-          Import := TX3DImport.Create;
-          Import.PositionInParent := Position;
-          AddImport(Import);
-          Import.ParseXML(I.Current, Reader);
-        end else
-        if I.Current.TagName = 'EXPORT' then
-        begin
-          ExportItem := TX3DExport.Create;
-          ExportItem.PositionInParent := Position;
-          AddExport(ExportItem);
-          ExportItem.ParseXML(I.Current, Reader);
-        end else
-        if I.Current.TagName = 'ProtoDeclare' then
-        begin
-          Proto := TX3DPrototype.Create;
-          Proto.PositionInParent := Position;
-          AddPrototype(Proto);
-          Proto.ParseXML(I.Current, Reader);
-        end else
-        if I.Current.TagName = 'ExternProtoDeclare' then
-        begin
-          ExternProto := TX3DExternalPrototype.Create;
-          ExternProto.PositionInParent := Position;
-          AddPrototype(ExternProto);
-          ExternProto.ParseXML(I.Current, Reader);
-        end else
-        if I.Current.TagName = 'field' then
-        begin
-          IDecl := TX3DInterfaceDeclaration.Create(Self);
-          try
-            IDecl.ParseXML(I.Current, Reader, true);
-            IDecl.PositionInParent := Position;
-            if IDecl.AccessType in HasInterfaceDeclarations then
-            begin
-              InterfaceDeclarations.Add(IDecl);
-              PostAddInterfaceDeclaration(IDecl);
-            end else
-            begin
-              FreeAndNil(IDecl);
-              WritelnWarning('VRML/X3D', 'X3D XML: specified <field> inside node, but this node doesn''t allow interface declaration with such accessType');
-            end;
-          except
-            FreeAndNil(IDecl);
-            raise;
-          end;
-        end else
-        begin
-          Child := ParseXMLNode(I.Current, ContainerField, Reader, true);
-          if Child <> nil then
-          try
-            Child.PositionInParent := Position;
-            FieldIndex := IndexOfField(ContainerField);
-
-            if (FieldIndex = -1) and
-               (ContainerField <> Child.DefaultContainerField) and
-               (Child.DefaultContainerField <> '') then
-            begin
-              { Retry with DefaultContainerField value, since it exists
-                and is different than current ContainerField. }
-              FieldIndex := IndexOfField(Child.DefaultContainerField);
-              if FieldIndex >= 0 then
-                WritelnWarning('VRML/X3D', 'X3D XML: containerField indicated unknown field name ("' + ContainerField + '" by node "' + Child.X3DType + '" inside node "' + X3DType + '"), using the default containerField value "' + Child.DefaultContainerField + '" succeeded');
-            end;
-
-            if FieldIndex >= 0 then
-            begin
-              if Fields[FieldIndex] is TSFNode then
-              begin
-                SF := Fields[FieldIndex] as TSFNode;
-
-                if SF.Value <> nil then
-                  WritelnWarning('VRML/X3D', 'X3D XML: More than one value specified for SFNode field ' + SF.NiceName);
-
-                { Although field doesn't have a set position in XML X3D
-                  encoding, when saving later in classic encoding we
-                  need some order of fields. This is yet another problem
-                  with non-unique names, something defined in XML X3D
-                  may be not possible to save in other encoding:
-
-                  <Group>
-                    <Shape> ... <Appearance DEF="XXX" ....> </Shape>
-                    <ROUTE ... using "XXX" name ...>
-                    <Shape> ... <Appearance DEF="XXX" ....> </Shape>
-                    <ROUTE ... using "XXX" name ...>
-                  </Group>
-
-                  This is uneasy to save in classic encoding, since
-                  you cannot insert ROUTE in the middle of "children"
-                  field of Group node in classic encoding.
-                }
-                Fields[FieldIndex].PositionInParent := Position;
-                SF.Value := Child;
-                SF.WarningIfChildNotAllowed(Child);
-              end else
-              if Fields[FieldIndex] is TMFNode then
-              begin
-                MF := Fields[FieldIndex] as TMFNode;
-                Fields[FieldIndex].PositionInParent := Position;
-                MF.Add(Child);
-                MF.WarningIfChildNotAllowed(Child);
-              end else
-                WritelnWarning('VRML/X3D', 'X3D field "' + ContainerField + '" is not SFNode or MFNode, but a node value (XML element) is specified');
-            end else
-              WritelnWarning('VRML/X3D', 'Unknown X3D field name (indicated by containerField value) "' + ContainerField + '" by node "' + Child.X3DType + '" inside node "' + X3DType + '"');
-          finally
-            { Any WritelnWarning above makes the Child unused.
-              Note that WritelnWarning may, but doesn't have, raise an exception. }
-            Child.FreeIfUnused;
-            Child := nil;
-          end;
-        end;
-        Inc(Position);
-      end;
-    finally FreeAndNil(I) end;
   end;
 
   procedure ParseXMLCdata;
-  var
-    I: TXMLCDataIterator;
-    CDataExists: boolean;
-    CData: string;
   begin
-    CDataExists := false;
-    CData := '';
-
-    I := TXMLCDataIterator.Create(Element);
-    try
-      if I.GetNext then
-      begin
-        CDataExists := true;
-        repeat
-          CData := CData + I.Current;
-        until not I.GetNext;
-      end;
-    finally FreeAndNil(I) end;
-
-    if CDataExists then
-      if CDataField <> nil then
-        CDataField.Items.Add(CData) else
-        WritelnWarning('VRML/X3D', Format('VRML/X3D node %s doesn''t allow CDATA section, but it''s specified',
-          [X3DType]));
   end;
 
 begin

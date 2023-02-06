@@ -250,9 +250,9 @@ implementation
 
 uses
   Math,
-  CastleFilesUtils, StrUtils, CastleURIUtils,
-  CastleLog, CastleDownload,
-  CastleNURBS, CastleQuaternions, CastleXMLUtils, X3DLoadInternalUtils;
+  StrUtils,
+  CastleLog,
+  CastleNURBS, CastleQuaternions, X3DLoadInternalUtils;
 
 {$warnings on}
 

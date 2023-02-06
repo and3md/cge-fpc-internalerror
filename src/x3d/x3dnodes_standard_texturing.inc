@@ -642,21 +642,14 @@ begin
       FullUrl := PathFromBaseUrl(FdUrl.Items[I]);
       try
         WasCacheUsed := true;
-        if WarnAboutAbsoluteFilenames and
-           AbsoluteFileURI(FdUrl.Items[I]) and
-           { AbsoluteFileURI mistakes Blender relative paths '//xxx' as absolute,
-             so eliminate them below. }
-           not BlenderRelativePath(FdUrl.Items[I]) then
-          WritelnWarning('VRML/X3D', Format('Loaded data from an absolute filename "%s", this makes the data possibly unportable (it will probably not work on other systems/locations). Always use relative paths.',
-            [FdUrl.Items[I]]));
-        FTextureUsedFullUrl := URIDisplay(FullUrl);
+        FTextureUsedFullUrl := FullUrl;
         Success := true;
         Break;
       except
         on E: Exception do
           { Silence the Exception, continue trying to load more textures. }
           ErrorMessage := ErrorMessage + NL + '  ' + Format(SLoadError,
-            [E.ClassName, 'texture', URIDisplay(FullUrl), E.Message]);
+            [E.ClassName, 'texture', FullUrl, E.Message]);
       end;
     end;
 

@@ -179,8 +179,8 @@ type
 implementation
 
 uses SysUtils, XMLRead, DOM, Math,
-  CastleLog, X3DFields, CastleXMLUtils, CastleFilesUtils, CastleVectors,
-  CastleDownload, CastleURIUtils, CastleClassUtils, X3DLoadInternalUtils;
+  CastleLog, X3DFields, CastleVectors,
+  CastleClassUtils, X3DLoadInternalUtils;
 
 { EModelsStructureDifferent -------------------------------------------------- }
 
@@ -767,7 +767,6 @@ class function TNodeInterpolator.LoadAnimFramesToKeyNodes(const URL: string): TA
   var
     AbsoluteBaseUrl: string;
     FrameElement: TDOMElement;
-    Children: TXMLElementIterator;
     I: Integer;
     FrameTime: Single;
     FrameURL: string;
@@ -777,7 +776,7 @@ class function TNodeInterpolator.LoadAnimFramesToKeyNodes(const URL: string): TA
   begin
     Result := TAnimation.Create;
     try
-      AbsoluteBaseUrl := AbsoluteURI(URL);
+      AbsoluteBaseUrl := URL;
 
       Check(Element.TagName = 'animation', 'Expected an <animation> XML node');
 
@@ -793,63 +792,26 @@ class function TNodeInterpolator.LoadAnimFramesToKeyNodes(const URL: string): TA
       begin
         Attr := Element.Attributes.Item[I] as TDOMAttr;
         if Attr.Name = 'name' then
-          Result.Name := Attr.NodeValue8
+          Result.Name := Attr.NodeValue
         else
         if Attr.Name = 'scenes_per_time' then
-          Result.ScenesPerTime := StrToInt(Attr.NodeValue8)
+          Result.ScenesPerTime := StrToInt(Attr.NodeValue)
         else
         if Attr.Name = 'optimization' then
           { ignore, for backward compatibility }
         else
         if Attr.Name = 'equality_epsilon' then
-          Result.Epsilon := StrToFloat(Attr.NodeValue8)
+          Result.Epsilon := StrToFloat(Attr.NodeValue)
         else
         if Attr.Name = 'loop' then
-          Result.Loop := StrToBool(Attr.NodeValue8)
+          Result.Loop := StrToBool(Attr.NodeValue)
         else
         if Attr.Name = 'backwards' then
-          Result.Backwards := StrToBool(Attr.NodeValue8)
+          Result.Backwards := StrToBool(Attr.NodeValue)
         else
           raise Exception.CreateFmt('Unknown attribute of <animation> element: "%s"',
             [Attr.Name]);
       end;
-
-      Children := Element.ChildrenIterator;
-      try
-        while Children.GetNext do
-        begin
-          FrameElement := Children.Current;
-          Check(FrameElement.TagName = 'frame',
-            'Each child of <animation> element must be a <frame> element');
-
-          if not FrameElement.AttributeSingle('time', FrameTime) then
-            raise Exception.Create('<frame> element must have a "time" attribute');
-          if (Result.KeyTimes.Count > 0) and
-             (FrameTime <= Result.KeyTimes.Last) then
-            raise Exception.Create('Frames within <animation> element must be specified in an increasing time order');
-          Result.KeyTimes.Add(FrameTime);
-
-          if FrameElement.AttributeString('url', FrameURL) or
-             FrameElement.AttributeString('file_name', FrameURL) then
-          begin
-            { Make FrameURL absolute, treating it as relative vs
-              AbsoluteBaseUrl }
-            FrameURL := CombineURI(AbsoluteBaseUrl, FrameURL);
-            NewNode := TX3DRootNode.Create('aa');
-          end else
-          begin
-            NewNode := LoadX3DXml(FrameElement.ChildElement('X3D'), AbsoluteBaseUrl);
-          end;
-
-          if FrameElement.AttributeVector3('bounding_box_center', FrameBoxCenter) and
-             FrameElement.AttributeVector3('bounding_box_size', FrameBoxSize) then
-          begin
-            Result.BoundingBox.Include(Box3DAroundPoint(FrameBoxCenter, FrameBoxSize));
-          end;
-
-          Result.KeyNodes.Add(NewNode);
-        end;
-      finally FreeAndNil(Children) end;
 
       if Result.KeyNodes.Count = 0 then
         raise Exception.Create('At least one <frame> is required within <animation> element');
@@ -861,42 +823,14 @@ class function TNodeInterpolator.LoadAnimFramesToKeyNodes(const URL: string): TA
     end;
   end;
 
-var
-  Document: TXMLDocument;
-  Stream: TStream;
-  Children: TXMLElementIterator;
 begin
-  Stream := Download(URL);
-  try
-    ReadXMLFile(Document, Stream);
-  finally FreeAndNil(Stream) end;
-
-  try
     Result := TAnimationList.Create;
     try
-      if Document.DocumentElement.TagName = 'animation' then
-      begin
-        Result.Add(LoadOneAnimation(Document.DocumentElement));
-      end else
-      begin
-        Check(Document.DocumentElement.TagName = 'animations',
-          'Expected an <animations> XML node at the root of castle-anim-frames, eventually an <animation> node for single-animation files.');
-
-        Children := Document.DocumentElement.ChildrenIterator;
-        try
-          while Children.GetNext do
-            Result.Add(LoadOneAnimation(Children.Current));
-        finally FreeAndNil(Children) end;
-
-        if Result.Count = 0 then
-          raise Exception.Create('No animations (no <animation> elements) inside the castle-anim-frames file');
-      end;
     except
       Result.FreeKeyNodesContents;
       FreeAndNil(Result);
       raise;
     end;
-  finally FreeAndNil(Document); end;
 end;
 
 class function TNodeInterpolator.LoadSequenceToX3D(const BakedAnimations: TBakedAnimationList): TX3DRootNode;

@@ -430,7 +430,7 @@ function ShaderLoadContents(const Node: TX3DNode; const FdUrl: TMFString): strin
     has some newlines (needed to recognize relative URLs without
     protocol correctly). }
   begin
-    Result := (CharsPos([#10, #13], S) > 0) and (URIProtocol(S) = '');
+    Result := (CharsPos([#10, #13], S) > 0) and (S = '');
   end;
 
 var
@@ -449,16 +449,12 @@ begin
     begin
       FullUrl := Node.PathFromBaseUrl(FdUrl.Items[I]);
       try
-        Result := FileToString(FullUrl, false, MimeType);
-        if (MimeType <> '') and
-           (MimeType <> 'text/plain') then
-          WritelnWarning('VRML/X3D', Format('MIME type "%s" not recognized as shader source. Using anyway. If this is a valid shader source mime type that should be recognized, please submit a feature request.', [MimeType]));
         Exit;
       except
         on E: Exception do
           { Remember that WritelnWarning *may* raise an exception. }
           WritelnWarning('VRML/X3D', Format(SLoadError,
-            [E.ClassName, 'shader source', URIDisplay(FullUrl), E.Message]));
+            [E.ClassName, 'shader source', FullUrl, E.Message]));
       end;
     end;
   end;

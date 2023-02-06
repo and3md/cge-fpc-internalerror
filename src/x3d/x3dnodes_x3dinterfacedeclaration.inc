@@ -274,59 +274,6 @@ begin
   { clear instance before parsing }
   FieldOrEvent.Free;
   FieldOrEvent := nil;
-
-  { calculate Access }
-  if Element.AttributeString('accessType', AccessName) then
-  begin
-    AccessIndex := ArrayPosStr(AccessName,
-      ['inputOnly', 'outputOnly', 'initializeOnly', 'inputOutput']);
-    if AccessIndex <> -1 then
-      Access := TX3DAccessType(AccessIndex) else
-      raise EX3DXmlError.CreateFmt('Access type "%s" unknown', [AccessName]);
-  end else
-    raise EX3DXmlError.Create('Missing access type in X3D interface declaration');
-
-  { calculate FieldType }
-  if Element.AttributeString('type', FieldX3DType) then
-  begin
-    FieldType := X3DFieldsManager.X3DTypeToClass(FieldX3DType);
-    if FieldType = nil then
-      raise EX3DXmlError.CreateFmt('Field type "%s" unknown', [FieldX3DType]);
-  end else
-    raise EX3DXmlError.Create('Missing field type in X3D interface declaration');
-
-  if not Element.AttributeString('name', ParsedName) then
-    raise EX3DXmlError.Create('Missing name in X3D interface declaration');
-
-  { we know everything now to create Event/Field instance }
-  case Access of
-    atInputOnly, atOutputOnly:
-      FieldOrEvent := FieldType.CreateEvent(ParentNode, ParsedName, Access = atInputOnly);
-    atInitializeOnly, atInputOutput:
-      FieldOrEvent := FieldType.CreateUndefined(ParentNode, Access = atInputOutput, ParsedName);
-    else raise EInternalError.Create('AccessType ?');
-  end;
-
-  if Event <> nil then
-  begin
-    { Classic VRML parser has here
-        if IsClauseAllowed then Event.Parse(Lexer);
-      but for X3D XML encoding this is not needed, see comments above. }
-  end else
-  begin
-    if FieldValue then
-    begin
-      if Element.AttributeString('value', FieldActualValue) then
-        Field.ParseXMLAttribute(FieldActualValue, Reader) else
-        Field.ParseXMLElement(Element, Reader);
-    end;
-
-    { Classic VRML parser has here
-        else if IsClauseAllowed then Field.ParseIsClause(Lexer);
-      but for X3D XML encoding this is not needed, see comments above. }
-  end;
-
-  FieldOrEvent.ParentInterfaceDeclaration := Self;
 end;
 
 function TX3DInterfaceDeclaration.CopyFieldOrEvent(

@@ -65,7 +65,7 @@ function FixRelativeUrl(const URL: string): string;
 implementation
 
 uses SysUtils, Math, URIParser, StrUtils,
-  CastleStringUtils, CastleFindFiles, CastleLog, CastleURIUtils, CastleUnicode;
+  CastleStringUtils, CastleLog, CastleUnicode;
 
 const
   EncodedPrefix = 'CastleEncoded_';
@@ -183,61 +183,7 @@ begin
 end;
 
 function SearchTextureFile(const BaseUrl: string; Base: string): string;
-var
-  SomePathDelim: Integer;
-  BaseShort, Path: string;
 begin
-  Path := ExtractURIPath(BaseUrl);
-  Base := FixRelativeUrl(Base);
-
-  try
-    if SearchFileHard(Path, Base, Result) then
-      Exit;
-
-    { According to https://sourceforge.net/tracker/index.php?func=detail&aid=3305661&group_id=200653&atid=974391
-      some archives expect search within textures/ subdirectory.
-      Example on http://www.gfx-3d-model.com/2008/06/house-07/#more-445
-      for Wavefront OBJ. }
-    if SearchFileHard(Path + 'textures/', Base, Result) then
-    begin
-      Result := 'textures/' + Result;
-      Exit;
-    end;
-    if SearchFileHard(Path + 'Textures/', Base, Result) then
-    begin
-      Result := 'Textures/' + Result;
-      Exit;
-    end;
-
-    { Some invalid models place full (absolute) path inside texture filename.
-      Try to handle it, by stripping path part (from any OS), and trying
-      to match new name. }
-    SomePathDelim := BackCharsPos(['/', '\'], Base);
-    if SomePathDelim <> 0  then
-    begin
-      BaseShort := SEnding(Base, SomePathDelim + 1);
-
-      if SearchFileHard(Path, BaseShort, Result) then
-        Exit;
-      if SearchFileHard(Path + 'textures/', BaseShort, Result) then
-      begin
-        Result := 'textures/' + Result;
-        Exit;
-      end;
-      if SearchFileHard(Path + 'Textures/', BaseShort, Result) then
-      begin
-        Result := 'Textures/' + Result;
-        Exit;
-      end;
-    end;
-
-  finally
-    if Result <> Base then
-      { Texture file found, but not under original name }
-      WritelnWarning('Texture', Format('Exact texture URL "%s" not found, using instead "%s"',
-        [Base, Result]));
-  end;
-
   { default result if nowhere found }
   Result := Base;
 end;

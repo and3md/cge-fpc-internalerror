@@ -366,28 +366,7 @@ begin
 end;
 
 procedure TSFNode.ParseXMLElement(Element: TDOMElement; Reader: TX3DReader);
-var
-  Child: TX3DNode;
-  I: TXMLElementIterator;
-  ContainerFieldDummy: string;
 begin
-  I := Element.ChildrenIterator;
-  try
-    if I.GetNext then
-    begin
-      Child := ParseXMLNode(I.Current,
-        ContainerFieldDummy { ignore containerField }, Reader as TX3DReaderNames, true);
-      if Child <> nil then
-      begin
-        Value := Child;
-        WarningIfChildNotAllowed(Child);
-      end;
-
-      if I.GetNext then
-        WritelnWarning('VRML/X3D', Format('X3D field "%s" is SFNode, but it contains more than one XML element (2nd element is "%s")',
-          [X3DName, I.Current.TagName]));
-    end;
-  finally FreeAndNil(I) end;
 end;
 
 procedure TSFNode.SaveToStreamValue(Writer: TX3DWriter);

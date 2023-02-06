@@ -1074,7 +1074,7 @@ function TAppearanceNode.InternalMaterialProperty: TMaterialProperty;
       TextureUrl := Url.Items[0];
       if TextureUrl <> '' then
         Result := MaterialProperties.FindTextureBaseName(
-          DeleteURIExt(ExtractURIName(TextureUrl)));
+          TextureUrl);
     end;
   end;
 

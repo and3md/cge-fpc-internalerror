@@ -587,39 +587,6 @@ function LoadX3DClassic(const URL: string;
 var
   BaseUrl: string;
 begin
-  if AllowStdIn and (URL = '-') then
-  begin
-    BaseUrl := URICurrentPath;
-    Result := DoIt(StdInStream, false, BaseUrl);
-  end else
-  begin
-    BaseUrl := AbsoluteURI(URL);
-
-    if Gzipped then
-      Result := DoIt(Download(URL, [soGzip]), true, BaseUrl) else
-    begin
-      try
-        Result := DoIt(Download(URL, []), true, BaseUrl);
-      except
-        { It's somewhat hacky solution to reopen the file, creating new stream.
-          But in practice, this works OK, and it allows us to read files
-          compressed by gzip but without indicating this by file extension.
-          The other idea would be to pipe the output always by gzip
-          decompression, but:
-
-          1. I simply prefer to not filter through yet another stream
-             class (we already wrap TFileStream in TBufferedReadStream)
-             when I don't have to.
-
-          2. Our Download function uses temporary files to overcome
-             the limitations of TGZFileStream (it cannot compress/decompress
-             memory data, only files on disk) for network data.
-             So it creates even more overhead. }
-        on EX3DGzipCompressed do
-          Result := DoIt(Download(URL, [soGzip]), true, BaseUrl);
-      end;
-    end;
-  end;
 end;
 
 function LoadX3DClassicFromString(const VRMLContents: string;

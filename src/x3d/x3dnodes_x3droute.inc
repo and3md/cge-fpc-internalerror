@@ -249,11 +249,6 @@ procedure TX3DRoute.ParseXML(Element: TDOMElement; Reader: TX3DReaderNames);
 
   function RequiredAttrib(const AttrName: string): string;
   begin
-    if not Element.AttributeString(AttrName, Result) then
-    begin
-      WritelnWarning('VRML/X3D', 'Missing ROUTE ' + AttrName + ' attribute');
-      Result := '';
-    end;
   end;
 
 var

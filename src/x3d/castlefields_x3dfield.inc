@@ -922,15 +922,7 @@ begin
 end;
 
 procedure TX3DField.ParseXMLElement(Element: TDOMElement; Reader: TX3DReader);
-var
-  I: TXMLElementIterator;
 begin
-  I := Element.ChildrenIterator;
-  try
-    if I.GetNext then
-      WritelnWarning('VRML/X3D', Format('X3D field "%s" is not SFNode or MFNode, but a node value (XML element "%s") is specified',
-        [X3DName, I.Current.TagName]));
-  finally FreeAndNil(I) end;
 end;
 
 procedure TX3DField.VRMLFieldAssignCommon(Source: TX3DField);

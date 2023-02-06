@@ -818,8 +818,8 @@ begin
       if FdLogFile.Value <> '' then
       begin
         WriteStream := TFileStream.Create(
-          FileNameAutoInc(ApplicationName + '_logger_' +
-            DeleteURIExt(ExtractURIName(FdLogFile.Value)) + '_%d.log'), fmCreate);
+          ApplicationName + '_logger_' +
+            FdLogFile.Value + '_%d.log', fmCreate);
         OwnsWriteStream := true;
       end else
       begin

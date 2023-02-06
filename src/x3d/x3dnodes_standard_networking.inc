@@ -318,35 +318,11 @@ begin
       PathFromBaseUrl would prefix it with our path,
       making it invalid. }
     UrlWithoutViewpoint := Url;
-    URIExtractAnchor(UrlWithoutViewpoint, NewViewpointName);
 
     if UrlWithoutViewpoint = '' then
     begin
       { in this case, we have either a viewpoint in current 3D world, or nothing }
       NewRootNode := nil;
-
-      if NewViewpointName = '' then
-      begin
-        NewViewpoint := nil;
-        Exit(true);
-      end else
-      begin
-        if CurrentRootNode <> nil then
-        begin
-          //NewViewpoint := CurrentRootNode.TryFindNodeByName(TAbstractViewpointNode,
-          //  NewViewpointName, true) as TAbstractViewpointNode;
-          if NewViewpoint <> nil then
-            Exit(true) else
-            ViewpointNameInvalid(NewViewpointName);
-        end else
-          ViewpointNameInvalid(NewViewpointName);
-
-        { In this case invalid viewpoint name is treated as a failure,
-          that is we try to find next URL.
-          This happens when CurrentRootNode = nil or when
-          CurrentRootNode doesn't contain NewViewpointName. }
-      end;
-
     end else
     begin
       { in this case, we have either a new 3D world, or a document }
@@ -520,7 +496,7 @@ begin
         on E: Exception do
           { Careful here, as WritelnWarning may also raise exception. }
           WritelnWarning('VRML/X3D', Format(SLoadError,
-            [E.ClassName, 'inline file', URIDisplay(FullUrl), E.Message]));
+            [E.ClassName, 'inline file', FullUrl, E.Message]));
       end;
     end;
 

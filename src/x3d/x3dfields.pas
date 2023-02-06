@@ -50,7 +50,7 @@ type
 implementation
 
 uses Math, Generics.Defaults,
-  X3DNodes, CastleXMLUtils, CastleLog;
+  X3DNodes, CastleLog;
 
 {$define read_implementation}
 

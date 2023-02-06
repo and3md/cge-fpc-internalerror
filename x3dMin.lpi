@@ -489,41 +489,6 @@
         <UnitName Value="CastleColors"/>
       </Unit>
       <Unit>
-        <Filename Value="src/files/castlefilesutils.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleFilesUtils"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/files/castleuriutils.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleURIUtils"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/files/castledatauri.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleDataURI"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/files/castlefindfiles.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleFindFiles"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/files/castlexmlutils.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleXMLUtils"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/files/castledownload.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleDownload"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/files/castleinternaldirectoryinformation.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleInternalDirectoryInformation"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/3d/castleboxes.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleBoxes"/>
@@ -805,7 +770,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir);src/base;src/files;src/3d;src/castlescript;src/fonts;src/x3d"/>
-      <OtherUnitFiles Value="src/base;src/files;src/3d;src/castlescript;src/x3d"/>
+      <OtherUnitFiles Value="src/base;src/3d;src/castlescript;src/x3d"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>

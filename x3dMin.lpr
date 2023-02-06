@@ -21,11 +21,7 @@ uses
   CastleTimeUtils, CastleUtils, CastleVectors, CastleVectorsInternalDouble,
   CastleVectorsInternalSingle, CastleUnicode, CastleBoxes, CastleFrustum,
   CastleInternalOctree, CastleNURBS, CastleQuaternions, CastleTriangles,
-  CastleTriangulate,
-  CastleDownload, CastleFilesUtils,
-  CastleFindFiles, CastleInternalDirectoryInformation, CastleURIUtils,
-  CastleXMLUtils, CastleDataURI
-  { you can add units after this };
+  CastleTriangulate;
 
 {$R *.res}
 

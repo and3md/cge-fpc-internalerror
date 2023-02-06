@@ -815,21 +815,7 @@ procedure TX3DPrototypeBase.ParseInterfaceDeclarationsXML(ExternalProto: boolean
   Element: TDOMElement; Reader: TX3DReaderNames);
 var
   I: TX3DInterfaceDeclaration;
-  Iter: TXMLElementIterator;
 begin
-  Iter := Element.ChildrenIterator;
-  try
-    while Iter.GetNext do
-    begin
-      if Iter.Current.TagName = 'field' then
-      begin
-        I := TX3DInterfaceDeclaration.Create(nil);
-        InterfaceDeclarations.Add(I);
-        I.ParseXML(Iter.Current, Reader, not ExternalProto);
-      end else
-        WritelnWarning('VRML/X3D', 'X3D XML: only <field> elements expected in prototype interface');
-    end;
-  finally FreeAndNil(Iter) end;
 end;
 
 procedure TX3DPrototypeBase.SaveInterfaceDeclarationsToStream(
@@ -903,21 +889,6 @@ var
   E: TDOMElement;
 begin
   BaseUrl := Reader.BaseUrl;
-
-  if Element.AttributeString('name', NewName) then
-    X3DName := NewName
-  else
-    raise EX3DXmlError.Create('Missing "name" for <ProtoDeclare> element');
-
-  E := Element.ChildElement('ProtoInterface', false);
-  if E <> nil then
-    ParseInterfaceDeclarationsXML(false, E, Reader);
-
-  E := Element.ChildElement('ProtoBody', false);
-  if E = nil then
-    raise EX3DXmlError.CreateFmt('Missing <ProtoBody> inside <ProtoDeclare> element of prototype "%s"', [X3DName]);
-
-  FreeAndNil(FNode);
 
   { VRML 2.0 spec explicitly says that inside prototype has it's own DEF/USE
     scope, completely independent from the outside.
@@ -1040,17 +1011,6 @@ var
 begin
   BaseUrl := Reader.BaseUrl;
 
-  if Element.AttributeString('name', NewName) then
-    X3DName := NewName
-  else
-    raise EX3DXmlError.Create('Missing "name" for <ExternProtoDeclare> element');
-
-  ParseInterfaceDeclarationsXML(true, Element, Reader);
-
-  if Element.AttributeString('url', URLListValue) then
-    URLList.ParseXMLAttribute(URLListValue, Reader) else
-    raise EX3DXmlError.Create('Missing "url" for <ExternProtoDeclare> element');
-
   Reader.Prototypes.Bind(Self);
 
   LoadReferenced;
@@ -1157,8 +1117,6 @@ procedure TX3DExternalPrototype.LoadReferenced;
   begin
     Result := false;
 
-    URL := CombineURI(BaseUrl, RelativeURL);
-    URIExtractAnchor(URL, Anchor);
     try
       ReferencedPrototypeNode := TX3dRootNode.Create('aaa');
       PrototypeNames := ReferencedPrototypeNode.PrototypeNames;

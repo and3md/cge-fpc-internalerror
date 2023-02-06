@@ -512,29 +512,12 @@ begin
 end;
 
 procedure TMFNode.ParseXMLElement(Element: TDOMElement; Reader: TX3DReader);
-var
-  Child: TX3DNode;
-  I: TXMLElementIterator;
-  ContainerFieldDummy: string;
 begin
   { Clear is necessary because MFNode default value may be non-empty,
     when it's defined by a prototype.
     See http://web3d.org/pipermail/x3d-public_web3d.org/2016-May/004771.html }
   Clear;
 
-  I := Element.ChildrenIterator;
-  try
-    while I.GetNext do
-    begin
-      Child := ParseXMLNode(I.Current,
-        ContainerFieldDummy { ignore containerField }, Reader as TX3DReaderNames, true);
-      if Child <> nil then
-      begin
-        Add(Child);
-        WarningIfChildNotAllowed(Child);
-      end;
-    end;
-  finally FreeAndNil(I) end;
 end;
 
 function TMFNode.EqualsDefaultValue: boolean;
