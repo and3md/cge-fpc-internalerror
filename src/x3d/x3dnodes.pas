@@ -532,7 +532,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_x3dsequencernode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dshadernode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dshapenode.inc}
-{$I auto_generated_node_helpers/x3dnodes_x3dsoundnode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dtexture2dnode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dtexture3dnode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dtexturecoordinatenode.inc}
