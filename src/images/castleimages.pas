@@ -72,7 +72,7 @@ unit CastleImages;
 interface
 
 uses SysUtils, Classes, Math, CastleUtils, CastleVectors, CastleRectangles,
-  CastleFileFilters, CastleClassUtils, CastleColors,
+  CastleClassUtils, CastleColors,
   Generics.Collections, FPImage, FPReadPCX, FPReadGIF, FPReadPSD, FPReadTGA, FPReadTiff, FPReadXPM,
   FPReadJPEG, FPWriteJPEG, FPReadPNM
   {$ifdef CASTLE_PNG_USING_FCL_IMAGE} , FPReadPNG, CastleInternalFPWritePNG
@@ -1743,7 +1743,7 @@ procedure SaveImage(const Img: TEncodedImage; const URL: string); overload;
 function ImageClassBestForSavingToFormat(const URL: string): TCastleImageClass;
 { @groupEnd }
 
-var
+//var
   { File filters if you want to choose a file that can be loaded/saved
     by appropriate functions from Images unit.
 
@@ -1751,8 +1751,8 @@ var
     Initialization / finalization of this unit automatically take care of them.
 
     @groupBegin }
-  LoadImage_FileFilters: TFileFilterList;
-  SaveImage_FileFilters: TFileFilterList;
+  //LoadImage_FileFilters: TFileFilterList;
+  //SaveImage_FileFilters: TFileFilterList;
   { @groupEnd }
 
 { Maximum alpha channel type. Chooses "full range" if anything is "full range",
@@ -4817,7 +4817,5 @@ initialization
   {$endif}
   LoadImageEvents := TLoadImageEventList.Create;
 finalization
-  FreeAndNil(LoadImage_FileFilters);
-  FreeAndNil(SaveImage_FileFilters);
   FreeAndNil(LoadImageEvents);
 end.

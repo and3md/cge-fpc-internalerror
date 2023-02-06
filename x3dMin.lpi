@@ -614,11 +614,6 @@
         <UnitName Value="CastleDynLib"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castlefilefilters.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleFileFilters"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castleinterfaces.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleInterfaces"/>

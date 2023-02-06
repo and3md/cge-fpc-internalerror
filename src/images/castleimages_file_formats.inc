@@ -608,53 +608,6 @@ end;
 
 procedure InitializeImagesFileFilters;
 
-  function CreateImagesFilters: TFileFilterList;
-  begin
-    Result := TFileFilterList.Create(true);
-    Result.AddFilter('All Files', ['*']);
-    Result.AddFilter('All Images', []);
-    Result.DefaultFilter := 1;
-  end;
-
-  procedure AddImageFormat(Filters: TFileFilterList; Format: TImageFormatInfo);
-  var
-    F: TFileFilter;
-    ExtIndex: Integer;
-    Pattern: string;
-  begin
-    F := TFileFilter.Create;
-    Filters.Add(F);
-    F.Name := Format.FormatName + ' (';
-
-    for ExtIndex := 1 to Format.ExtsCount do
-    begin
-      Pattern := '*.' + Format.Exts[ExtIndex];
-
-      { add to "All images" filter }
-      Filters[Filters.DefaultFilter].Patterns.Append(Pattern);
-
-      { add to this filter }
-      F.Patterns.Append(Pattern);
-
-      { add to this filter visible name }
-      if ExtIndex <> 1 then F.Name := F.Name + ', ';
-      F.Name := F.Name + Pattern;
-    end;
-
-    F.Name := F.Name + ')';
-  end;
-
-var
-  Format: TImageFormat;
 begin
-  LoadImage_FileFilters := CreateImagesFilters;
-  SaveImage_FileFilters := CreateImagesFilters;
 
-  for Format := Low(Format) to High(Format) do
-  begin
-    if Assigned(ImageFormatInfos[Format].Load) then
-      AddImageFormat(LoadImage_FileFilters, ImageFormatInfos[Format]);
-    if Assigned(ImageFormatInfos[Format].Save) then
-      AddImageFormat(SaveImage_FileFilters, ImageFormatInfos[Format]);
-  end;
 end;
