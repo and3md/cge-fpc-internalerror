@@ -170,7 +170,7 @@ uses SysUtils, Generics.Collections, Classes, XMLRead, DOM,
   CastleInternalX3DLexer, CastleUtils, CastleClassUtils,
   X3DFields, CastleImages, CastleColors,
   X3DTime,
-  CastleScript, X3DCastleScript, CastleCompositeImage,
+  CastleCompositeImage,
   CastleTextureImages, CastleStringUtils, CastleBoxes, CastleMaterialProperties,
   CastleInternalOctree, CastleProjection;
 
@@ -207,7 +207,6 @@ type
   {$I x3dnodes_standard_h-anim.inc}
   {$I x3dnodes_standard_nurbs.inc}
   {$I x3dnodes_standard_dis.inc}
-  {$I x3dnodes_standard_scripting.inc}
   {$I x3dnodes_standard_eventutilities.inc}
   {$I x3dnodes_standard_shaders.inc}
   {$I x3dnodes_standard_cadgeometry.inc}
@@ -252,8 +251,8 @@ implementation
 
 uses
   Math,
-  CastleFilesUtils, StrUtils, CastleURIUtils, CastleCurves,
-  CastleLog, CastleScriptParser, CastleDownload,
+  CastleFilesUtils, StrUtils, CastleURIUtils,
+  CastleLog, CastleDownload,
   CastleNURBS, CastleQuaternions, CastleXMLUtils, X3DLoadInternalUtils;
 
 {$warnings on}
@@ -314,7 +313,6 @@ uses
 {$I x3dnodes_standard_h-anim.inc}
 {$I x3dnodes_standard_nurbs.inc}
 {$I x3dnodes_standard_dis.inc}
-{$I x3dnodes_standard_scripting.inc}
 {$I x3dnodes_standard_eventutilities.inc}
 {$I x3dnodes_standard_shaders.inc}
 {$I x3dnodes_standard_cadgeometry.inc}
@@ -485,7 +483,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_scalarchaser.inc}
 {$I auto_generated_node_helpers/x3dnodes_scalarinterpolator.inc}
 {$I auto_generated_node_helpers/x3dnodes_screengroup.inc}
-{$I auto_generated_node_helpers/x3dnodes_script.inc}
 {$I auto_generated_node_helpers/x3dnodes_shaderpart.inc}
 {$I auto_generated_node_helpers/x3dnodes_shaderprogram.inc}
 {$I auto_generated_node_helpers/x3dnodes_shadertexture.inc}
@@ -571,7 +568,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_x3dpointingdevicesensornode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dproductstructurechildnode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3drigidjointnode.inc}
-{$I auto_generated_node_helpers/x3dnodes_x3dscriptnode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dsensornode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dsequencernode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dshadernode.inc}
@@ -639,7 +635,7 @@ initialization
   RegisterHAnimNodes;
   RegisterNURBSNodes;
   RegisterDISNodes;
-  RegisterScriptingNodes;
+  //RegisterScriptingNodes;
   RegisterEventUtilitiesNodes;
   RegisterShadersNodes;
   RegisterCADGeometryNodes;

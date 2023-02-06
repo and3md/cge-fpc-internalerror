@@ -13,7 +13,7 @@ uses
   Forms, UMinX3d, CastleInternalNodeInterpolator, CastleInternalNormals,
   CastleInternalShadowMaps, CastleInternalShapeOctree,
   CastleInternalTriangleOctree, CastleInternalX3DLexer,
-  CastleMaterialProperties, X3DCastleScript, X3DFields, X3DLoadInternalUtils,
+  CastleMaterialProperties, X3DFields, X3DLoadInternalUtils,
   X3DNodes, X3DTime, X3DTriangles, CastleClassUtils, CastleColors, CastleDynLib,
   CastleInterfaces, CastleInternalDoubleLists,
   CastleInternalGzio, CastleLog, CastleProgress, CastleProjection,

@@ -195,19 +195,7 @@ end;
 class procedure TAbstractCubicBezierInterpolatorNode.CalculatedCurve2D(
   const KeyValue: TVector4;
   out Curve: TCalculatedCurve2D); static;
-var
-  CurvePoints: TCubicBezier2DPoints;
-  I: Integer;
 begin
-  CurvePoints[0] := Vector2(0, 0);
-  CurvePoints[1] := Vector2(KeyValue[0], KeyValue[1]);
-  CurvePoints[2] := Vector2(KeyValue[2], KeyValue[3]);
-  CurvePoints[3] := Vector2(1, 1);
-
-  { calculate Curve in 2D for curve parameter (T parameter of CubicBezier2D())
-    in 0..1 }
-  for I := 0 to High(Curve) do
-    Curve[I] := CubicBezier2D(I / High(Curve), CurvePoints);
 end;
 
 procedure TAbstractCubicBezierInterpolatorNode.OptimizeControlPoints;
