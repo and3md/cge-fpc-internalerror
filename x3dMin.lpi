@@ -718,11 +718,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/3d/castlefrustum.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleFrustum"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/3d/castlenurbs.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleNURBS"/>

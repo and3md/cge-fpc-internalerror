@@ -19,7 +19,7 @@ uses
   CastleLog, CastleProjection,
   CastleRectangles, CastleRendererBaseTypes, CastleStringUtils,
   CastleTimeUtils, CastleUtils, CastleVectors, CastleVectorsInternalDouble,
-  CastleVectorsInternalSingle, CastleUnicode, CastleBoxes, CastleFrustum,
+  CastleVectorsInternalSingle, CastleUnicode, CastleBoxes,
   CastleInternalOctree, CastleNURBS, CastleQuaternions, CastleTriangles,
   CastleTriangulate;
 
