@@ -182,10 +182,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dnodes_97_nurbs.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dnodes_bitmanagement.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -343,10 +339,6 @@
       </Unit>
       <Unit>
         <Filename Value="src/x3d/x3dnodes_standard_networking.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dnodes_standard_nurbs.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
@@ -716,11 +708,6 @@
       <Unit>
         <Filename Value="src/base/norqcheckend.inc"/>
         <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/3d/castlenurbs.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleNURBS"/>
       </Unit>
       <Unit>
         <Filename Value="src/3d/castlequaternions.pas"/>

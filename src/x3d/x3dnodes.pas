@@ -204,7 +204,6 @@ type
   {$I x3dnodes_standard_pointingdevicesensor.inc}
   {$I x3dnodes_standard_environmentalsensor.inc}
   {$I x3dnodes_standard_h-anim.inc}
-  {$I x3dnodes_standard_nurbs.inc}
   {$I x3dnodes_standard_dis.inc}
   {$I x3dnodes_standard_eventutilities.inc}
   {$I x3dnodes_standard_shaders.inc}
@@ -221,8 +220,6 @@ type
   {$I x3dnodes_1.inc}
   {$I x3dnodes_inventor.inc}
   {$I x3dnodes_97_hanim.inc}
-  {$I x3dnodes_97_nurbs.inc}
-  // {$I x3dnodes_castle.inc}
   {$I x3dnodes_instantreality.inc}
   {$I x3dnodes_bitmanagement.inc}
 
@@ -231,7 +228,6 @@ type
   {$I x3dnodes_prototypes.inc}
   {$I x3dnodes_x3droute.inc}
   {$I x3dnodes_importexport.inc}
-  // {$I x3dnodes_eventsengine.inc}
   {$I x3dnodes_names.inc}
   {$I x3dnodes_load.inc}
 
@@ -252,7 +248,7 @@ uses
   Math,
   StrUtils,
   CastleLog,
-  CastleNURBS, CastleQuaternions, X3DLoadInternalUtils;
+  CastleQuaternions, X3DLoadInternalUtils;
 
 {$warnings on}
 
@@ -310,7 +306,6 @@ uses
 {$I x3dnodes_standard_pointingdevicesensor.inc}
 {$I x3dnodes_standard_environmentalsensor.inc}
 {$I x3dnodes_standard_h-anim.inc}
-{$I x3dnodes_standard_nurbs.inc}
 {$I x3dnodes_standard_dis.inc}
 {$I x3dnodes_standard_eventutilities.inc}
 {$I x3dnodes_standard_shaders.inc}
@@ -327,7 +322,6 @@ uses
 {$I x3dnodes_1.inc}
 {$I x3dnodes_inventor.inc}
 {$I x3dnodes_97_hanim.inc}
-{$I x3dnodes_97_nurbs.inc}
 {$I x3dnodes_instantreality.inc}
 {$I x3dnodes_bitmanagement.inc}
 
@@ -372,7 +366,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_contourpolyline2d.inc}
 {$I auto_generated_node_helpers/x3dnodes_coordinate.inc}
 {$I auto_generated_node_helpers/x3dnodes_coordinatedamper.inc}
-{$I auto_generated_node_helpers/x3dnodes_coordinatedouble.inc}
 {$I auto_generated_node_helpers/x3dnodes_coordinateinterpolator.inc}
 {$I auto_generated_node_helpers/x3dnodes_coordinateinterpolator2d.inc}
 {$I auto_generated_node_helpers/x3dnodes_cylinder.inc}
@@ -436,17 +429,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_multitexturetransform.inc}
 {$I auto_generated_node_helpers/x3dnodes_normal.inc}
 {$I auto_generated_node_helpers/x3dnodes_normalinterpolator.inc}
-{$I auto_generated_node_helpers/x3dnodes_nurbscurve.inc}
-{$I auto_generated_node_helpers/x3dnodes_nurbscurve2d.inc}
-{$I auto_generated_node_helpers/x3dnodes_nurbsorientationinterpolator.inc}
-{$I auto_generated_node_helpers/x3dnodes_nurbspatchsurface.inc}
-{$I auto_generated_node_helpers/x3dnodes_nurbspositioninterpolator.inc}
-{$I auto_generated_node_helpers/x3dnodes_nurbsset.inc}
-{$I auto_generated_node_helpers/x3dnodes_nurbssurfaceinterpolator.inc}
-{$I auto_generated_node_helpers/x3dnodes_nurbssweptsurface.inc}
-{$I auto_generated_node_helpers/x3dnodes_nurbsswungsurface.inc}
-{$I auto_generated_node_helpers/x3dnodes_nurbstexturecoordinate.inc}
-{$I auto_generated_node_helpers/x3dnodes_nurbstrimmedsurface.inc}
 {$I auto_generated_node_helpers/x3dnodes_orientationchaser.inc}
 {$I auto_generated_node_helpers/x3dnodes_orientationdamper.inc}
 {$I auto_generated_node_helpers/x3dnodes_orientationinterpolator.inc}
@@ -558,8 +540,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_x3dnetworksensornode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dnode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dnormalnode.inc}
-{$I auto_generated_node_helpers/x3dnodes_x3dnurbscontrolcurvenode.inc}
-{$I auto_generated_node_helpers/x3dnodes_x3dnurbssurfacegeometrynode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dparametricgeometrynode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dparticleemitternode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dparticlephysicsmodelnode.inc}
@@ -605,7 +585,6 @@ initialization
   RegistedInventorNodes;
   RegisterVRML1Nodes;
   RegisterVRML97HAnimNodes;
-  RegisterVRML97NodesNurbs;
   RegisterInstantRealityNodes;
   RegisterBitManagementNodes;
 
@@ -632,7 +611,6 @@ initialization
   //RegisterEnvironmentalEffectsNodes;
   //RegisterGeospatialNodes;
   RegisterHAnimNodes;
-  RegisterNURBSNodes;
   RegisterDISNodes;
   //RegisterScriptingNodes;
   RegisterEventUtilitiesNodes;

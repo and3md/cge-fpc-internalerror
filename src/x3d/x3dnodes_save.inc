@@ -160,53 +160,6 @@ procedure TVRMLToX3DConverter.Convert(ParentNode: TX3DNode; var Node: TX3DNode);
     Result.FdPoint.AssignValue(Coords);
   end;
 
-  function ConvertNurbsCurve(Node: TNurbsCurveNode_2): TNurbsCurveNode;
-  begin
-    Result := TNurbsCurveNode.Create(Node.X3DName, Node.BaseUrl);
-    Result.PositionInParent := Node.PositionInParent;
-
-    Result.FdcontrolPoint.Value := CoordinateNode(Node.FdcontrolPoint);
-    Result.Fdweight.Items.Assign(Node.FdWeight.Items); { converts float to double }
-    Result.Fdtessellation.AssignValue(Node.Fdtessellation);
-    Result.Fdknot.Items.Assign(Node.Fdknot.Items); { converts float to double }
-    Result.Fdorder.AssignValue(Node.Fdorder);
-    Result.FdClosed.Value := true; { true means "possibly closed" }
-  end;
-
-  function ConvertNurbsSurface(Node: TNurbsSurfaceNode): TNurbsPatchSurfaceNode;
-  begin
-    Result := TNurbsPatchSurfaceNode.Create(Node.X3DName, Node.BaseUrl);
-    Result.PositionInParent := Node.PositionInParent;
-
-    Result.FdcontrolPoint.Value := CoordinateNode(Node.FdcontrolPoint);
-    Result.FdtexCoord.AssignValue(Node.FdtexCoord);
-    Result.FduTessellation.AssignValue(Node.FduTessellation);
-    Result.FdvTessellation.AssignValue(Node.FdvTessellation);
-    Result.Fdweight.Items.Assign(Node.FdWeight.Items); { converts float to double }
-    Result.FdSolid.AssignValue(Node.FdSolid);
-
-    Result.FdUClosed.Value := true; { true means "possibly closed" }
-    Result.FdUDimension.AssignValue(Node.FdUDimension);
-    Result.FdUKnot.Items.Assign(Node.FdUknot.Items); { converts float to double }
-    Result.FdUOrder.AssignValue(Node.FdUorder);
-
-    Result.FdVClosed.Value := true; { true means "possibly closed" }
-    Result.FdVDimension.AssignValue(Node.FdVDimension);
-    Result.FdVKnot.Items.Assign(Node.FdVKnot.Items); { converts float to double }
-    Result.FdVOrder.AssignValue(Node.FdVOrder);
-  end;
-
-  function ConvertNurbsPositionInterpolator(Node: TNurbsPositionInterpolatorNode_2): TNurbsPositionInterpolatorNode;
-  begin
-    Result := TNurbsPositionInterpolatorNode.Create(Node.X3DName, Node.BaseUrl);
-    Result.PositionInParent := Node.PositionInParent;
-
-    Result.FdcontrolPoint.Value := CoordinateNode(Node.FdKeyValue);
-    Result.Fdknot.Items.Assign(Node.Fdknot.Items); { converts float to double }
-    Result.Fdorder.AssignValue(Node.Fdorder);
-    Result.Fdweight.Items.Assign(Node.FdKeyWeight.Items); { converts float to double }
-  end;
-
 begin
   { The nodes needing to be converted from VRML 2.0 to X3D:
     - Some can be found by grepping for "Version.Major = 2".
@@ -237,12 +190,6 @@ begin
       <NurbsCurve> instead of <ProtoInstance name="NurbsCurve">,
       and the invalid externproto is not relevant.
   }
-  if Node is TNurbsCurveNode_2 then
-    Node := ConvertNurbsCurve(TNurbsCurveNode_2(Node)) else
-  if Node is TNurbsSurfaceNode then
-    Node := ConvertNurbsSurface(TNurbsSurfaceNode(Node)) else
-  if Node is TNurbsPositionInterpolatorNode_2 then
-    Node := ConvertNurbsPositionInterpolator(TNurbsPositionInterpolatorNode_2(Node));
 end;
 
 function Save3DWillConvertToX3D(Version: TX3DVersion;
