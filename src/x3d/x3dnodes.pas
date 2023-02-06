@@ -251,9 +251,6 @@ implementation
 {$warnings off}
 
 uses
-  { Fonts for Text, FontStyle, AsciiText nodes }
-  CastleTextureFont_DjvSans_20,
-
   Math,
   CastleFilesUtils, StrUtils, CastleURIUtils, CastleCurves,
   CastleLog, CastleScriptParser, CastleDownload,

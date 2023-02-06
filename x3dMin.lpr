@@ -22,7 +22,7 @@ uses
   CastleVectorsInternalSingle, CastleUnicode, CastleBoxes, CastleFrustum,
   CastleInternalOctree, CastleNURBS, CastleQuaternions, CastleTriangles,
   CastleTriangulate, CastleInternalFreeType, CastleInternalFreeTypeH,
-  CastleInternalFtFont, CastleTextureFontData, CastleTextureFont_DjvSans_20,
+  CastleInternalFtFont, CastleTextureFontData,
   CastleCompositeImage, CastleImages, CastleInternalFPWritePNG,
   CastleTextureImages, CastleDownload, CastleFilesUtils,
   CastleFindFiles, CastleInternalDirectoryInformation, CastleURIUtils,
