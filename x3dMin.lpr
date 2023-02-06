@@ -15,7 +15,7 @@ uses
   CastleInternalTriangleOctree, CastleInternalX3DLexer,
   CastleMaterialProperties, X3DFields, X3DLoadInternalUtils,
   X3DNodes, X3DTime, X3DTriangles, CastleClassUtils, CastleColors,
-  CastleInterfaces, CastleInternalDoubleLists,
+  CastleInterfaces,
   CastleInternalGzio, CastleLog, CastleProgress, CastleProjection,
   CastleRectangles, CastleRendererBaseTypes, CastleStringUtils,
   CastleTimeUtils, CastleUtils, CastleVectors, CastleVectorsInternalDouble,

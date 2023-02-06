@@ -532,11 +532,6 @@
         <UnitName Value="CastleInterfaces"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castleinternaldoublelists.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleInternalDoubleLists"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castleinternalgzio.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleInternalGzio"/>
