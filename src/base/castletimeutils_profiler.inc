@@ -250,7 +250,7 @@ end;
 { TCastleProfiler.TTimes ----------------------------------------------------- }
 
   { Helper for TTimes.Sort }
-  function TimeSort({$ifdef FPC}constref{$else}const{$endif} Value1, Value2: TCastleProfiler.TTime): Integer;
+  function TimeSort({$ifdef FPC}{$ifdef VER3_3_1}const{$else}constref{$endif}{$else}const{$endif} Value1, Value2: TCastleProfiler.TTime): Integer;
   begin
     Result := Sign(Value2.Time - Value1.Time);
   end;

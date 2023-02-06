@@ -397,7 +397,7 @@ type
 implementation
 
 uses URIParser, Math,
-  CastleURIUtils, CastleUtils, CastleLog, CastleInternalZStream,
+  CastleURIUtils, CastleUtils, CastleLog,
   CastleClassUtils, CastleDataURI, CastleProgress, CastleStringUtils,
   CastleFilesUtils
   {$ifdef ANDROID}, CastleAndroidInternalAssetStream, CastleMessaging {$endif}
@@ -677,7 +677,8 @@ function ReadGzipped(var Stream: TStream; const ForceMemoryStream: boolean): TSt
 var
   NewResult: TMemoryStream;
 begin
-  Result := TGZFileStream.Create(Stream, false);
+  Result := nil;
+{  Result := TGZFileStream.Create(Stream, false);
   try
     Stream := nil; // Stream is owned by Result now
 
@@ -692,7 +693,7 @@ begin
     end;
   except
     FreeAndNil(Result); raise;
-  end;
+  end;}
 end;
 
 procedure CheckFileAccessSafe(const URL: string);
@@ -898,7 +899,7 @@ begin
 
   if ssoGzip in Options then
   begin
-    Result := TGZFileStream.Create(TFileStream.Create(FileName, fmCreate), true);
+    Result := TFileStream.Create(FileName, fmCreate); //TGZFileStream.Create(TFileStream.Create(FileName, fmCreate), true);
   end else
     Result := TFileStream.Create(FileName, fmCreate);
 end;

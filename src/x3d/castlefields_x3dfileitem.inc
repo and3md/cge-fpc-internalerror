@@ -118,7 +118,7 @@ procedure TX3DFileItemList.SortPositionInParent;
 type
   TX3DFileItemComparer = {$ifdef CASTLE_OBJFPC}specialize{$endif} TComparer<TX3DFileItem>;
 begin
-  Sort(TX3DFileItemComparer.Construct(@IsSmallerPositionInParent));
+  //Sort(TX3DFileItemComparer.Construct(@IsSmallerPositionInParent));
 end;
 
 procedure TX3DFileItemList.SaveToStream(Writer: TX3DWriter);

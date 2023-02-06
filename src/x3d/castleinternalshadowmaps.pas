@@ -44,8 +44,8 @@ procedure ProcessShadowMapsReceivers(Model: TX3DNode; Shapes: TObject;
 
 implementation
 
-uses SysUtils, Generics.Collections,
-  CastleUtils, CastleStringUtils,
+uses SysUtils,
+  CastleUtils,
   CastleBoxes, CastleLog, CastleVectors, CastleRectangles;
 
 const

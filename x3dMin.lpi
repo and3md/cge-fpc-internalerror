@@ -468,6 +468,466 @@
         <Filename Value="src/x3d/x3dtriangles_raysegment_nonleaf.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
+      <Unit>
+        <Filename Value="src/base/castleutils_miscella.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleutils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleUtils"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleutils_math.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlevectors.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleVectors"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlestringutils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleStringUtils"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlelog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleLog"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlecolors.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleColors"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/castleimages.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleImages"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/files/castlefilesutils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleFilesUtils"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/files/castleuriutils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleURIUtils"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/files/castledatauri.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleDataURI"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/files/castlefindfiles.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleFindFiles"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/files/castlexmlutils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleXMLUtils"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/files/castledownload.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleDownload"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/files/castleinternaldirectoryinformation.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleInternalDirectoryInformation"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/castlecompositeimage.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleCompositeImage"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/castlecompositeimage_ktx.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/3d/castleboxes.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleBoxes"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/castletextureimages.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleTextureImages"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/3d/castletriangles.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleTriangles"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleshaders.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleShaders"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/3d/castleinternaloctree.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleInternalOctree"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/fonts/castletexturefont_djvsans_20.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleTextureFont_DjvSans_20"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/fonts/castletexturefontdata.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleTextureFontData"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/fonts/castleinternalfreetypeh.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleInternalFreeTypeH"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleunicode.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleUnicode"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleclassutils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleClassUtils"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlecolors_persistent.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleconf.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castledynlib.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleDynLib"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlefilefilters.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleFileFilters"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleinterfaces.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleInterfaces"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleinternaldoublelists.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleInternalDoubleLists"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleinternalgzio.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleInternalGzio"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleprogress.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleProgress"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleprojection.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleProjection"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlerectangles.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleRectangles"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlerendererbasetypes.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleRendererBaseTypes"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castletimeutils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleTimeUtils"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castletimeutils_frameprofiler.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castletimeutils_framespersecond.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castletimeutils_gettickcount64.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castletimeutils_miscellaneous.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castletimeutils_now.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castletimeutils_processtimer.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castletimeutils_profiler.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castletimeutils_timer.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleutils_basic_algorithms.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleutils_delphi_compatibility.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleutils_filenames.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleutils_implement_sort.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleutils_os_specific_unix.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleutils_platform.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleutils_pointers.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleutils_primitive_lists.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleutils_program_exit.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleutils_read_write.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleutils_struct_list.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleutils_types.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlevectors_border.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlevectors_byte.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlevectors_cardinal.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlevectors_compatibility_deprecated.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlevectors_double.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlevectors_float.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlevectors_generic_float_record.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlevectors_integer.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlevectorsinternaldouble.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleVectorsInternalDouble"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlevectorsinternalsingle.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleVectorsInternalSingle"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlevectors_lists.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlevectors_lists_double.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlevectors_miscellaneous.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlevectors_persistent.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlevectors_single.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlevectors_smallint.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castlevectors_transformation.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/castleversion.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/gl_texture_compression_constants.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/norqcheckbegin.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/base/norqcheckend.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/3d/castlefrustum.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleFrustum"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/3d/castlenurbs.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleNURBS"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/3d/castlequaternions.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleQuaternions"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/3d/castletriangles_istrianglespherecollision.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/3d/castletriangulate.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleTriangulate"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/fonts/castleinternalfreetype.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleInternalFreeType"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/fonts/castleinternalftfont.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleInternalFtFont"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/castlecompositeimage_dds.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/castlecompositeimage_format_handler.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/castleimages_draw.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/castleimages_file_formats.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/castleimages_paint.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/castleinternalfpwritepng.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleInternalFPWritePNG"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/castlevideos.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="CastleVideos"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/images_bmp.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/images_composite.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/images_external_tool.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/images_fpimage.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/images_ipl.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/images_modulatergb_implement.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/images_ppm.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/images_rgbe_fileformat.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/images_s3tc_flip_vertical.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="src/images/images_transformrgb_implement.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
