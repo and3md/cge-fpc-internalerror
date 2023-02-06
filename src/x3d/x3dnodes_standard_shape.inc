@@ -543,7 +543,6 @@
     strict private FFdTransSpecularExp: TSFFloat;
     public property FdTransSpecularExp: TSFFloat read FFdTransSpecularExp;
 
-    {$I auto_generated_node_helpers/x3dnodes_material.inc}
   end;
   TMaterialNode_2 = TMaterialNode;
 
@@ -605,7 +604,6 @@
     strict private FFdTransparency: TSFFloat;
     public property FdTransparency: TSFFloat read FFdTransparency;
 
-    {$I auto_generated_node_helpers/x3dnodes_twosidedmaterial.inc}
   end;
 
 {$endif read_interface}

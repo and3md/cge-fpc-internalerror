@@ -438,8 +438,7 @@ type
         for TAbstractPositionalLightNode with HasRadius = true.
         E.g. PointLight with global = false should be limited by *both*
         scope (in graph hierarchy) and radius, as far as I understand. }
-      State.AddLight(
-        TAbstractLightNode(Child).CreateLightInstance(State)) else
+      else
     if Child is TAbstractPointingDeviceSensorNode then
     begin
       AddPointingDeviceSensor(Child);

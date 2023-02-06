@@ -167,25 +167,6 @@
     procedure Box3DDistances(const Box: TBox3D;
       out MinDistance, MaxDistance: Single); virtual; abstract;
 
-    { Create TLightInstance record describing this light node under given
-      State. }
-    function CreateLightInstance(State: TX3DGraphTraverseState): TLightInstance;
-
-    { Update TLightInstance record when lighting State changes.
-      Assumes that LightInstance.Node = Self.
-
-      This will set LightInstance.Transform properties, and recalculate
-      all LightInstance properties based on Transform. }
-    procedure UpdateLightInstanceState(
-      var LightInstance: TLightInstance;
-      State: TX3DGraphTraverseState);
-
-    { Update TLightInstance record when lighting location/direction (and other
-      properties precalculated on TLightInstance) change.
-      Assumes that LightInstance.Node = Self. }
-    procedure UpdateLightInstance(
-      var LightInstance: TLightInstance); virtual;
-
     function TransformationChange: TNodeTransformationChange; override;
 
     { Light scope. Default implementation returns lsGlobal or lsLocal,
@@ -198,8 +179,6 @@
 
       Note that this is expressed in the local light node coordinate system. }
     function PositionAndDirection: TVector4; virtual; abstract;
-
-    {$I auto_generated_node_helpers/x3dnodes_x3dlightnode.inc}
   end;
 
   { Base class for all directional lights. }
@@ -231,8 +210,6 @@
     strict private FFdProjectionLocation: TSFVec3f;
     public property FdProjectionLocation: TSFVec3f read FFdProjectionLocation;
     property ProjectionLocation: TVector3 read GetProjectionLocation write SetProjectionLocation;
-
-    procedure UpdateLightInstance(var LightInstance: TLightInstance); override;
 
     function ProjectionMatrix: TMatrix4; override;
     function ModelviewMatrix: TMatrix4; override;
@@ -304,7 +281,6 @@
     { Should the "radius" field be taken into account. }
     function HasRadius: boolean; virtual;
 
-    procedure UpdateLightInstance(var LightInstance: TLightInstance); override;
     function PositionAndDirection: TVector4; override;
   end;
 
@@ -376,8 +352,6 @@
 
     class function ForVRMLVersion(const Version: TX3DVersion): boolean;
       override;
-
-    procedure UpdateLightInstance(var LightInstance: TLightInstance); override;
 
     function ProjectionMatrix: TMatrix4; override;
     function ModelviewMatrix: TMatrix4; override;
@@ -586,35 +560,9 @@ begin
   Up := TVector3.CrossProduct(Side, Dir);
 end;
 
-function TAbstractLightNode.CreateLightInstance(
-  State: TX3DGraphTraverseState): TLightInstance;
-begin
-  Result.Node := Self;
-  Result.WorldCoordinates := false;
-  UpdateLightInstanceState(Result, State);
-end;
-
-procedure TAbstractLightNode.UpdateLightInstanceState(
-  var LightInstance: TLightInstance;
-  State: TX3DGraphTraverseState);
-begin
-  LightInstance.Transform := State.Transform;
-  LightInstance.TransformScale := State.TransformScale;
-  UpdateLightInstance(LightInstance);
-end;
-
-procedure TAbstractLightNode.UpdateLightInstance(
-  var LightInstance: TLightInstance);
-begin
-  { Nothing to do in this class. }
-  Assert(LightInstance.Node = Self);
-end;
-
 procedure TAbstractLightNode.MiddleTraverse(StateStack: TX3DGraphTraverseStateStack);
 begin
   inherited;
-  if Scope = lsLocalVRML1 then
-    StateStack.Top.AddLight(CreateLightInstance(StateStack.Top));
 end;
 
 function TAbstractLightNode.TransformationChange: TNodeTransformationChange;
@@ -655,14 +603,6 @@ end;
 class function TAbstractDirectionalLightNode.ClassX3DType: string;
 begin
   Result := 'DirectionalLight';
-end;
-
-procedure TAbstractDirectionalLightNode.UpdateLightInstance(
-  var LightInstance: TLightInstance);
-begin
-  inherited;
-  LightInstance.Direction :=
-    LightInstance.Transform.MultDirection(FdDirection.Value).Normalize;
 end;
 
 function TAbstractDirectionalLightNode.ProjectionMatrix: TMatrix4;
@@ -805,28 +745,6 @@ end;
 function TAbstractPositionalLightNode.HasRadius: boolean;
 begin
   Result := true;
-end;
-
-procedure TAbstractPositionalLightNode.UpdateLightInstance(
-  var LightInstance: TLightInstance);
-begin
-  inherited;
-
-  LightInstance.Location := LightInstance.Transform.MultPoint(
-    FdLocation.Value);
-
-  { TODO: For non-uniform scale, this will simply use average scale.
-    This is not fully correct, VRML spec doesn't clarify this
-    but I guess that the intention was that the non-uniform scale will
-    make radius non-uniform, i.e. light volume will not be a regular sphere
-    but some 3d ellipsoid. Unfortunately this would require quite more
-    work, AddGlobalLights (in TCastleSceneCore) would then have to check for collision
-    between
-      sphere transformed by matrix Transform
-    and
-      bounding box
-    which I don't know how to do *easily*... }
-  LightInstance.Radius := FdRadius.Value * LightInstance.TransformScale;
 end;
 
 function TAbstractPositionalLightNode.CalculateAttenuation(const DistanceToLight: Single): Single;
@@ -1003,14 +921,6 @@ end;
 class function TSpotLightNode.ForVRMLVersion(const Version: TX3DVersion): boolean;
 begin
   Result := Version.Major >= 2;
-end;
-
-procedure TSpotLightNode.UpdateLightInstance(
-  var LightInstance: TLightInstance);
-begin
-  inherited;
-  LightInstance.Direction :=
-    LightInstance.Transform.MultDirection(FdDirection.Value).Normalize;
 end;
 
 function TSpotLightNode.ProjectionMatrix: TMatrix4;

@@ -28,8 +28,6 @@
   strict private
     function GetAnisotropicDegree: Single;
     procedure SetAnisotropicDegree(const Value: Single);
-    function GetBorderColor: TCastleColor;
-    procedure SetBorderColor(const Value: TCastleColor);
     function GetBorderWidth: Integer;
     procedure SetBorderWidth(const Value: Integer);
     function GetBoundaryModeS: string;
@@ -49,9 +47,6 @@
   public
     { X3D field "anisotropicDegree". } { }
     property AnisotropicDegree: Single read GetAnisotropicDegree write SetAnisotropicDegree;
-    { X3D field "borderColor". } { }
-    property BorderColor: TCastleColor read GetBorderColor write SetBorderColor;
-    { X3D field "borderWidth". } { }
     property BorderWidth: Integer read GetBorderWidth write SetBorderWidth;
     { X3D field "boundaryModeS". } { }
     property BoundaryModeS: string read GetBoundaryModeS write SetBoundaryModeS;
@@ -82,16 +77,6 @@ end;
 procedure TTexturePropertiesNode.SetAnisotropicDegree(const Value: Single);
 begin
   FdAnisotropicDegree.Send(Value);
-end;
-
-function TTexturePropertiesNode.GetBorderColor: TCastleColor;
-begin
-  Result := FdBorderColor.Value;
-end;
-
-procedure TTexturePropertiesNode.SetBorderColor(const Value: TCastleColor);
-begin
-  FdBorderColor.Send(Value);
 end;
 
 function TTexturePropertiesNode.GetBorderWidth: Integer;

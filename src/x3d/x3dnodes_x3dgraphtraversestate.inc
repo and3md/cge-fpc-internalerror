@@ -31,18 +31,6 @@
     property VRML1State: TVRML1State read FVRML1State;
     property LastNodes: TVRML1State read FVRML1State; deprecated 'use VRML1State';
   public
-    { Lights active in this state.
-
-      May be @nil if empty. This way we optimize creation / assignment time,
-      which happen very often with TX3DGraphTraverseState during VRML/X3D
-      traversing.
-
-      Note that VRML >= 2.0 "global" lights are added from TCastleSceneCore,
-      not during the traverse pass. }
-    Lights: TLightInstancesList;
-
-    procedure AddLight(const Light: TLightInstance);
-  public
     { Current transformation. }
     Transform: TMatrix4;
 
@@ -329,7 +317,6 @@ end;
 destructor TX3DGraphTraverseState.Destroy;
 begin
   FreeAndNil(FVRML1State);
-  FreeAndNil(Lights);
   FreeAndNil(PointingDeviceSensors);
   FreeAndNil(ClipPlanes);
   FreeAndNil(Effects);
@@ -355,16 +342,8 @@ begin
   //LocalFog := nil;
 
   PointingDeviceSensors.Count := 0;
-  FreeAndNil(Lights);
   FreeAndNil(ClipPlanes);
   FreeAndNil(Effects);
-end;
-
-procedure TX3DGraphTraverseState.AddLight(const Light: TLightInstance);
-begin
-  if Lights = nil then
-    Lights := TLightInstancesList.Create;
-  Lights.Add(Light);
 end;
 
 function TX3DGraphTraverseState.AddClipPlane: PClipPlane;
@@ -389,14 +368,6 @@ begin
 //  LocalFog := Source.LocalFog;
 
   PointingDeviceSensors.Assign(Source.PointingDeviceSensors);
-
-  if Source.Lights <> nil then
-  begin
-    if Lights = nil then
-      Lights := TLightInstancesList.Create;
-    Lights.Assign(Source.Lights);
-  end else
-    FreeAndNil(Lights);
 end;
 
 procedure TX3DGraphTraverseState.AssignTransform(

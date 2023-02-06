@@ -76,7 +76,6 @@
     strict private FFdInitialValue: TSFColor;
     public property FdInitialValue: TSFColor read FFdInitialValue;
 
-    {$I auto_generated_node_helpers/x3dnodes_colordamper.inc}
   end;
 
   TCoordinateDamperNode = class(TAbstractDamperNode)

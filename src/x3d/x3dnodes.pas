@@ -168,7 +168,7 @@ interface
 uses SysUtils, Generics.Collections, Classes, XMLRead, DOM,
   CastleVectors, CastleRectangles,
   CastleInternalX3DLexer, CastleUtils, CastleClassUtils,
-  X3DFields, CastleColors,
+  X3DFields,
   X3DTime,
   CastleStringUtils, CastleBoxes, CastleMaterialProperties,
   CastleInternalOctree, CastleProjection;
@@ -178,7 +178,6 @@ uses SysUtils, Generics.Collections, Classes, XMLRead, DOM,
 type
   {$I x3dnodes_initial_types.inc}
   {$I x3dnodes_vrml1state.inc}
-  {$I x3dnodes_lightinstance.inc}
   {$I x3dnodes_clipplane.inc}
   {$I x3dnodes_x3dgraphtraversestate.inc}
   {$I x3dnodes_destructionnotification.inc}
@@ -257,7 +256,6 @@ uses
 
 {$I x3dnodes_initial_types.inc}
 {$I x3dnodes_vrml1state.inc}
-{$I x3dnodes_lightinstance.inc}
 {$I x3dnodes_clipplane.inc}
 {$I x3dnodes_x3dgraphtraversestate.inc}
 {$I x3dnodes_destructionnotification.inc}
@@ -342,11 +340,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_cadpart.inc}
 {$I auto_generated_node_helpers/x3dnodes_circle2d.inc}
 {$I auto_generated_node_helpers/x3dnodes_clipplane.inc}
-{$I auto_generated_node_helpers/x3dnodes_color.inc}
-{$I auto_generated_node_helpers/x3dnodes_colordamper.inc}
-{$I auto_generated_node_helpers/x3dnodes_colorinterpolator.inc}
-{$I auto_generated_node_helpers/x3dnodes_colorrgba.inc}
-{$I auto_generated_node_helpers/x3dnodes_colorsetinterpolator.inc}
 {$I auto_generated_node_helpers/x3dnodes_commonsurfaceshader.inc}
 {$I auto_generated_node_helpers/x3dnodes_composedcubemaptexture.inc}
 {$I auto_generated_node_helpers/x3dnodes_composedshader.inc}
@@ -402,7 +395,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_loadsensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_lod.inc}
 {$I auto_generated_node_helpers/x3dnodes_logger.inc}
-{$I auto_generated_node_helpers/x3dnodes_material.inc}
 {$I auto_generated_node_helpers/x3dnodes_matrix3vertexattribute.inc}
 {$I auto_generated_node_helpers/x3dnodes_matrix4vertexattribute.inc}
 {$I auto_generated_node_helpers/x3dnodes_matrixtransform.inc}
@@ -487,7 +479,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_triangleset.inc}
 {$I auto_generated_node_helpers/x3dnodes_triangleset2d.inc}
 {$I auto_generated_node_helpers/x3dnodes_trianglestripset.inc}
-{$I auto_generated_node_helpers/x3dnodes_twosidedmaterial.inc}
 {$I auto_generated_node_helpers/x3dnodes_vectorinterpolator.inc}
 {$I auto_generated_node_helpers/x3dnodes_viewport.inc}
 {$I auto_generated_node_helpers/x3dnodes_visibilitysensor.inc}
@@ -517,7 +508,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_x3dkeydevicesensornode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dlayernode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dlayoutnode.inc}
-{$I auto_generated_node_helpers/x3dnodes_x3dlightnode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dmaterialnode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dnetworksensornode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dnode.inc}

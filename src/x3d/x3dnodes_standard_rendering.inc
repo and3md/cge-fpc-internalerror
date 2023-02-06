@@ -576,8 +576,6 @@
 
     strict private FFdColor: TMFColor;
     public property FdColor: TMFColor read FFdColor;
-
-    {$I auto_generated_node_helpers/x3dnodes_color.inc}
   end;
 
   { Set of RGBA colours. }
@@ -589,8 +587,6 @@
 
     strict private FFdColor: TMFColorRGBA;
     public property FdColor: TMFColorRGBA read FFdColor;
-
-    {$I auto_generated_node_helpers/x3dnodes_colorrgba.inc}
   end;
 
   { Set of 3D coordinates to be used in the @code(Coord)

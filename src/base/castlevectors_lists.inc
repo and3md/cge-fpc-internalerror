@@ -391,8 +391,6 @@ var
   I: Integer;
 begin
   Count := ACount;
-  for I := 0 to Count - 1 do
-    List^[I] := LerpRgbInHsv(Fraction, V1.List^[Index1 + I], V2.List^[Index2 + I]);
 end;
 
 function TVector3List.ToVector4(const W: Single): TVector4List;

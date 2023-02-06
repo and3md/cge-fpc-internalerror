@@ -86,14 +86,10 @@
     TVector3,
     TMFColor,
     TSFColorEvent>)
-  strict protected
-    function InterpolatorLerp(const A: Single;
-      const V1, V2: TVector3): TVector3; override;
   public
     class function ClassX3DType: string; override;
     class function URNMatching(const URN: string): boolean; override;
 
-    {$I auto_generated_node_helpers/x3dnodes_colorinterpolator.inc}
   end;
 
   { Interpolate (animate) a set of colors,
@@ -109,8 +105,6 @@
   public
     class function ClassX3DType: string; override;
     class function URNMatching(const URN: string): boolean; override;
-
-    {$I auto_generated_node_helpers/x3dnodes_colorsetinterpolator.inc}
   end;
 
   { Interpolate (animate) a set of 3D positions,
@@ -593,12 +587,6 @@ begin
   Result := (inherited URNMatching(URN)) or
     (URN = URNVRML97Nodes + ClassX3DType) or
     (URN = URNX3DNodes + ClassX3DType);
-end;
-
-function TColorInterpolatorNode.InterpolatorLerp(const A: Single;
-  const V1, V2: TVector3): TVector3;
-begin
-  Result := LerpRgbInHsv(A, V1, V2);
 end;
 
 { TColorSetInterpolatorNode -------------------------------------------------- }

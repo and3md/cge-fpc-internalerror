@@ -28,8 +28,6 @@
   strict private
     function GetFilled: boolean;
     procedure SetFilled(const Value: boolean);
-    function GetHatchColor: TCastleColorRGB;
-    procedure SetHatchColor(const Value: TCastleColorRGB);
     function GetHatched: boolean;
     procedure SetHatched(const Value: boolean);
     function GetHatchStyle: Integer;
@@ -37,8 +35,6 @@
   public
     { X3D field "filled". } { }
     property Filled: boolean read GetFilled write SetFilled;
-    { X3D field "hatchColor". } { }
-    property HatchColor: TCastleColorRGB read GetHatchColor write SetHatchColor;
     { X3D field "hatched". } { }
     property Hatched: boolean read GetHatched write SetHatched;
     { X3D field "hatchStyle". } { }
@@ -58,16 +54,6 @@ end;
 procedure TFillPropertiesNode.SetFilled(const Value: boolean);
 begin
   FdFilled.Send(Value);
-end;
-
-function TFillPropertiesNode.GetHatchColor: TCastleColorRGB;
-begin
-  Result := FdHatchColor.Value;
-end;
-
-procedure TFillPropertiesNode.SetHatchColor(const Value: TCastleColorRGB);
-begin
-  FdHatchColor.Send(Value);
 end;
 
 function TFillPropertiesNode.GetHatched: boolean;

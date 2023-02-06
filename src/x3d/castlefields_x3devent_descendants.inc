@@ -170,13 +170,6 @@
     procedure Send(const Value: TVector3); overload;
   end;
 
-  TSFColorRGBAEvent = class(TX3DEvent)
-  public
-    constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-    procedure Send(const Value: TCastleColor; const Time: TX3DTime; const PartialSend: TPartialSend = nil); overload;
-    procedure Send(const Value: TCastleColor); overload;
-  end;
-
   { Universal input event that can receive value of any type.
     It is used by some InstantReality extensions, like Logger.write.
     InstantReality calls this event type XFAny. }
@@ -805,30 +798,6 @@ begin
 end;
 
 { TSFColorRGBAEvent ---------------------------------------------------------- }
-
-constructor TSFColorRGBAEvent.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-begin
-  inherited Create(AParentNode, AName, TSFColorRGBA, AInEvent);
-end;
-
-procedure TSFColorRGBAEvent.Send(const Value: TCastleColor; const Time: TX3DTime; const PartialSend: TPartialSend);
-var
-  Field: TX3DField;
-begin
-  Field := CreateTemp(PartialSend);
-  (Field as TSFColorRGBA).Value := Value;
-  try
-    Send(Field, Time);
-  finally FreeTemp(Field) end;
-end;
-
-procedure TSFColorRGBAEvent.Send(const Value: TCastleColor);
-var
-  a: TX3dTime;
-begin
-  if (ParentNode <> nil) then
-    Send(Value, a);
-end;
 
 { ---------------------------------------------------------------------------- }
 

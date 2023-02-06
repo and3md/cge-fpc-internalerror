@@ -687,8 +687,6 @@
     class function ForVRMLVersion(const Version: TX3DVersion): boolean;
       override;
 
-    procedure UpdateLightInstance(var LightInstance: TLightInstance); override;
-
     function ProjectionMatrix: TMatrix4; override;
     function ModelviewMatrix: TMatrix4; override;
     function ModelviewRotationMatrix: TMatrix4; override;
@@ -2119,13 +2117,6 @@ end;
 class function TSpotLightNode_1.ForVRMLVersion(const Version: TX3DVersion): boolean;
 begin
   Result := Version.Major <= 1;
-end;
-
-procedure TSpotLightNode_1.UpdateLightInstance(var LightInstance: TLightInstance);
-begin
-  inherited;
-  LightInstance.Direction :=
-    LightInstance.Transform.MultDirection(FdDirection.Value).Normalize;
 end;
 
 function TSpotLightNode_1.ProjectionMatrix: TMatrix4;

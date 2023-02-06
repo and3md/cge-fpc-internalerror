@@ -1803,7 +1803,7 @@ end;
 
 class function TSFColorRGBA.CreateEvent(const AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean): TX3DEvent;
 begin
-  Result := TSFColorRGBAEvent.Create(AParentNode, AName, AInEvent);
+  Result := nil; //TSFColorRGBAEvent.Create(AParentNode, AName, AInEvent);
 end;
 
 { TSFVec2d ------------------------------------------------------------------- }
