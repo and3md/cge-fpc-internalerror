@@ -16,7 +16,7 @@ uses
   CastleMaterialProperties, X3DFields, X3DLoadInternalUtils,
   X3DNodes, X3DTime, X3DTriangles, CastleClassUtils, CastleColors,
   CastleInterfaces,
-  CastleLog, CastleProgress, CastleProjection,
+  CastleLog, CastleProjection,
   CastleRectangles, CastleRendererBaseTypes, CastleStringUtils,
   CastleTimeUtils, CastleUtils, CastleVectors, CastleVectorsInternalDouble,
   CastleVectorsInternalSingle, CastleUnicode, CastleBoxes, CastleFrustum,

@@ -532,11 +532,6 @@
         <UnitName Value="CastleInterfaces"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castleprogress.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleProgress"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castleprojection.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleProjection"/>
