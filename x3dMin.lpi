@@ -572,11 +572,6 @@
         <UnitName Value="CastleInternalOctree"/>
       </Unit>
       <Unit>
-        <Filename Value="src/fonts/castleinternalfreetypeh.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleInternalFreeTypeH"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castleunicode.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleUnicode"/>
@@ -830,16 +825,6 @@
         <UnitName Value="CastleTriangulate"/>
       </Unit>
       <Unit>
-        <Filename Value="src/fonts/castleinternalfreetype.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleInternalFreeType"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/fonts/castleinternalftfont.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleInternalFtFont"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/images/castlecompositeimage_dds.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -913,7 +898,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir);src/base;src/images;src/files;src/3d;src/castlescript;src/fonts;src/x3d"/>
-      <OtherUnitFiles Value="src/base;src/images;src/files;src/3d;src/castlescript;src/fonts;src/x3d"/>
+      <OtherUnitFiles Value="src/base;src/images;src/files;src/3d;src/castlescript;src/x3d"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
