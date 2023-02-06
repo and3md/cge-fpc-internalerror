@@ -572,11 +572,6 @@
         <UnitName Value="CastleInternalOctree"/>
       </Unit>
       <Unit>
-        <Filename Value="src/fonts/castletexturefontdata.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleTextureFontData"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/fonts/castleinternalfreetypeh.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleInternalFreeTypeH"/>
