@@ -527,11 +527,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castledynlib.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleDynLib"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castleinterfaces.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleInterfaces"/>
