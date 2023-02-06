@@ -14,8 +14,6 @@
 }
 
 {$ifdef read_interface}
-  TGeneratedShadowMapNode = class;
-
   TLightScope = (
     { Light shines everywhere. VRML/X3D >= 2 calls these lights global. }
     lsGlobal,
@@ -476,7 +474,7 @@ begin
    FdUp.ChangesAlways := [chVisibleGeometry];
   AddField(FFdUp);
 
-  FFdDefaultShadowMap := TSFNode.Create(Self, false, 'defaultShadowMap', [TGeneratedShadowMapNode]);
+  FFdDefaultShadowMap := TSFNode.Create(Self, false, 'defaultShadowMap', []);
    FdDefaultShadowMap.ChangesAlways := [chEverything];
   AddField(FFdDefaultShadowMap);
 
@@ -484,7 +482,7 @@ begin
    FdShadows.ChangesAlways := [chShadowMaps];
   AddField(FFdShadows);
 
-  FFdEffects := TMFNode.Create(Self, false, 'effects', [TEffectNode]);
+  FFdEffects := TMFNode.Create(Self, false, 'effects', []);
    FdEffects.ChangesAlways := [chEverything];
   AddField(FFdEffects);
 

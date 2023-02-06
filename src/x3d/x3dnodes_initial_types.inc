@@ -31,13 +31,13 @@
   TAbstractLightNode = class;
   TAbstractShapeNode = class;
   TAbstractTexture2DNode = class;
-  TBlendModeNode = class;
+  //TBlendModeNode = class;
   TAbstractTextureNode = class;
   ///TX3DEventsEngine = class;
   TClipPlaneNode = class;
   THAnimHumanoidNode = class;
   // TLocalFogNode = class;
-  TEffectNode = class;
+  // TEffectNode = class;
   TX3DRootNode = class;
   TX3DGraphTraverseState = class;
   TPointingDeviceSensorList = class;

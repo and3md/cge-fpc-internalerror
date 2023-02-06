@@ -452,12 +452,6 @@ type
     end else
 //    if Child is TLocalFogNode then
 //      State.LocalFog := TLocalFogNode(Child) else
-    if Child is TEffectNode then
-    begin
-      if State.Effects = nil then
-        State.Effects := TX3DNodeList.Create(false);
-      State.Effects.Add(Child);
-    end;
   end;
 
 function TAbstractGroupingNode.SeparateGroup: boolean;

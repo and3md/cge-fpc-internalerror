@@ -644,7 +644,7 @@ begin
    FdManifold.ChangesAlways := [chGeometry];
   AddField(FFdManifold);
 
-  FFdTexCoord := TSFNode.Create(Self, true, 'texCoord', [TTextureCoordinateGeneratorNode, TProjectedTextureCoordinateNode, TMultiTextureCoordinateNode]);
+  FFdTexCoord := TSFNode.Create(Self, true, 'texCoord', [TTextureCoordinateGeneratorNode, TMultiTextureCoordinateNode]);
    FdTexCoord.ChangesAlways := [chGeometry];
   AddField(FFdTexCoord);
 end;

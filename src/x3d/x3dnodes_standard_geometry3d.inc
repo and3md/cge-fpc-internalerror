@@ -477,7 +477,7 @@ begin
    FdCcw.ChangesAlways := [chGeometry];
   AddField(FFdCcw);
 
-  FFdTexCoord := TSFNode.Create(Self, true, 'texCoord', [TTextureCoordinateGeneratorNode, TProjectedTextureCoordinateNode, TMultiTextureCoordinateNode]);
+  FFdTexCoord := TSFNode.Create(Self, true, 'texCoord', [TTextureCoordinateGeneratorNode, TMultiTextureCoordinateNode]);
    FdTexCoord.ChangesAlways := [chGeometry];
   AddField(FFdTexCoord);
 
@@ -550,7 +550,7 @@ begin
    FdSolid.ChangesAlways := [chGeometry];
   AddField(FFdSolid);
 
-  FFdTexCoord := TSFNode.Create(Self, true, 'texCoord', [TTextureCoordinateGeneratorNode, TProjectedTextureCoordinateNode, TMultiTextureCoordinateNode]);
+  FFdTexCoord := TSFNode.Create(Self, true, 'texCoord', [TTextureCoordinateGeneratorNode, TMultiTextureCoordinateNode]);
    FdTexCoord.ChangesAlways := [chGeometry];
   AddField(FFdTexCoord);
 
@@ -654,7 +654,7 @@ begin
    FdTop.ChangesAlways := [chGeometry];
   AddField(FFdTop);
 
-  FFdTexCoord := TSFNode.Create(Self, true, 'texCoord', [TTextureCoordinateGeneratorNode, TProjectedTextureCoordinateNode, TMultiTextureCoordinateNode]);
+  FFdTexCoord := TSFNode.Create(Self, true, 'texCoord', [TTextureCoordinateGeneratorNode, TMultiTextureCoordinateNode]);
    FdTexCoord.ChangesAlways := [chGeometry];
   AddField(FFdTexCoord);
 
@@ -925,7 +925,7 @@ begin
   AddField(FFdSpine);
   { X3D specification comment: (-Inf,Inf) }
 
-  FFdTexCoord := TSFNode.Create(Self, true, 'texCoord', [TTextureCoordinateGeneratorNode, TProjectedTextureCoordinateNode, TMultiTextureCoordinateNode]);
+  FFdTexCoord := TSFNode.Create(Self, true, 'texCoord', [TTextureCoordinateGeneratorNode, TMultiTextureCoordinateNode]);
    FdTexCoord.ChangesAlways := [chGeometry];
   AddField(FFdTexCoord);
 end;
@@ -1437,7 +1437,7 @@ begin
    FdSolid.ChangesAlways := [chGeometry];
   AddField(FFdSolid);
 
-  FFdTexCoord := TSFNode.Create(Self, true, 'texCoord', [TTextureCoordinateGeneratorNode, TProjectedTextureCoordinateNode, TMultiTextureCoordinateNode]);
+  FFdTexCoord := TSFNode.Create(Self, true, 'texCoord', [TTextureCoordinateGeneratorNode, TMultiTextureCoordinateNode]);
    FdTexCoord.ChangesAlways := [chGeometry];
   AddField(FFdTexCoord);
 

@@ -525,7 +525,7 @@ procedure TAbstractTextureNode.CreateNode;
 begin
   inherited;
 
-  FFdEffects := TMFNode.Create(Self, false, 'effects', [TEffectNode]);
+  FFdEffects := TMFNode.Create(Self, false, 'effects', []);
    FdEffects.ChangesAlways := [chEverything];
   AddField(FFdEffects);
 

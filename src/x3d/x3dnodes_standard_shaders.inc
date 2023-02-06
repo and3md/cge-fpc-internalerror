@@ -159,8 +159,7 @@
     ContentsCache: string;
     procedure EventUrlReceive(
       Event: TX3DEvent; Value: TX3DField; const Time: TX3DTime);
-    function GetShaderType: TShaderType;
-    procedure SetShaderType(const Value: TShaderType);
+    //procedure SetShaderType(const Value: TShaderType);
     function GetContents: string;
     procedure SetContents(const Value: string);
   public
@@ -175,7 +174,7 @@
     public property FdType: TSFStringEnum read FFdType;
 
     { Shader type. }
-    property ShaderType: TShaderType read GetShaderType write SetShaderType;
+    //property ShaderType: TShaderType read GetShaderType write SetShaderType;
 
     { The shader code.
 
@@ -216,7 +215,7 @@ const
   ShaderLanguageNames: array [TShaderLanguage] of string =
   ('', 'CG', 'GLSL', 'HLSL');
 
-  ShaderTypeNameX3D: array [TShaderType] of string =
+  ShaderTypeNameX3D: array [0..2] of string =
   ( 'VERTEX', 'GEOMETRY', 'FRAGMENT' );
 
 procedure TAbstractShaderNode.CreateNode;
@@ -409,7 +408,7 @@ begin
   AddField(FFdUrl);
   { X3D specification comment: [URI] }
 
-  FFdType := TSFStringEnum.Create(Self, false, 'type', ShaderTypeNameX3D, Ord(stVertex));
+  FFdType := TSFStringEnum.Create(Self, false, 'type', ShaderTypeNameX3D, Ord(0));
    FdType.ChangesAlways := [chEverything];
   AddField(FFdType);
   { X3D specification comment: ["VERTEX"|"FRAGMENT"] }
@@ -497,16 +496,6 @@ begin
     (URN = URNX3DNodes + ClassX3DType);
 end;
 
-function TShaderPartNode.GetShaderType: TShaderType;
-begin
-  Result := TShaderType(FdType.EnumValue);
-end;
-
-procedure TShaderPartNode.SetShaderType(const Value: TShaderType);
-begin
-  FdType.SendEnumValue(Ord(Value));
-end;
-
 procedure TShaderProgramNode.CreateNode;
 begin
   inherited;
@@ -515,7 +504,7 @@ begin
   AddField(FFdUrl);
   { X3D specification comment: [URI] }
 
-  FFdType := TSFStringEnum.Create(Self, false, 'type', ShaderTypeNameX3D, Ord(stVertex));
+  FFdType := TSFStringEnum.Create(Self, false, 'type', ShaderTypeNameX3D, Ord(0));
   AddField(FFdType);
   { X3D specification comment: ["VERTEX"|"FRAGMENT"] }
 

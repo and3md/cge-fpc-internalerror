@@ -14,7 +14,6 @@
 }
 
 {$ifdef read_interface}
-  TKambiOctreePropertiesNode = class;
   TAbstractShaderNode = class;
 
   { Base node type for the child nodes of @link(TAbstractAppearanceNode). }
@@ -686,7 +685,7 @@ begin
    FdShading.ChangesAlways := [chVisibleNonGeometry];
   AddField(FFdShading);
 
-  FFdOctreeTriangles := TSFNode.Create(Self, false, 'octreeTriangles', [TKambiOctreePropertiesNode]);
+  FFdOctreeTriangles := TSFNode.Create(Self, false, 'octreeTriangles', []);
    FdOctreeTriangles.ChangesAlways := [chEverything];
   AddField(FFdOctreeTriangles);
 end;
@@ -928,11 +927,11 @@ begin
    FdHeightMapScale.ChangesAlways := [chEverything];
   AddField(FFdHeightMapScale);
 
-  FFdBlendMode := TSFNode.Create(Self, true, 'blendMode', [TBlendModeNode]);
+  FFdBlendMode := TSFNode.Create(Self, true, 'blendMode', []);
    FdBlendMode.ChangesAlways := [chEverything];
   AddField(FFdBlendMode);
 
-  FFdEffects := TMFNode.Create(Self, false, 'effects', [TEffectNode]);
+  FFdEffects := TMFNode.Create(Self, false, 'effects', []);
    FdEffects.ChangesAlways := [chEverything];
   AddField(FFdEffects);
 

@@ -36,8 +36,8 @@
     procedure SetShadowCaster(const Value: boolean);
     function GetHeightMapScale: Single;
     procedure SetHeightMapScale(const Value: Single);
-    function GetBlendMode: TBlendModeNode;
-    procedure SetBlendMode(const Value: TBlendModeNode);
+    ///function GetBlendMode: TBlendModeNode;
+    ///procedure SetBlendMode(const Value: TBlendModeNode);
   public
     { X3D field "fillProperties". } { }
     property FillProperties: TFillPropertiesNode read GetFillProperties write SetFillProperties;
@@ -54,9 +54,9 @@
     { X3D field "heightMapScale". } { }
     property HeightMapScale: Single read GetHeightMapScale write SetHeightMapScale;
     { X3D field "blendMode". } { }
-    property BlendMode: TBlendModeNode read GetBlendMode write SetBlendMode;
+    ///property BlendMode: TBlendModeNode read GetBlendMode write SetBlendMode;
     { Set X3D field "effects". } { }
-    procedure SetEffects(const Value: array of TEffectNode);
+    // procedure SetEffects(const Value: array of TEffectNode);
 
 {$endif read_interface}
 
@@ -145,31 +145,6 @@ end;
 procedure TAppearanceNode.SetHeightMapScale(const Value: Single);
 begin
   FdHeightMapScale.Send(Value);
-end;
-
-function TAppearanceNode.GetBlendMode: TBlendModeNode;
-begin
-  if FdBlendMode.Value is TBlendModeNode then
-    Result := TBlendModeNode(FdBlendMode.Value)
-  else
-    Result := nil;
-end;
-
-procedure TAppearanceNode.SetBlendMode(const Value: TBlendModeNode);
-begin
-  FdBlendMode.Send(Value);
-end;
-
-procedure TAppearanceNode.SetEffects(const Value: array of TEffectNode);
-var
-  L: Integer;
-  A: array of TX3DNode;
-begin
-  L := High(Value) + 1;
-  SetLength(A, L);
-  if L > 0 then
-    Move(Value[0], A[0], L * SizeOf(TEffectNode));
-  FdEffects.Send(A);
 end;
 
 {$endif read_implementation}

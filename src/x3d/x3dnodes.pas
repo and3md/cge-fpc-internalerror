@@ -172,7 +172,7 @@ uses SysUtils, Generics.Collections, Classes, XMLRead, DOM,
   X3DTime,
   CastleScript, X3DCastleScript, CastleCompositeImage,
   CastleTextureImages, CastleStringUtils, CastleBoxes, CastleMaterialProperties, CastleVideos,
-  CastleShaders, CastleInternalOctree, CastleProjection;
+  CastleInternalOctree, CastleProjection;
 
 {$define read_interface}
 
@@ -225,7 +225,7 @@ type
   {$I x3dnodes_inventor.inc}
   {$I x3dnodes_97_hanim.inc}
   {$I x3dnodes_97_nurbs.inc}
-  {$I x3dnodes_castle.inc}
+  // {$I x3dnodes_castle.inc}
   {$I x3dnodes_instantreality.inc}
   {$I x3dnodes_bitmanagement.inc}
 
@@ -336,7 +336,6 @@ uses
 {$I x3dnodes_inventor.inc}
 {$I x3dnodes_97_hanim.inc}
 {$I x3dnodes_97_nurbs.inc}
-{$I x3dnodes_castle.inc}
 {$I x3dnodes_instantreality.inc}
 {$I x3dnodes_bitmanagement.inc}
 
@@ -348,7 +347,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_arc2d.inc}
 {$I auto_generated_node_helpers/x3dnodes_arcclose2d.inc}
 {$I auto_generated_node_helpers/x3dnodes_balljoint.inc}
-{$I auto_generated_node_helpers/x3dnodes_blendmode.inc}
 {$I auto_generated_node_helpers/x3dnodes_booleanfilter.inc}
 {$I auto_generated_node_helpers/x3dnodes_booleansequencer.inc}
 {$I auto_generated_node_helpers/x3dnodes_booleantoggle.inc}
@@ -393,8 +391,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_disk2d.inc}
 {$I auto_generated_node_helpers/x3dnodes_doubleaxishingejoint.inc}
 {$I auto_generated_node_helpers/x3dnodes_easeineaseout.inc}
-{$I auto_generated_node_helpers/x3dnodes_effect.inc}
-{$I auto_generated_node_helpers/x3dnodes_effectpart.inc}
 {$I auto_generated_node_helpers/x3dnodes_elevationgrid.inc}
 {$I auto_generated_node_helpers/x3dnodes_espdutransform.inc}
 {$I auto_generated_node_helpers/x3dnodes_explosionemitter.inc}
@@ -403,7 +399,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_floatvertexattribute.inc}
 {$I auto_generated_node_helpers/x3dnodes_forcephysicsmodel.inc}
 {$I auto_generated_node_helpers/x3dnodes_generatedcubemaptexture.inc}
-{$I auto_generated_node_helpers/x3dnodes_generatedshadowmap.inc}
 {$I auto_generated_node_helpers/x3dnodes_group.inc}
 {$I auto_generated_node_helpers/x3dnodes_hanimdisplacer.inc}
 {$I auto_generated_node_helpers/x3dnodes_hanimhumanoid.inc}
@@ -423,9 +418,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_integersequencer.inc}
 {$I auto_generated_node_helpers/x3dnodes_integertrigger.inc}
 {$I auto_generated_node_helpers/x3dnodes_kambiappearance.inc}
-{$I auto_generated_node_helpers/x3dnodes_kambiheadlight.inc}
-{$I auto_generated_node_helpers/x3dnodes_kambiinline.inc}
-{$I auto_generated_node_helpers/x3dnodes_kambioctreeproperties.inc}
 {$I auto_generated_node_helpers/x3dnodes_keysensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_layer.inc}
 {$I auto_generated_node_helpers/x3dnodes_layerset.inc}
@@ -497,7 +489,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_rigidbodycollection.inc}
 {$I auto_generated_node_helpers/x3dnodes_scalarchaser.inc}
 {$I auto_generated_node_helpers/x3dnodes_scalarinterpolator.inc}
-{$I auto_generated_node_helpers/x3dnodes_screeneffect.inc}
 {$I auto_generated_node_helpers/x3dnodes_screengroup.inc}
 {$I auto_generated_node_helpers/x3dnodes_script.inc}
 {$I auto_generated_node_helpers/x3dnodes_shaderpart.inc}
@@ -541,7 +532,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_twosidedmaterial.inc}
 {$I auto_generated_node_helpers/x3dnodes_universaljoint.inc}
 {$I auto_generated_node_helpers/x3dnodes_vectorinterpolator.inc}
-{$I auto_generated_node_helpers/x3dnodes_viewpointmirror.inc}
 {$I auto_generated_node_helpers/x3dnodes_viewport.inc}
 {$I auto_generated_node_helpers/x3dnodes_visibilitysensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_volumeemitter.inc}
@@ -629,7 +619,6 @@ initialization
   RegisterVRML1Nodes;
   RegisterVRML97HAnimNodes;
   RegisterVRML97NodesNurbs;
-  RegisterKambiNodes;
   RegisterInstantRealityNodes;
   RegisterBitManagementNodes;
 

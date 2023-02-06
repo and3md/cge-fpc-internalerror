@@ -48,8 +48,6 @@
     procedure SetProjectionFar(const Value: Single);
     function GetUp: TVector3;
     procedure SetUp(const Value: TVector3);
-    function GetDefaultShadowMap: TGeneratedShadowMapNode;
-    procedure SetDefaultShadowMap(const Value: TGeneratedShadowMapNode);
   public
     { X3D field "ambientIntensity". } { }
     property AmbientIntensity: Single read GetAmbientIntensity write SetAmbientIntensity;
@@ -73,10 +71,8 @@
     property ProjectionFar: Single read GetProjectionFar write SetProjectionFar;
     { X3D field "up". } { }
     property Up: TVector3 read GetUp write SetUp;
-    { X3D field "defaultShadowMap". } { }
-    property DefaultShadowMap: TGeneratedShadowMapNode read GetDefaultShadowMap write SetDefaultShadowMap;
     { Set X3D field "effects". } { }
-    procedure SetEffects(const Value: array of TEffectNode);
+    // procedure SetEffects(const Value: array of TEffectNode);
 
 {$endif read_interface}
 
@@ -192,31 +188,6 @@ end;
 procedure TAbstractLightNode.SetUp(const Value: TVector3);
 begin
   FdUp.Send(Value);
-end;
-
-function TAbstractLightNode.GetDefaultShadowMap: TGeneratedShadowMapNode;
-begin
-  if FdDefaultShadowMap.Value is TGeneratedShadowMapNode then
-    Result := TGeneratedShadowMapNode(FdDefaultShadowMap.Value)
-  else
-    Result := nil;
-end;
-
-procedure TAbstractLightNode.SetDefaultShadowMap(const Value: TGeneratedShadowMapNode);
-begin
-  FdDefaultShadowMap.Send(Value);
-end;
-
-procedure TAbstractLightNode.SetEffects(const Value: array of TEffectNode);
-var
-  L: Integer;
-  A: array of TX3DNode;
-begin
-  L := High(Value) + 1;
-  SetLength(A, L);
-  if L > 0 then
-    Move(Value[0], A[0], L * SizeOf(TEffectNode));
-  FdEffects.Send(A);
 end;
 
 {$endif read_implementation}

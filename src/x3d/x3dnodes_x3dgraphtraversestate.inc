@@ -119,7 +119,7 @@
     function DiffuseAlphaTexture: TAbstractTextureNode;
 
     { Returns BlendMode for this state, or @nil if not present. }
-    function BlendMode: TBlendModeNode;
+    // function BlendMode: TBlendModeNode;
 
   public
     { Information if you're within any inline node or expanded prototype.
@@ -461,23 +461,6 @@ begin
   else
   if ShapeNode.Appearance <> nil then
     Result := ShapeNode.Appearance.DiffuseAlphaTexture;
-end;
-
-function TX3DGraphTraverseState.BlendMode: TBlendModeNode;
-var
-  Node: TX3DNode;
-begin
-  Result := nil;
-  if ShapeNode <> nil then
-  begin
-    Node := ShapeNode.FdAppearance.Value;
-    if (Node <> nil) and (Node is TAppearanceNode) then
-    begin
-      Node := TAppearanceNode(Node).FdBlendMode.Value;
-      if (Node <> nil) and (Node is TBlendModeNode) then
-        Result := TBlendModeNode(Node);
-    end;
-  end;
 end;
 
 function TX3DGraphTraverseState.MaterialInfo: TMaterialInfo;

@@ -30,8 +30,6 @@
     procedure SetBboxCenter(const Value: TVector3);
     function GetBboxSize: TVector3;
     procedure SetBboxSize(const Value: TVector3);
-    function GetOctreeTriangles: TKambiOctreePropertiesNode;
-    procedure SetOctreeTriangles(const Value: TKambiOctreePropertiesNode);
     function GetRender: boolean;
     procedure SetRender(const Value: boolean);
   public
@@ -39,8 +37,6 @@
     property BboxCenter: TVector3 read GetBboxCenter write SetBboxCenter;
     { X3D field "bboxSize". } { }
     property BboxSize: TVector3 read GetBboxSize write SetBboxSize;
-    { X3D field "octreeTriangles". } { }
-    property OctreeTriangles: TKambiOctreePropertiesNode read GetOctreeTriangles write SetOctreeTriangles;
     { X3D field "render". } { }
     property Render: boolean read GetRender write SetRender;
 
@@ -68,19 +64,6 @@ end;
 procedure TAbstractShapeNode.SetBboxSize(const Value: TVector3);
 begin
   FdBboxSize.Send(Value);
-end;
-
-function TAbstractShapeNode.GetOctreeTriangles: TKambiOctreePropertiesNode;
-begin
-  if FdOctreeTriangles.Value is TKambiOctreePropertiesNode then
-    Result := TKambiOctreePropertiesNode(FdOctreeTriangles.Value)
-  else
-    Result := nil;
-end;
-
-procedure TAbstractShapeNode.SetOctreeTriangles(const Value: TKambiOctreePropertiesNode);
-begin
-  FdOctreeTriangles.Send(Value);
 end;
 
 function TAbstractShapeNode.GetRender: boolean;
