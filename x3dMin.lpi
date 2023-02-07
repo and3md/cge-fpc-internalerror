@@ -344,11 +344,6 @@
         <UnitName Value="CastleLog"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castleshaders.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleShaders"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castleunicode.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleUnicode"/>
