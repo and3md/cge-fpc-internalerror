@@ -625,7 +625,7 @@ function TX3DPrototypeNode.PrepareInstantiateIsClause(
   Node, Child: TX3DNode): Pointer;
 begin
   Result := nil;
-  if not (Child.NeedsInstantiateIsClause or (Child is TInlineNode)) then
+  if not (Child.NeedsInstantiateIsClause) then
   begin
     Child.NeedsInstantiateIsClause := true;
     Child.DirectEnumerateAll({$ifdef CASTLE_OBJFPC}@{$endif} Self.PrepareInstantiateIsClause);

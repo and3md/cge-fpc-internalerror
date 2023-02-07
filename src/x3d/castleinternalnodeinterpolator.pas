@@ -243,13 +243,6 @@ begin
       'Different nodes classes: "%s" and "%s"',
       [Model1.ClassName, Model2.ClassName]);
 
-  { Make sure that *Inline content is loaded now. }
-  if Model1 is TInlineNode then
-  begin
-    TInlineNode(Model1).LoadInlined(false);
-    TInlineNode(Model2).LoadInlined(false);
-  end;
-
   if Model1.X3DName <> Model2.X3DName then
     raise EModelsStructureDifferent.CreateFmt(
       'Different names of nodes: "%s" and "%s"',
@@ -327,7 +320,7 @@ begin
         examples/models/gus_2_final.wrl trick. }
 
       if not (
-         ( (Model1 is TInlineNode)            and (Model1.Fields[I].X3DName = 'url') ) or
+         ( (Model1.Fields[I].X3DName = 'url') ) or
          Model1.Fields[I].Equals(Model2.Fields[I]
            { TODO: ignored for now, and maybe for ever: , Epsilon })
          ) then
@@ -507,16 +500,6 @@ begin
   Result := TX3DNodeClass(Model1.ClassType).Create(Model1.X3DName,
     Model1.BaseUrl);
   try
-    { We already loaded all inlines (in CheckNodesStructurallyEqual).
-      We have to mark it now, by setting Loaded := true field as necessary
-      inside inline nodes --- otherwise, they could be loaded again
-      (adding content to already existing nodes, making content loaded
-      more than once). }
-    if Result is TInlineNode then
-    begin
-      TInlineNode(Result).LoadedInlineDirectly;
-    end;
-
     if Result is TX3DRootNode then
     begin
       { copy TX3DRootNode special fields, like TX3DRootNode.DeepCopyCore.

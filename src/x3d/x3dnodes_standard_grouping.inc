@@ -503,8 +503,6 @@ begin
       Tested with InstantReality and g3l_stapes_dbg.wrl from Robert Funnell.
       So it's correct to just call AddPointingDeviceSensor that wil set
       WasPointingDeviceSensor := true. }
-    if Self is TAnchorNode then
-      Enumerator.AddPointingDeviceSensor(Self);
 
     DirectEnumerateActive({$ifdef CASTLE_OBJFPC}@{$endif} Enumerator.EnumerateChildrenFunction);
   finally FreeAndNil(Enumerator) end;

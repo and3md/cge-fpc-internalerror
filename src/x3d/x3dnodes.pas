@@ -187,7 +187,6 @@ type
   {$I x3dnodes_standard_core.inc}
   {$I x3dnodes_standard_time.inc}
   {$I x3dnodes_standard_grouping.inc}
-  {$I x3dnodes_standard_networking.inc}
   {$I x3dnodes_standard_shape.inc}
   {$I x3dnodes_standard_interpolation.inc}
   {$I x3dnodes_standard_interpolation_cubic_bezier.inc}
@@ -251,7 +250,6 @@ uses
 {$I x3dnodes_standard_core.inc}
 {$I x3dnodes_standard_time.inc}
 {$I x3dnodes_standard_grouping.inc}
-{$I x3dnodes_standard_networking.inc}
 {$I x3dnodes_standard_shape.inc}
 {$I x3dnodes_standard_interpolation.inc}
 {$I x3dnodes_standard_interpolation_cubic_bezier.inc}
@@ -265,7 +263,6 @@ uses
 
 
 { Auto-generated nodes code }
-{$I auto_generated_node_helpers/x3dnodes_anchor.inc}
 {$I auto_generated_node_helpers/x3dnodes_appearance.inc}
 {$I auto_generated_node_helpers/x3dnodes_booleanfilter.inc}
 {$I auto_generated_node_helpers/x3dnodes_booleansequencer.inc}
@@ -280,7 +277,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_easeineaseout.inc}
 {$I auto_generated_node_helpers/x3dnodes_fillproperties.inc}
 {$I auto_generated_node_helpers/x3dnodes_group.inc}
-{$I auto_generated_node_helpers/x3dnodes_inline.inc}
 {$I auto_generated_node_helpers/x3dnodes_integersequencer.inc}
 {$I auto_generated_node_helpers/x3dnodes_integertrigger.inc}
 {$I auto_generated_node_helpers/x3dnodes_kambiappearance.inc}
@@ -289,7 +285,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_layerset.inc}
 {$I auto_generated_node_helpers/x3dnodes_linepicksensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_lineproperties.inc}
-{$I auto_generated_node_helpers/x3dnodes_loadsensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_lod.inc}
 {$I auto_generated_node_helpers/x3dnodes_metadataboolean.inc}
 {$I auto_generated_node_helpers/x3dnodes_metadatadouble.inc}
@@ -396,7 +391,6 @@ initialization
 
   RegisterCoreNodes;
   RegisterTimeNodes;
-  RegisterNetworkingNodes;
   RegisterGroupingNodes;
 
   RegisterShapeNodes;
