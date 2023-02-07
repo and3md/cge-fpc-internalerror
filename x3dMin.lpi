@@ -303,11 +303,6 @@
         <UnitName Value="CastleLog"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castleunicode.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleUnicode"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castleclassutils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleClassUtils"/>

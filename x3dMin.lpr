@@ -17,7 +17,7 @@ uses
   CastleLog,
   CastleRectangles, CastleStringUtils,
   CastleTimeUtils, CastleUtils, CastleVectors, CastleVectorsInternalDouble,
-  CastleVectorsInternalSingle, CastleUnicode;
+  CastleVectorsInternalSingle;
 
 {$R *.res}
 
