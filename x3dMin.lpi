@@ -131,11 +131,6 @@
         <UnitName Value="X3DFields"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dloadinternalstl.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X3DLoadInternalSTL"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dloadinternalutils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="X3DLoadInternalUtils"/>
