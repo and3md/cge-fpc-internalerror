@@ -191,7 +191,6 @@ type
   {$I x3dnodes_standard_interpolation.inc}
   {$I x3dnodes_standard_interpolation_cubic_bezier.inc}
   {$I x3dnodes_standard_eventutilities.inc}
-  {$I x3dnodes_standard_followers.inc}
 
   { More X3D nodes, not from X3D standard }
   {$I x3dnodes_x3dinterfacedeclaration.inc}
@@ -254,7 +253,6 @@ uses
 {$I x3dnodes_standard_interpolation_cubic_bezier.inc}
 
 {$I x3dnodes_standard_eventutilities.inc}
-{$I x3dnodes_standard_followers.inc}
 
 { More X3D nodes, not from X3D standard }
 
@@ -268,7 +266,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_booleantrigger.inc}
 {$I auto_generated_node_helpers/x3dnodes_contour2d.inc}
 {$I auto_generated_node_helpers/x3dnodes_contourpolyline2d.inc}
-{$I auto_generated_node_helpers/x3dnodes_coordinatedamper.inc}
 {$I auto_generated_node_helpers/x3dnodes_coordinateinterpolator.inc}
 {$I auto_generated_node_helpers/x3dnodes_coordinateinterpolator2d.inc}
 {$I auto_generated_node_helpers/x3dnodes_directionallight.inc}
@@ -290,23 +287,16 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_metadatastring.inc}
 {$I auto_generated_node_helpers/x3dnodes_multigeneratedtexturecoordinate.inc}
 {$I auto_generated_node_helpers/x3dnodes_normalinterpolator.inc}
-{$I auto_generated_node_helpers/x3dnodes_orientationchaser.inc}
-{$I auto_generated_node_helpers/x3dnodes_orientationdamper.inc}
 {$I auto_generated_node_helpers/x3dnodes_orientationinterpolator.inc}
 {$I auto_generated_node_helpers/x3dnodes_pixeltexture.inc}
 {$I auto_generated_node_helpers/x3dnodes_pointlight.inc}
 {$I auto_generated_node_helpers/x3dnodes_pointpicksensor.inc}
-{$I auto_generated_node_helpers/x3dnodes_positionchaser.inc}
-{$I auto_generated_node_helpers/x3dnodes_positionchaser2d.inc}
-{$I auto_generated_node_helpers/x3dnodes_positiondamper.inc}
-{$I auto_generated_node_helpers/x3dnodes_positiondamper2d.inc}
 {$I auto_generated_node_helpers/x3dnodes_positioninterpolator.inc}
 {$I auto_generated_node_helpers/x3dnodes_positioninterpolator2d.inc}
 {$I auto_generated_node_helpers/x3dnodes_primitivepicksensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_projectedtexturecoordinate.inc}
 {$I auto_generated_node_helpers/x3dnodes_proximitysensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_quadset.inc}
-{$I auto_generated_node_helpers/x3dnodes_scalarchaser.inc}
 {$I auto_generated_node_helpers/x3dnodes_scalarinterpolator.inc}
 {$I auto_generated_node_helpers/x3dnodes_screengroup.inc}
 {$I auto_generated_node_helpers/x3dnodes_shadertexture.inc}
@@ -317,7 +307,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_squadorientationinterpolator.inc}
 {$I auto_generated_node_helpers/x3dnodes_staticgroup.inc}
 {$I auto_generated_node_helpers/x3dnodes_switch.inc}
-{$I auto_generated_node_helpers/x3dnodes_texcoorddamper2d.inc}
 {$I auto_generated_node_helpers/x3dnodes_timesensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_timetrigger.inc}
 {$I auto_generated_node_helpers/x3dnodes_touchsensor.inc}
@@ -331,11 +320,9 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_x3dappearancechildnode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dappearancenode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dbindablenode.inc}
-{$I auto_generated_node_helpers/x3dnodes_x3dchasernode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dchildnode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dcolornode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dcoordinatenode.inc}
-{$I auto_generated_node_helpers/x3dnodes_x3ddampernode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3denvironmenttexturenode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dfollowernode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dfontstylenode.inc}
@@ -389,8 +376,6 @@ initialization
   RegisterInterpolationNodes;
   RegisterInterpolationCubicBezierNodes;
   RegisterEventUtilitiesNodes;
-  //RegisterLayoutNodes;
-  RegisterFollowersNodes;
 
   //X3DCache := TX3DFontTexturesCache.Create;
   //TextureCache := X3DCache;
