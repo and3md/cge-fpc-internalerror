@@ -21,7 +21,7 @@ unit CastleBoxes;
 interface
 
 uses SysUtils, Generics.Collections,
-  CastleVectors, CastleUtils, CastleTriangles, CastleRectangles;
+  CastleVectors, CastleUtils, CastleRectangles;
 
 type
   EBox3DEmpty = class(Exception);
@@ -373,9 +373,6 @@ type
     function PlaneCollisionOutside(const Plane: TVector4): boolean;
     { @groupEnd }
 
-    function IsTriangleCollision(
-      const Triangle: TTriangle3): boolean;
-
     { Smallest possible sphere completely enclosing given Box.
       When Box is empty we return SphereRadiusSqr = 0 and undefined SphereCenter. }
     procedure BoundingSphere(
@@ -628,8 +625,6 @@ function CalculateBoundingBoxFromIndices(
   GetVertex: TGetVertexFromIndexFunc;
   const Transform: TMatrix4): TBox3D; overload;
 { @groupEnd }
-
-function TriangleBoundingBox(const T: TTriangle3): TBox3D;
 
 { Tests for collision between box3d centered around (0, 0, 0)
   and a plane.
@@ -1483,212 +1478,6 @@ begin
     Plane.Data[3] > 0;
 end;
 
-function TBox3D.IsTriangleCollision(const Triangle: TTriangle3): boolean;
-
-{ Implementation based on
-  [http://jgt.akpeters.com/papers/AkenineMoller01/tribox.html],
-  by Tomas Akenine-Möller, described
-  in his paper [http://jgt.akpeters.com/papers/AkenineMoller01/]
-  "Fast 3D Triangle-Box Overlap Testing", downloadable from
-  [http://www.cs.lth.se/home/Tomas_Akenine_Moller/pubs/tribox.pdf].
-
-  Use separating axis theorem to test overlap between triangle and box
-  need to test for overlap in these directions:
-  1) the (x,y,z)-directions
-  2) normal of the triangle
-  3) crossproduct(edge from tri, (x,y,z)-direction)
-     this gives 3x3=9 more tests
-}
-
-const
-  { Special equality epsilon used by IsCenteredBox3DPlaneCollision.
-    For implementation reasons, they always
-    use Double precision (even when called with arguments with Single precision),
-    and still have to use epsilon slightly larger than usual
-    CastleVectors.DoubleEpsilon. }
-  Epsilon: Double = 1e-5;
-
-{ It's better to make these calculations using Double precision. }
-{$define IsTriangleCollision_DoublePrecision}
-
-type
-  TVector3 = {$ifdef IsTriangleCollision_DoublePrecision}
-    CastleVectors.TVector3Double {$else}
-    CastleVectors.TVector3 {$endif};
-  TVector4 = {$ifdef IsTriangleCollision_DoublePrecision}
-    CastleVectors.TVector4Double {$else}
-    CastleVectors.TVector4 {$endif};
-  TScalar = {$ifdef IsTriangleCollision_DoublePrecision}
-    Double {$else}
-    Single {$endif};
-  TTriangle3 = array [0..2] of TVector3;
-
-var
-  TriangleMoved: TTriangle3;
-  BoxHalfSize: TVector3;
-
-  { ======================== X-tests ======================== }
-  function AXISTEST_X01(const a, b, fa, fb: TScalar): boolean;
-  var
-    p0, p2, rad, min, max: TScalar;
-  begin
-    p0 := a * TriangleMoved[0].Data[1] - b * TriangleMoved[0].Data[2];
-    p2 := a * TriangleMoved[2].Data[1] - b * TriangleMoved[2].Data[2];
-    if p0<p2 then begin min := p0; max := p2; end else
-                  begin min := p2; max := p0; end;
-    rad := fa * BoxHalfSize.Data[1] + fb * BoxHalfSize.Data[2];
-    Result := (min > rad + Epsilon) or (max < -rad - Epsilon);
-  end;
-
-  function AXISTEST_X2(const a, b, fa, fb: TScalar): boolean;
-  var
-    p0, p1, rad, min, max: TScalar;
-  begin
-    p0 := a * TriangleMoved[0].Data[1] - b * TriangleMoved[0].Data[2];
-    p1 := a * TriangleMoved[1].Data[1] - b * TriangleMoved[1].Data[2];
-    if p0<p1 then begin min := p0; max := p1; end else
-                  begin min := p1; max := p0; end;
-    rad := fa * BoxHalfSize.Data[1] + fb * BoxHalfSize.Data[2];
-    Result := (min > rad + Epsilon) or (max < -rad - Epsilon);
-  end;
-
-  { ======================== Y-tests ======================== }
-  function AXISTEST_Y02(const a, b, fa, fb: TScalar): boolean;
-  var
-    p0, p2, rad, min, max: TScalar;
-  begin
-    p0 := -a * TriangleMoved[0].Data[0] + b * TriangleMoved[0].Data[2];
-    p2 := -a * TriangleMoved[2].Data[0] + b * TriangleMoved[2].Data[2];
-    if p0<p2 then begin min := p0; max := p2; end else
-                  begin min := p2; max := p0; end;
-    rad := fa * BoxHalfSize.Data[0] + fb * BoxHalfSize.Data[2];
-    Result := (min > rad + Epsilon) or (max < -rad - Epsilon);
-  end;
-
-  function AXISTEST_Y1(const a, b, fa, fb: TScalar): boolean;
-  var
-    p0, p1, rad, min, max: TScalar;
-  begin
-    p0 := -a * TriangleMoved[0].Data[0] + b * TriangleMoved[0].Data[2];
-    p1 := -a * TriangleMoved[1].Data[0] + b * TriangleMoved[1].Data[2];
-    if p0<p1 then begin min := p0; max := p1; end else
-                  begin min := p1; max := p0; end;
-    rad := fa * BoxHalfSize.Data[0] + fb * BoxHalfSize.Data[2];
-    Result := (min > rad + Epsilon) or (max < -rad - Epsilon);
-  end;
-
-  { ======================== Z-tests ======================== }
-  function AXISTEST_Z12(const a, b, fa, fb: TScalar): boolean;
-  var
-    p1, p2, rad, min, max: TScalar;
-  begin
-    p1 := a * TriangleMoved[1].Data[0] - b * TriangleMoved[1].Data[1];
-    p2 := a * TriangleMoved[2].Data[0] - b * TriangleMoved[2].Data[1];
-    if p2<p1 then begin min := p2; max := p1; end else
-                  begin min := p1; max := p2; end;
-    rad := fa * BoxHalfSize.Data[0] + fb * BoxHalfSize.Data[1];
-    Result := (min > rad + Epsilon) or (max < -rad - Epsilon);
-  end;
-
-  function AXISTEST_Z0(const a, b, fa, fb: TScalar): boolean;
-  var
-    p0, p1, rad, min, max: TScalar;
-  begin
-    p0 := a * TriangleMoved[0].Data[0] - b * TriangleMoved[0].Data[1];
-    p1 := a * TriangleMoved[1].Data[0] - b * TriangleMoved[1].Data[1];
-    if p0<p1 then begin min := p0; max := p1; end else
-                  begin min := p1; max := p0; end;
-    rad := fa * BoxHalfSize.Data[0] + fb * BoxHalfSize.Data[1];
-    Result := (min > rad + Epsilon) or (max < -rad - Epsilon);
-  end;
-
-var
-  BoxCenter: TVector3;
-  I: Integer;
-  TriangleEdges: TTriangle3;
-  EdgeAbs: TVector3;
-  TriMin, TriMax: TScalar;
-  Plane: TVector4;
-  PlaneDir: TVector3 absolute Plane;
-begin
-  if IsEmpty then
-    Exit(false);
-
-  { calculate BoxCenter and BoxHalfSize }
-  for I := 0 to 2 do
-  begin
-    BoxCenter.Data[I] := (Data[0].Data[I] + Data[1].Data[I]) / 2;
-    BoxHalfSize.Data[I] := (Data[1].Data[I] - Data[0].Data[I]) / 2;
-  end;
-
-  { calculate TriangleMoved (Triangle shifted by -BoxCenter,
-    so that we can treat the BoxHalfSize as centered around origin) }
-  TriangleMoved[0] := {$ifdef IsTriangleCollision_DoublePrecision}Vector3Double{$endif}(Triangle.Data[0]) - BoxCenter;
-  TriangleMoved[1] := {$ifdef IsTriangleCollision_DoublePrecision}Vector3Double{$endif}(Triangle.Data[1]) - BoxCenter;
-  TriangleMoved[2] := {$ifdef IsTriangleCollision_DoublePrecision}Vector3Double{$endif}(Triangle.Data[2]) - BoxCenter;
-
-  { calculate TriangleMoved edges }
-  TriangleEdges[0] := TriangleMoved[1] - TriangleMoved[0];
-  TriangleEdges[1] := TriangleMoved[2] - TriangleMoved[1];
-  TriangleEdges[2] := TriangleMoved[0] - TriangleMoved[2];
-
-  { tests 3) }
-  EdgeAbs.Data[0] := Abs(TriangleEdges[0].Data[0]);
-  EdgeAbs.Data[1] := Abs(TriangleEdges[0].Data[1]);
-  EdgeAbs.Data[2] := Abs(TriangleEdges[0].Data[2]);
-  if AXISTEST_X01(TriangleEdges[0].Data[2], TriangleEdges[0].Data[1], EdgeAbs.Data[2], EdgeAbs.Data[1]) then Exit(false);
-  if AXISTEST_Y02(TriangleEdges[0].Data[2], TriangleEdges[0].Data[0], EdgeAbs.Data[2], EdgeAbs.Data[0]) then Exit(false);
-  if AXISTEST_Z12(TriangleEdges[0].Data[1], TriangleEdges[0].Data[0], EdgeAbs.Data[1], EdgeAbs.Data[0]) then Exit(false);
-
-  EdgeAbs.Data[0] := Abs(TriangleEdges[1].Data[0]);
-  EdgeAbs.Data[1] := Abs(TriangleEdges[1].Data[1]);
-  EdgeAbs.Data[2] := Abs(TriangleEdges[1].Data[2]);
-  if AXISTEST_X01(TriangleEdges[1].Data[2], TriangleEdges[1].Data[1], EdgeAbs.Data[2], EdgeAbs.Data[1]) then Exit(false);
-  if AXISTEST_Y02(TriangleEdges[1].Data[2], TriangleEdges[1].Data[0], EdgeAbs.Data[2], EdgeAbs.Data[0]) then Exit(false);
-  if AXISTEST_Z0 (TriangleEdges[1].Data[1], TriangleEdges[1].Data[0], EdgeAbs.Data[1], EdgeAbs.Data[0]) then Exit(false);
-
-  EdgeAbs.Data[0] := Abs(TriangleEdges[2].Data[0]);
-  EdgeAbs.Data[1] := Abs(TriangleEdges[2].Data[1]);
-  EdgeAbs.Data[2] := Abs(TriangleEdges[2].Data[2]);
-  if AXISTEST_X2 (TriangleEdges[2].Data[2], TriangleEdges[2].Data[1], EdgeAbs.Data[2], EdgeAbs.Data[1]) then Exit(false);
-  if AXISTEST_Y1 (TriangleEdges[2].Data[2], TriangleEdges[2].Data[0], EdgeAbs.Data[2], EdgeAbs.Data[0]) then Exit(false);
-  if AXISTEST_Z12(TriangleEdges[2].Data[1], TriangleEdges[2].Data[0], EdgeAbs.Data[1], EdgeAbs.Data[0]) then Exit(false);
-
-  { tests 1)
-    first test overlap in the (x,y,z)-directions
-    find TriMin, TriMax of the triangle each direction, and test for overlap in
-    that direction -- this is equivalent to testing a minimal AABB around
-    the triangle against the AABB }
-
-  { test in X-direction }
-  MinMax(TriangleMoved[0].Data[0], TriangleMoved[1].Data[0], TriangleMoved[2].Data[0], TriMin, TriMax);
-  if (TriMin >  boxhalfsize.Data[0] + Epsilon) or
-     (TriMax < -boxhalfsize.Data[0] - Epsilon) then Exit(false);
-
-  { test in Y-direction }
-  MinMax(TriangleMoved[0].Data[1], TriangleMoved[1].Data[1], TriangleMoved[2].Data[1], TriMin, TriMax);
-  if (TriMin >  boxhalfsize.Data[1] + Epsilon) or
-     (TriMax < -boxhalfsize.Data[1] - Epsilon) then Exit(false);
-
-  { test in Z-direction }
-  MinMax(TriangleMoved[0].Data[2], TriangleMoved[1].Data[2], TriangleMoved[2].Data[2], TriMin, TriMax);
-  if (TriMin >  boxhalfsize.Data[2] + Epsilon) or
-     (TriMax < -boxhalfsize.Data[2] - Epsilon) then Exit(false);
-
-  { tests 2)
-    test if the box intersects the plane of the triangle
-    compute plane equation of triangle: normal*x+d=0 }
-  PlaneDir := TVector3.CrossProduct(TriangleEdges[0], TriangleEdges[1]);
-  Plane.Data[3] := -TVector3.DotProduct(PlaneDir, TriangleMoved[0]);
-  if not {$ifdef IsTriangleCollision_DoublePrecision}
-         IsCenteredBox3DPlaneCollisionDouble{$else}
-         IsCenteredBox3DPlaneCollision{$endif}
-         (BoxHalfSize, Plane) then
-    Exit(false);
-
-  Result := true; { box and triangle overlaps }
-end;
-
 procedure TBox3D.BoundingSphere(
   var SphereCenter: TVector3; var SphereRadiusSqr: Single);
 begin
@@ -2472,13 +2261,6 @@ begin
       VertsIndicesCount,
       {$ifdef CASTLE_OBJFPC} @ {$endif} Calculator.GetTransformed);
   finally Calculator.Free end;
-end;
-
-function TriangleBoundingBox(const T: TTriangle3): TBox3D;
-begin
-  MinMax(T.Data[0].Data[0], T.Data[1].Data[0], T.Data[2].Data[0], Result.Data[0].Data[0], Result.Data[1].Data[0]);
-  MinMax(T.Data[0].Data[1], T.Data[1].Data[1], T.Data[2].Data[1], Result.Data[0].Data[1], Result.Data[1].Data[1]);
-  MinMax(T.Data[0].Data[2], T.Data[1].Data[2], T.Data[2].Data[2], Result.Data[0].Data[2], Result.Data[1].Data[2]);
 end;
 
 function BoundingBox3DFromSphere(const Center: TVector3;

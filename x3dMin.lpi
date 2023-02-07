@@ -434,11 +434,6 @@
         <UnitName Value="CastleBoxes"/>
       </Unit>
       <Unit>
-        <Filename Value="src/3d/castletriangles.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleTriangles"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castleshaders.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleShaders"/>
