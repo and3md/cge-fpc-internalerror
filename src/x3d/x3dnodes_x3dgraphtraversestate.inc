@@ -94,12 +94,6 @@
     function Equals(SecondValue: TX3DGraphTraverseState;
       const IgnoreTransform: boolean): boolean; {$ifdef TOBJECT_HAS_EQUALS} reintroduce; {$endif}
 
-    { Diffuse (and alpha) texture that should be used for nodes within this State.
-      Regardless of VRML/X3D version. May return multi-texture
-      (TMultiTextureNode), or normal 2D texture (TAbstractTexture2DNode),
-      or some other TAbstractTextureNode descendant (cube map, 3d texture). }
-    function DiffuseAlphaTexture: TAbstractTextureNode;
-
     { Returns BlendMode for this state, or @nil if not present. }
     // function BlendMode: TBlendModeNode;
 
@@ -157,22 +151,6 @@
 
     { For Humanoid skeleton, these contain cummulated joint transformation. }
     HumanoidTransform, HumanoidInvertedTransform: TMatrix4;
-    { Humanoid node containing us, or @nil if none. }
-    Humanoid: THAnimHumanoidNode;
-
-    { ClipPlanes affecting nodes within this state.
-
-      They are collected here regardless of whether they are enabled or not.
-      This allows efficient implementation of @code(ClipPlane.enabled)
-      dynamic changes.
-
-      Ordered from the most global to most local ones.
-      So, following the X3D specification, we should consider the first
-      clip planes on this list more important.
-
-      Always @nil if empty. This allows us to optimize TX3DGraphTraverseState
-      processing. }
-    ClipPlanes: TClipPlaneList;
 
     { Local fog settings. When @nil, it means use global fog (or no fog,
       if no global fog defined in file). }
@@ -180,8 +158,6 @@
 
     { Effects (TEffectNode) affecting this state. }
     Effects: TX3DNodeList;
-
-    function AddClipPlane: PClipPlane;
 
     { Material information at this state.
       See TMaterialInfo for usage description.
@@ -292,7 +268,6 @@ end;
 
 destructor TX3DGraphTraverseState.Destroy;
 begin
-  FreeAndNil(ClipPlanes);
   FreeAndNil(Effects);
   inherited;
 end;
@@ -314,15 +289,7 @@ begin
   InsideInvisible := 0;
   //LocalFog := nil;
 
-  FreeAndNil(ClipPlanes);
   FreeAndNil(Effects);
-end;
-
-function TX3DGraphTraverseState.AddClipPlane: PClipPlane;
-begin
-  if ClipPlanes = nil then
-    ClipPlanes := TClipPlaneList.Create;
-  Result := ClipPlanes.Add();
 end;
 
 procedure TX3DGraphTraverseState.Assign(Source: TX3DGraphTraverseState);
@@ -335,7 +302,6 @@ begin
   InsidePrototype := Source.InsidePrototype;
   InsideIgnoreCollision := Source.InsideIgnoreCollision;
   InsideInvisible := Source.InsideInvisible;
-  Humanoid := Source.Humanoid;
 end;
 
 procedure TX3DGraphTraverseState.AssignTransform(
@@ -346,14 +312,6 @@ begin
   InvertedTransform := Source.InvertedTransform;
   HumanoidTransform := Source.HumanoidTransform;
   HumanoidInvertedTransform := Source.HumanoidInvertedTransform;
-
-  if Source.ClipPlanes <> nil then
-  begin
-    if ClipPlanes = nil then
-      ClipPlanes := TClipPlaneList.Create;
-    ClipPlanes.Assign(Source.ClipPlanes);
-  end else
-    FreeAndNil(ClipPlanes);
 
   if Source.Effects <> nil then
   begin
@@ -378,24 +336,12 @@ begin
 
 end;
 
-function TX3DGraphTraverseState.DiffuseAlphaTexture: TAbstractTextureNode;
-begin
-  Result := nil;
-  if ShapeNode.Appearance <> nil then
-    Result := ShapeNode.Appearance.DiffuseAlphaTexture;
-end;
-
 function TX3DGraphTraverseState.MaterialInfo: TMaterialInfo;
 var
   M2: TMaterialNode;
-  SurfaceShader: TCommonSurfaceShaderNode;
 begin
   if ShapeNode <> nil then
   begin
-    SurfaceShader := ShapeNode.CommonSurfaceShader;
-    if SurfaceShader <> nil then
-      Result := SurfaceShader.MaterialInfo
-    else
     begin
       M2 := ShapeNode.Material;
       if M2 <> nil then

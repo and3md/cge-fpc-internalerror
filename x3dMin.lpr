@@ -10,7 +10,7 @@ uses
   athreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, UMinX3d, CastleInternalNodeInterpolator, CastleInternalNormals,
+  Forms, UMinX3d, CastleInternalNodeInterpolator,
   CastleInternalShadowMaps,
   CastleInternalX3DLexer,
   CastleMaterialProperties, X3DFields, X3DLoadInternalUtils,
@@ -19,7 +19,7 @@ uses
   CastleLog, CastleProjection,
   CastleRectangles, CastleRendererBaseTypes, CastleStringUtils,
   CastleTimeUtils, CastleUtils, CastleVectors, CastleVectorsInternalDouble,
-  CastleVectorsInternalSingle, CastleUnicode, CastleBoxes;
+  CastleVectorsInternalSingle, CastleUnicode;
 
 {$R *.res}
 

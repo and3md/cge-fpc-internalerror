@@ -30,8 +30,6 @@
     procedure SetFillProperties(const Value: TFillPropertiesNode);
     function GetLineProperties: TLinePropertiesNode;
     procedure SetLineProperties(const Value: TLinePropertiesNode);
-    function GetTextureTransform: TAbstractTextureTransformNode;
-    procedure SetTextureTransform(const Value: TAbstractTextureTransformNode);
     function GetShadowCaster: boolean;
     procedure SetShadowCaster(const Value: boolean);
     function GetHeightMapScale: Single;
@@ -43,12 +41,6 @@
     property FillProperties: TFillPropertiesNode read GetFillProperties write SetFillProperties;
     { X3D field "lineProperties". } { }
     property LineProperties: TLinePropertiesNode read GetLineProperties write SetLineProperties;
-    { Set X3D field "shaders". } { }
-    procedure SetShaders(const Value: array of TAbstractShaderNode);
-    { X3D field "textureTransform". } { }
-    property TextureTransform: TAbstractTextureTransformNode read GetTextureTransform write SetTextureTransform;
-    { Set X3D field "receiveShadows". } { }
-    procedure SetReceiveShadows(const Value: array of TAbstractLightNode);
     { X3D field "shadowCaster". } { }
     property ShadowCaster: boolean read GetShadowCaster write SetShadowCaster;
     { X3D field "heightMapScale". } { }
@@ -88,43 +80,6 @@ end;
 procedure TAppearanceNode.SetLineProperties(const Value: TLinePropertiesNode);
 begin
   FdLineProperties.Send(Value);
-end;
-
-procedure TAppearanceNode.SetShaders(const Value: array of TAbstractShaderNode);
-var
-  L: Integer;
-  A: array of TX3DNode;
-begin
-  L := High(Value) + 1;
-  SetLength(A, L);
-  if L > 0 then
-    Move(Value[0], A[0], L * SizeOf(TAbstractShaderNode));
-  FdShaders.Send(A);
-end;
-
-function TAppearanceNode.GetTextureTransform: TAbstractTextureTransformNode;
-begin
-  if FdTextureTransform.Value is TAbstractTextureTransformNode then
-    Result := TAbstractTextureTransformNode(FdTextureTransform.Value)
-  else
-    Result := nil;
-end;
-
-procedure TAppearanceNode.SetTextureTransform(const Value: TAbstractTextureTransformNode);
-begin
-  FdTextureTransform.Send(Value);
-end;
-
-procedure TAppearanceNode.SetReceiveShadows(const Value: array of TAbstractLightNode);
-var
-  L: Integer;
-  A: array of TX3DNode;
-begin
-  L := High(Value) + 1;
-  SetLength(A, L);
-  if L > 0 then
-    Move(Value[0], A[0], L * SizeOf(TAbstractLightNode));
-  FdReceiveShadows.Send(A);
 end;
 
 function TAppearanceNode.GetShadowCaster: boolean;

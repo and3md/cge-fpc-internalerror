@@ -18,15 +18,9 @@
   { Forward declarations } { }
   TX3DNodeList = class;
   TX3DNode = class;
-  TAbstractGeometryNode = class;
-  TAbstractLightNode = class;
   TAbstractShapeNode = class;
-  TAbstractTexture2DNode = class;
   //TBlendModeNode = class;
-  TAbstractTextureNode = class;
   ///TX3DEventsEngine = class;
-  TClipPlaneNode = class;
-  THAnimHumanoidNode = class;
   // TLocalFogNode = class;
   // TEffectNode = class;
   TX3DRootNode = class;
@@ -49,10 +43,7 @@
   TX3DGraphTraverseStateStack = class;
   TShapeNode = class;
   TTransformNode = class;
-  TAbstractCoordinateNode = class;
-  TAbstractNormalNode = class;
   // TFogCoordinateNode = class;
-  TAbstractTextureCoordinateNode = class;
 
   TX3DNodeClass = class of TX3DNode;
 

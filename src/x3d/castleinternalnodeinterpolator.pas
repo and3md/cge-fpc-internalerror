@@ -22,7 +22,7 @@ unit CastleInternalNodeInterpolator;
 interface
 
 uses Classes, Generics.Collections,
-  CastleUtils, X3DNodes, CastleBoxes;
+  CastleUtils, X3DNodes;
 
 type
   TGetKeyNodeWithTime = procedure (const Index: Cardinal;
@@ -57,7 +57,6 @@ type
         ScenesPerTime: Cardinal;
         Epsilon: Single;
         Loop, Backwards: boolean;
-        BoundingBox: TBox3D;
 
         constructor Create;
         destructor Destroy; override;
@@ -93,7 +92,6 @@ type
         TimeBegin, TimeEnd: Single;
         Name: string;
         Loop, Backwards: boolean;
-        BoundingBox: TBox3D;
 
         constructor Create;
         destructor Destroy; override;
@@ -786,7 +784,6 @@ class function TNodeInterpolator.LoadAnimFramesToKeyNodes(const URL: string): TA
       Result.Epsilon := DefaultEpsilon;
       Result.Loop := DefaultLoop;
       Result.Backwards := DefaultBackwards;
-      Result.BoundingBox := TBox3D.Empty;
 
       for I := 0 to Integer(Element.Attributes.Length) - 1 do
       begin
@@ -846,12 +843,6 @@ var
   function WrapRootNode(const RootNode: TX3DRootNode): TAbstractChildNode;
   begin
     Result := RootNode;
-  end;
-
-  function WrapInCollisionNode(
-    const VisibleNode: TX3DNode; const Box: TBox3D): TAbstractChildNode;
-  begin
-    Result := TBooleanToggleNode.Create('aaa');
   end;
 
   function ConvertOneAnimation(
@@ -985,7 +976,7 @@ var
       -> interpolators to have proper collisions with castle-anim-frames
       contents. Even then, it's unsure whether it will be sensible,
       as it will cost at runtime. }
-    Result := WrapInCollisionNode(Group, BakedAnimation.BoundingBox);
+    Result := RootNode;
   end;
 
 var
@@ -1038,7 +1029,6 @@ begin
         BakedAnimation.Name := Animation.Name;
         BakedAnimation.Loop := Animation.Loop;
         BakedAnimation.Backwards := Animation.Backwards;
-        BakedAnimation.BoundingBox := Animation.BoundingBox;
         BakedAnimations.Add(BakedAnimation);
       end;
     except

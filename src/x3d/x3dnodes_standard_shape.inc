@@ -14,8 +14,6 @@
 }
 
 {$ifdef read_interface}
-  TAbstractShaderNode = class;
-
   { Base node type for the child nodes of @link(TAbstractAppearanceNode). }
   TAbstractAppearanceChildNode = class(TAbstractNode)
     {$I auto_generated_node_helpers/x3dnodes_x3dappearancechildnode.inc}
@@ -35,27 +33,18 @@
   end;
 
   TAppearanceNode = class;
-  TAbstractTextureTransformNode = class;
   TMaterialNode = class;
-  TComposedShaderNode = class;
   TLinePropertiesNode = class;
-  TCommonSurfaceShaderNode = class;
 
   TShading = (shDefault, shGouraud, shPhong, shWireframe);
 
   { Base node type for all Shape nodes. }
   TAbstractShapeNode = class(TAbstractChildNode, IAbstractBoundedObject)
   strict private
-    function GetGeometry: TAbstractGeometryNode;
-    procedure SetGeometry(const Value: TAbstractGeometryNode);
     function GetAppearance: TAppearanceNode;
     procedure SetAppearance(const Value: TAppearanceNode);
     function GetMaterial: TMaterialNode;
     procedure SetMaterial(const Value: TMaterialNode);
-    function GetTexture: TAbstractTextureNode;
-    procedure SetTexture(const Value: TAbstractTextureNode);
-    function GetTextureTransform: TAbstractTextureTransformNode;
-    procedure SetTextureTransform(const Value: TAbstractTextureTransformNode);
     function GetLineProperties: TLinePropertiesNode;
     procedure SetLineProperties(const Value: TLinePropertiesNode);
     function GetShading: TShading;
@@ -99,30 +88,11 @@
     procedure BeforeTraverse(StateStack: TX3DGraphTraverseStateStack); override;
     procedure AfterTraverse(StateStack: TX3DGraphTraverseStateStack); override;
 
-    { Geometry of this shape. }
-    property Geometry: TAbstractGeometryNode read GetGeometry write SetGeometry;
-
     { Apperance of this shape.
 
       This is a comfortable shortcut for FdAppearance.Value,
       checking whether it's class is appropriate. }
     property Appearance: TAppearanceNode read GetAppearance write SetAppearance;
-
-    { The texture of this shape.
-      This is a shortcut for accessing "texture" field of Apperance,
-      that is @code(TAppearanceNode(FdAppearance.Value).FdTexture.Value),
-      checking whether nodes are set to appropriate types along the way.
-
-      When setting this to something non-nil, we make sure
-      to also set Appearance to something non-nil. }
-    property Texture: TAbstractTextureNode read GetTexture write SetTexture;
-
-    { Texture transformation of this shape.
-      Similar to @link(Texture), this is just a comfortable property
-      for getting and setting the appropriate Appearance field,
-      checking class types along the way. }
-    property TextureTransform: TAbstractTextureTransformNode
-      read GetTextureTransform write SetTextureTransform;
 
     { Get / set the (simple, one-sided) material of this shape.
       This is a shortcut for accessing "material" field of Apperance,
@@ -141,10 +111,6 @@
     strict private FFdOctreeTriangles: TSFNode;
     public property FdOctreeTriangles: TSFNode read FFdOctreeTriangles;
 
-    { Find a suitable CommonSurfaceShader to be used when rendering this shape,
-      or @nil. }
-    function CommonSurfaceShader: TCommonSurfaceShaderNode;
-
     {$I auto_generated_node_helpers/x3dnodes_x3dshapenode.inc}
   end;
 
@@ -152,10 +118,6 @@
   strict protected
     class function ExposedEventsFieldClass: TX3DFieldClass; override;
   public
-    { Returns Items[Index], if it's a shader node suitable
-      for GLSL  shader. Otherwise returns @nil. Checks the class of
-      Items[Index] and it's @code(language) field. }
-    function GLSLShader(Index: Integer): TComposedShaderNode;
   end;
 
   TFillPropertiesNode = class;
@@ -168,12 +130,8 @@
     material created by @code(TMaterialNode.Create). }
   TAppearanceNode = class(TAbstractAppearanceNode)
   strict private
-    function GetTexture: TAbstractTextureNode;
-    procedure SetTexture(const Value: TAbstractTextureNode);
     function GetMaterial: TMaterialNode;
     procedure SetMaterial(const Value: TMaterialNode);
-    function GetNormalMap: TAbstractTexture2DNode;
-    procedure SetNormalMap(const Value: TAbstractTexture2DNode);
   protected
     function DirectEnumerateActive(Func: TEnumerateChildrenFunction): Pointer; override;
     procedure ParseAfter(Reader: TX3DReaderNames); override;
@@ -227,24 +185,6 @@
     strict private FFdBlendMode: TSFNode;
     public property FdBlendMode: TSFNode read FFdBlendMode;
 
-    { The texture of this appearance.
-
-      This is a comfortable property for getting and setting the appropriate
-      X3D field, checking class types along the way and setting the value
-      through X3D events if necessary. }
-    property Texture: TAbstractTextureNode read GetTexture write SetTexture;
-
-    { The normal map of this appearance.
-
-      See https://castle-engine.io/x3d_implementation_texturing_extensions.php#section_ext_bump_mapping .
-      This is a deprecated method of using bump mapping, a better method is to
-      use CommonSurfaceShader:
-      https://castle-engine.io/x3d_implementation_texturing_extensions.php#section_ext_common_surface_shader .
-
-      This is a comfortable property for getting and setting the appropriate
-      X3D field, checking class types along the way and setting the value
-      through X3D events if necessary. }
-    property NormalMap: TAbstractTexture2DNode read GetNormalMap write SetNormalMap;
 
     { The material of this appearance.
       This only sets the simple, one-sided material node.
@@ -254,14 +194,6 @@
       through X3D events if necessary. }
     property Material: TMaterialNode read GetMaterial write SetMaterial;
 
-    { Find a suitable CommonSurfaceShader to be used when rendering this shape,
-      or @nil. }
-    function CommonSurfaceShader: TCommonSurfaceShaderNode;
-
-    { Returns an effective diffuse (and alpha) texture node
-      that should be used for this appearance, or @nil.
-      This texture may come from @link(Texture) or from @link(CommonSurfaceShader). }
-    function DiffuseAlphaTexture: TAbstractTextureNode;
 
     function InternalMaterialProperty: TMaterialProperty;
     function MaterialProperty: TMaterialProperty; deprecated 'use InternalMaterialProperty, or (better) do not use it at all -- this is internal';
@@ -661,7 +593,7 @@ begin
    FdAppearance.ChangesAlways := [chEverything];
   AddField(FFdAppearance);
 
-  FFdGeometry := TSFNode.Create(Self, true, 'geometry', [TAbstractGeometryNode]);
+  FFdGeometry := TSFNode.Create(Self, true, 'geometry', []);
    FdGeometry.ChangesAlways := [chEverything];
   AddField(FFdGeometry);
 
@@ -715,19 +647,6 @@ begin
   inherited;
 end;
 
-function TAbstractShapeNode.GetGeometry: TAbstractGeometryNode;
-begin
-  if FdGeometry.Value is TAbstractGeometryNode then
-    Result := TAbstractGeometryNode(FdGeometry.Value)
-  else
-    Result := nil;
-end;
-
-procedure TAbstractShapeNode.SetGeometry(const Value: TAbstractGeometryNode);
-begin
-  FdGeometry.Send(Value);
-end;
-
 function TAbstractShapeNode.GetAppearance: TAppearanceNode;
 begin
   if FdAppearance.Value is TAppearanceNode then
@@ -752,17 +671,6 @@ begin
     Result := nil;
 end;
 
-function TAbstractShapeNode.CommonSurfaceShader: TCommonSurfaceShaderNode;
-var
-  App: TAppearanceNode;
-begin
-  App := Appearance;
-  if App <> nil then
-    Result := App.CommonSurfaceShader
-  else
-    Result := nil;
-end;
-
 procedure TAbstractShapeNode.SetMaterial(const Value: TMaterialNode);
 var
   App: TAppearanceNode;
@@ -776,62 +684,6 @@ begin
     App := TAppearanceNode.Create('', BaseUrl);
     //App.Scene := Scene;
     App.Material := Value;
-    Appearance := App;
-  end;
-end;
-
-function TAbstractShapeNode.GetTexture: TAbstractTextureNode;
-var
-  App: TAppearanceNode;
-begin
-  App := Appearance;
-  if App <> nil then
-    Result := App.Texture
-  else
-    Result := nil;
-end;
-
-procedure TAbstractShapeNode.SetTexture(const Value: TAbstractTextureNode);
-var
-  App: TAppearanceNode;
-begin
-  App := Appearance;
-  if App <> nil then
-    App.Texture := Value
-  else
-  if Value <> nil then
-  begin
-    App := TAppearanceNode.Create('', BaseUrl);
-    //App.Scene := Scene;
-    App.Texture := Value;
-    Appearance := App;
-  end;
-end;
-
-function TAbstractShapeNode.GetTextureTransform: TAbstractTextureTransformNode;
-var
-  App: TAppearanceNode;
-begin
-  App := Appearance;
-  if App <> nil then
-    Result := App.TextureTransform
-  else
-    Result := nil;
-end;
-
-procedure TAbstractShapeNode.SetTextureTransform(const Value: TAbstractTextureTransformNode);
-var
-  App: TAppearanceNode;
-begin
-  App := Appearance;
-  if App <> nil then
-    App.TextureTransform := Value
-  else
-  if Value <> nil then
-  begin
-    App := TAppearanceNode.Create('', BaseUrl);
-    //App.Scene := Scene;
-    App.TextureTransform := Value;
     Appearance := App;
   end;
 end;
@@ -890,19 +742,19 @@ begin
    FdMaterial.ChangesAlways := [chEverything];
   AddField(FFdMaterial);
 
-  FFdShaders := TMFNodeShaders.Create(Self, true, 'shaders', [TAbstractShaderNode]);
+  FFdShaders := TMFNodeShaders.Create(Self, true, 'shaders', []);
    FdShaders.ChangesAlways := [chEverything];
   AddField(FFdShaders);
 
-  FFdTexture := TSFNode.Create(Self, true, 'texture', [TAbstractTextureNode]);
+  FFdTexture := TSFNode.Create(Self, true, 'texture', []);
    FdTexture.ChangesAlways := [chEverything];
   AddField(FFdTexture);
 
-  FFdTextureTransform := TSFNode.Create(Self, true, 'textureTransform', [TAbstractTextureTransformNode]);
+  FFdTextureTransform := TSFNode.Create(Self, true, 'textureTransform', []);
    FdTextureTransform.ChangesAlways := [chEverything];
   AddField(FFdTextureTransform);
 
-  FFdReceiveShadows := TMFNode.Create(Self, false, 'receiveShadows', [TAbstractLightNode]);
+  FFdReceiveShadows := TMFNode.Create(Self, false, 'receiveShadows', []);
    FdReceiveShadows.ChangesAlways := [chShadowMaps];
   AddField(FFdReceiveShadows);
 
@@ -910,11 +762,11 @@ begin
    FdShadowCaster.ChangesAlways := [chShadowCasters];
   AddField(FFdShadowCaster);
 
-  FFdNormalMap := TSFNode.Create(Self, true, 'normalMap', [TAbstractTextureNode]);
+  FFdNormalMap := TSFNode.Create(Self, true, 'normalMap', []);
    FdNormalMap.ChangesAlways := [chEverything];
   AddField(FFdNormalMap);
 
-  FFdHeightMap := TSFNode.Create(Self, true, 'heightMap', [TAbstractTextureNode]);
+  FFdHeightMap := TSFNode.Create(Self, true, 'heightMap', []);
    FdHeightMap.ChangesAlways := [chEverything];
   AddField(FFdHeightMap);
 
@@ -954,17 +806,6 @@ begin
   Result := TMFNode;
 end;
 
-function TMFNodeShaders.GLSLShader(Index: Integer): TComposedShaderNode;
-begin
-  if Items[Index] is TComposedShaderNode then
-  begin
-    Result := TComposedShaderNode(Items[Index]);
-    if not (Result.Language in [slDefault, slGLSL]) then
-      Result := nil;
-  end else
-    Result := nil;
-end;
-
 function TAppearanceNode.DirectEnumerateActive(Func: TEnumerateChildrenFunction): Pointer;
 begin
   Result := FFdFillProperties.Enumerate(Func);
@@ -986,31 +827,6 @@ begin
   if Result <> nil then Exit;
 end;
 
-function TAppearanceNode.GetTexture: TAbstractTextureNode;
-begin
-  if FdTexture.Value is TAbstractTextureNode then
-    Result := TAbstractTextureNode(FdTexture.Value)
-  else
-    Result := nil;
-end;
-
-procedure TAppearanceNode.SetTexture(const Value: TAbstractTextureNode);
-begin
-  FdTexture.Send(Value);
-end;
-
-function TAppearanceNode.GetNormalMap: TAbstractTexture2DNode;
-begin
-  if FdNormalMap.Value is TAbstractTexture2DNode then
-    Result := TAbstractTexture2DNode(FdNormalMap.Value)
-  else
-    Result := nil;
-end;
-
-procedure TAppearanceNode.SetNormalMap(const Value: TAbstractTexture2DNode);
-begin
-  FdNormalMap.Send(Value);
-end;
 
 function TAppearanceNode.GetMaterial: TMaterialNode;
 begin
@@ -1025,35 +841,6 @@ begin
   FdMaterial.Send(Value);
 end;
 
-function TAppearanceNode.CommonSurfaceShader: TCommonSurfaceShaderNode;
-var
-  I: Integer;
-  Shader: TX3DNode;
-begin
-  Result := nil;
-  for I := 0 to FdShaders.Count - 1 do
-  begin
-    Shader := FdShaders[I];
-    if Shader is TCommonSurfaceShaderNode then
-      Exit(TCommonSurfaceShaderNode(Shader));
-  end;
-end;
-
-function TAppearanceNode.DiffuseAlphaTexture: TAbstractTextureNode;
-var
-  SurfaceShader: TCommonSurfaceShaderNode;
-begin
-  Result := nil;
-  SurfaceShader := CommonSurfaceShader;
-  if SurfaceShader <> nil then
-  begin
-    if SurfaceShader.MultiDiffuseAlphaTexture <> nil then
-      Exit(SurfaceShader.MultiDiffuseAlphaTexture);
-    if SurfaceShader.DiffuseTexture <> nil then
-      Exit(SurfaceShader.DiffuseTexture);
-  end else
-    Result := Texture;
-end;
 
 function TAppearanceNode.MaterialProperty: TMaterialProperty;
 begin
@@ -1076,14 +863,9 @@ function TAppearanceNode.InternalMaterialProperty: TMaterialProperty;
     end;
   end;
 
-var
-  Tex: TAbstractTextureNode;
 begin
   Result := nil;
 
-  Tex := DiffuseAlphaTexture;
-  if Tex is TImageTextureNode then
-    Result := TryUrl(TImageTextureNode(Tex).FdUrl);
   {if Tex is TMovieTextureNode then
     Result := TryUrl(TMovieTextureNode(Tex).FdUrl);}
 end;
@@ -1091,22 +873,11 @@ end;
 procedure TAppearanceNode.ParseAfter(Reader: TX3DReaderNames);
 var
   MP: TMaterialProperty;
-  NormalMapNode: TImageTextureNode;
 begin
   inherited;
 
   MP := InternalMaterialProperty;
 
-  if (MP <> nil) and (MP.NormalMap <> '') and (FdNormalMap.Value = nil) then
-  begin
-    { use normalMap from MaterialProperty, if our normalMap field is empty now }
-    NormalMapNode := TImageTextureNode.Create('', BaseUrl);
-    NormalMapNode.FdUrl.Items.Add(MP.NormalMap);
-    FdNormalMap.Value := NormalMapNode;
-  end;
-
-  if (MP <> nil) and (MP.AlphaChannel <> '') and (Texture <> nil) then
-    Texture.FdAlphaChannel.Value := MP.AlphaChannel;
 end;
 
 procedure TFillPropertiesNode.CreateNode;

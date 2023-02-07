@@ -414,30 +414,8 @@ type
 
   function TGeneralGroupingEnumerator.EnumerateChildrenFunction(
     Node, Child: TX3DNode): Pointer;
-  var
-    CP: PClipPlane;
   begin
     Result := nil;
-    if (Child is TAbstractLightNode) and
-       (TAbstractLightNode(Child).Scope = lsLocal) then
-      { We do CreateLightInstance with State from TAbstractGroupingNode node,
-        while precisely we should rather use State from TAbstractLightNode
-        traverse. But, fortunately, State of TAbstractLightNode doesn't
-        change inside (TAbstractLightNode doesn't do anything inside
-        BeforeTraverse), so this is the same thing. }
-      { TODO: we ignore here light radius, which may be relevant
-        for TAbstractPositionalLightNode with HasRadius = true.
-        E.g. PointLight with global = false should be limited by *both*
-        scope (in graph hierarchy) and radius, as far as I understand. }
-      else
-    if Child is TClipPlaneNode then
-    begin
-      CP := State.AddClipPlane;
-      CP^.Node := TClipPlaneNode(Child);
-      CP^.Transform := State.Transform;
-    end else
-//    if Child is TLocalFogNode then
-//      State.LocalFog := TLocalFogNode(Child) else
   end;
 
 function TAbstractGroupingNode.SeparateGroup: boolean;

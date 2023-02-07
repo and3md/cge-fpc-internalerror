@@ -154,12 +154,6 @@ type
 
 procedure TVRMLToX3DConverter.Convert(ParentNode: TX3DNode; var Node: TX3DNode);
 
-  function CoordinateNode(Coords: TMFVec3f): TCoordinateNode;
-  begin
-    Result := TCoordinateNode.Create('', Node.BaseUrl);
-    Result.FdPoint.AssignValue(Coords);
-  end;
-
 begin
   { The nodes needing to be converted from VRML 2.0 to X3D:
     - Some can be found by grepping for "Version.Major = 2".

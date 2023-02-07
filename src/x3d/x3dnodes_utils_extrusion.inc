@@ -24,17 +24,11 @@ type
   TVRMLExtrusion = class
   strict private
     FHigh: Integer;
-    FNode: TExtrusionNode;
     FSpineClosed, FCrossSectionClosed: boolean;
     FCrossSectionOmit: Cardinal;
     FBeginEndCapsMatching: boolean;
-    procedure SetNode(Value: TExtrusionNode);
   public
     constructor Create;
-
-    { Node used. Always assign something non-nil, and generally
-      use rest of this class only when this is assigned. }
-    property Node: TExtrusionNode read FNode write SetNode;
 
     { You have spines from 0 to High.
       Remember that this can be -1, if no spine points are defined.
@@ -89,76 +83,12 @@ begin
   inherited;
 end;
 
-procedure TVRMLExtrusion.SetNode(Value: TExtrusionNode);
-var
-  BeginOrientation, EndOrientation: TVector4;
-  BeginScale, EndScale: TVector2;
-begin
-  FNode := Value;
-
-  { calculate FHigh }
-
-  if Node.FdSpine.Count = 0 then
-  begin
-    FHigh := -1;
-    { ... and don't even check scale/orientation }
-  end else
-  if (Node.FdScale.Count = 0) or
-     (Node.FdOrientation.Count = 0) then
-  begin
-    WritelnWarning('VRML/X3D', 'Extrusion has no scale or orientation specified');
-    FHigh := -1;
-  end else
-  begin
-    FHigh := Node.FdSpine.Count - 1;
-
-    { We will handle all other scale/orientation counts.
-      Excessive scale/orientation values will be ignored.
-      If not enough will be available then we'll only use the first one
-      (spec says the behavior is undefined then).
-      We know that at least one is available, we checked this above. }
-
-    if (Node.FdScale.Count > 1) and
-       (Node.FdScale.Count < Node.FdSpine.Count) then
-      WritelnWarning('VRML/X3D', 'Extrusion has more scales than 1, but not as much as spines. ' +
-        'We''ll use only the first scale.');
-
-    if (Node.FdOrientation.Count > 1) and
-       (Node.FdOrientation.Count < Node.FdSpine.Count) then
-      WritelnWarning('VRML/X3D', 'Extrusion has more orientations than 1, but not as much as spines. ' +
-        'We''ll use only the first orientation.');
-  end;
-
-  FSpineClosed := Node.SpineClosed;
-  FCrossSectionClosed := Node.CrossSectionClosed;
-
-  if FCrossSectionClosed then
-    FCrossSectionOmit := 1 else
-    FCrossSectionOmit := 0;
-
-  if SpineClosed then
-  begin
-    SpineScaleVar(0, BeginScale);
-    SpineScaleVar(High, EndScale);
-    SpineOrientationVar(0, BeginOrientation);
-    SpineOrientationVar(High, EndOrientation);
-    FBeginEndCapsMatching :=
-      TVector4.PerfectlyEquals(BeginOrientation, EndOrientation) and
-      TVector2.PerfectlyEquals(BeginScale, EndScale);
-  end else
-    FBeginEndCapsMatching := false;
-end;
-
 procedure TVRMLExtrusion.SpineScaleVar(Spine: Cardinal;
   out Scale: TVector2);
 begin
   Assert(Between(Spine, 0, High));
   { So High must be >= 0, by the way.
     Also, High checked that we have at least one scale. }
-
-  if Node.FdScale.Count < Node.FdSpine.Count then
-    Scale := Node.FdScale.Items.List^[0] else
-    Scale := Node.FdScale.Items.List^[Spine];
 end;
 
 procedure TVRMLExtrusion.SpineOrientationVar(Spine: Cardinal;
@@ -168,9 +98,6 @@ begin
   { So High must be >= 0, by the way.
     Also, High checked that we have at least one orientation. }
 
-  if Node.FdOrientation.Count < Node.FdSpine.Count then
-    Orientation := Node.FdOrientation.Items.List^[0] else
-    Orientation := Node.FdOrientation.Items.List^[Spine];
 end;
 
 procedure TVRMLExtrusion.SpineTransformVar(Spine: Cardinal;
@@ -299,8 +226,6 @@ var
   Orientation: TVector4;
 begin
   Assert(Between(Spine, 0, High));
-
-  SpinePoints := Node.FdSpine.Items;
 
   if High = 0 then
   begin

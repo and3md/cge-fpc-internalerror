@@ -116,11 +116,6 @@
         <UnitName Value="CastleInternalNodeInterpolator"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/castleinternalnormals.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleInternalNormals"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/castleinternalshadowmaps.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleInternalShadowMaps"/>
@@ -425,11 +420,6 @@
         <UnitName Value="CastleLog"/>
       </Unit>
       <Unit>
-        <Filename Value="src/3d/castleboxes.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleBoxes"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castleshaders.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleShaders"/>
@@ -639,10 +629,6 @@
         <Filename Value="src/base/norqcheckend.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
-      <Unit>
-        <Filename Value="src/3d/castletriangles_istrianglespherecollision.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -651,8 +637,8 @@
       <Filename Value="x3dMin"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="$(ProjOutDir);src/base;src/files;src/3d;src/castlescript;src/fonts;src/x3d"/>
-      <OtherUnitFiles Value="src/base;src/3d;src/castlescript;src/x3d"/>
+      <IncludeFiles Value="$(ProjOutDir);src/base;src/files;src/castlescript;src/fonts;src/x3d"/>
+      <OtherUnitFiles Value="src/base;src/castlescript;src/x3d"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>

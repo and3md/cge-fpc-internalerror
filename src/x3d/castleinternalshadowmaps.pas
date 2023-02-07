@@ -46,7 +46,7 @@ implementation
 
 uses SysUtils,
   CastleUtils,
-  CastleBoxes, CastleLog, CastleVectors, CastleRectangles;
+  CastleLog, CastleVectors, CastleRectangles;
 
 const
   { Suffix of VRML node names created by ProcessShadowMapsReceivers
