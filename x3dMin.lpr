@@ -16,8 +16,7 @@ uses
   CastleInterfaces,
   CastleLog,
   CastleRectangles, CastleStringUtils,
-  CastleTimeUtils, CastleUtils, CastleVectors, CastleVectorsInternalDouble,
-  CastleVectorsInternalSingle;
+  CastleTimeUtils, CastleUtils, CastleVectors;
 
 {$R *.res}
 
