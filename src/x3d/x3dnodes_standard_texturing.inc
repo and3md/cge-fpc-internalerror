@@ -833,8 +833,7 @@ begin
     to override it's transform with transformation of this
     TextureCoordinateGenerator. }
   FFdProjectedLight := TSFNode.Create(Self, true, 'projectedLight',
-    [TSpotLightNode_1, TDirectionalLightNode_1,
-     TSpotLightNode  , TDirectionalLightNode  ]);
+    [TSpotLightNode  , TDirectionalLightNode  ]);
    FdProjectedLight.ChangesAlways := [chTextureCoordinate];
   AddField(FFdProjectedLight);
 end;

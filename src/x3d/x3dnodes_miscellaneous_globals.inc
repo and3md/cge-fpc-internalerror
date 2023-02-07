@@ -132,20 +132,6 @@ const
   MinTriangulationDivisions: Cardinal = 0;
   { @groupEnd }
 
-  { Classes corresponding to nodes on TVRML1State. }
-  VRML1StateClasses: array [TVRML1StateNode] of TX3DNodeClass = (
-    TCoordinate3Node_1,
-    TShapeHintsNode_1,
-    TFontStyleNode_1,
-    TMaterialNode_1,
-    TMaterialBindingNode_1,
-    TNormalNode,
-    TNormalBindingNode_1,
-    TTexture2Node_1,
-    TTextureCoordinate2Node_1
-    { additions here must be synchronized with additions to TVRML1State }
-  );
-
 var
   { Triangulation settings.
 

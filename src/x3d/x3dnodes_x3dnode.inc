@@ -759,10 +759,6 @@
       node type, and node contents. }
     procedure SaveToStream(Writer: TX3DWriter); override;
 
-    { Do the nodes of (exactly) this class should be included
-      in VRML 1.0 state (see TX3DGraphTraverseState.VRML1State). }
-    class function VRML1StateNode(out StateNode: TVRML1StateNode): boolean;
-
     { Some nodes are present only in specific VRML/X3D version.
       This functions decides it.
 
@@ -1525,7 +1521,6 @@ type
   function TTraverseEnumerator.EnumerateChildrenFunction(
     Node, Child: TX3DNode): Pointer;
   var
-    StateNode: TVRML1StateNode;
     IsTraverseIntoChildren: boolean;
   begin
     Result := nil;
@@ -1548,8 +1543,6 @@ type
       end;
     finally Child.AfterTraverse(StateStack) end;
 
-    if Child.VRML1StateNode(StateNode) then
-      StateStack.Top.VRML1State.Nodes[StateNode] := Child;
   end;
 
 function TX3DNode.TraverseInternal(StateStack: TX3DGraphTraverseStateStack;
@@ -2604,22 +2597,6 @@ begin
     xeXML    : Xml;
     else raise EInternalError.Create('TX3DNode.SaveToStream Encoding?');
   end;
-end;
-
-class function TX3DNode.VRML1StateNode(out StateNode: TVRML1StateNode): boolean;
-var
-  SN: TVRML1StateNode;
-begin
-  { We're in "class function", so Self = reference to our class.
-    So simple comparison "Self = ..." is what we want. }
-  for SN := Low(SN) to High(SN) do
-    if VRML1StateClasses[SN] = Self then
-    begin
-      StateNode := SN;
-      Result := true;
-      Exit;
-    end;
-  Result := false;
 end;
 
 class function TX3DNode.ForVRMLVersion(const Version: TX3DVersion): boolean;

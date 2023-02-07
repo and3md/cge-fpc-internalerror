@@ -845,12 +845,7 @@ var
     so well...). But it's obsolete VRML 1.0, so the hack is acceptable:) }
   function WrapRootNode(const RootNode: TX3DRootNode): TAbstractChildNode;
   begin
-    if RootNode.HasForceVersion and (RootNode.ForceVersion.Major <= 1) then
-    begin
-      Result := TSeparatorNode_1.Create('', BaseUrl);
-      Result.VRML1ChildAdd(RootNode);
-    end else
-      Result := RootNode;
+    Result := RootNode;
   end;
 
   function WrapInCollisionNode(

@@ -177,7 +177,6 @@ uses SysUtils, Generics.Collections, Classes, XMLRead, DOM,
 
 type
   {$I x3dnodes_initial_types.inc}
-  {$I x3dnodes_vrml1state.inc}
   {$I x3dnodes_clipplane.inc}
   {$I x3dnodes_x3dgraphtraversestate.inc}
   {$I x3dnodes_destructionnotification.inc}
@@ -214,8 +213,6 @@ type
   {$I x3dnodes_standard_particlesystems.inc}
 
   { More X3D nodes, not from X3D standard }
-  {$I x3dnodes_1.inc}
-  {$I x3dnodes_inventor.inc}
   {$I x3dnodes_97_hanim.inc}
   {$I x3dnodes_instantreality.inc}
   {$I x3dnodes_bitmanagement.inc}
@@ -254,7 +251,6 @@ uses
 {$I x3dnodes_miscellaneous_internals.inc}
 
 {$I x3dnodes_initial_types.inc}
-{$I x3dnodes_vrml1state.inc}
 {$I x3dnodes_clipplane.inc}
 {$I x3dnodes_x3dgraphtraversestate.inc}
 {$I x3dnodes_destructionnotification.inc}
@@ -314,8 +310,6 @@ uses
 {$I x3dnodes_standard_particlesystems.inc}
 
 { More X3D nodes, not from X3D standard }
-{$I x3dnodes_1.inc}
-{$I x3dnodes_inventor.inc}
 {$I x3dnodes_97_hanim.inc}
 {$I x3dnodes_instantreality.inc}
 {$I x3dnodes_bitmanagement.inc}
@@ -532,7 +526,6 @@ uses
 
 procedure X3DNodesFinalization;
 begin
-  FreeAndNil(VRML1DefaultState);
   FreeAndNil(TraverseSingleStack);
   FreeAndNil(X3DCache);
 
@@ -547,8 +540,6 @@ initialization
 
   NodesManager := TNodesManager.Create;
 
-  RegistedInventorNodes;
-  RegisterVRML1Nodes;
   RegisterVRML97HAnimNodes;
   RegisterInstantRealityNodes;
   RegisterBitManagementNodes;
@@ -590,8 +581,6 @@ initialization
 
   //X3DCache := TX3DFontTexturesCache.Create;
   //TextureCache := X3DCache;
-  VRML1DefaultState := TVRML1State.Create;
-  VRML1DefaultState.CreateNodes;
   TraverseSingleStack := TX3DGraphTraverseStateStack.Create;
 finalization
   { Because of various finalization order (some stuff may be owned

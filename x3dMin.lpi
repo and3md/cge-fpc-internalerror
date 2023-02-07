@@ -174,10 +174,6 @@
         <UnitName Value="X3DNodes"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dnodes_1.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dnodes_97_hanim.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -227,10 +223,6 @@
       </Unit>
       <Unit>
         <Filename Value="src/x3d/x3dnodes_instantreality.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dnodes_inventor.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
@@ -391,10 +383,6 @@
       </Unit>
       <Unit>
         <Filename Value="src/x3d/x3dnodes_verticesandtrianglescounting.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dnodes_vrml1state.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>

@@ -23,13 +23,7 @@
     this class contains whole state needed for any VRML/X3D version. }
   TX3DGraphTraverseState = class
   strict private
-    FVRML1State: TVRML1State;
     procedure CommonCreate;
-  public
-    { Nodes that affect how following nodes are rendered,
-      mostly for VRML 1.0 state. }
-    property VRML1State: TVRML1State read FVRML1State;
-    property LastNodes: TVRML1State read FVRML1State; deprecated 'use VRML1State';
   public
     { Current transformation. }
     Transform: TMatrix4;
@@ -265,14 +259,9 @@
 
 { TX3DGraphTraverseState ---------------------------------------------------- }
 
-var
-  { Starting state nodes for TX3DGraphTraverseState.Create. }
-  VRML1DefaultState: TVRML1State;
-
 procedure TX3DGraphTraverseState.CommonCreate;
 begin
   inherited Create;
-  FVRML1State := TVRML1State.Create;
 end;
 
 constructor TX3DGraphTraverseState.CreateCopy(Source: TX3DGraphTraverseState);
@@ -299,12 +288,10 @@ begin
   HumanoidInvertedTransform := TMatrix4.Identity;
 
   TextureTransform := TMatrix4.Identity;
-  FVRML1State.Assign(VRML1DefaultState);
 end;
 
 destructor TX3DGraphTraverseState.Destroy;
 begin
-  FreeAndNil(FVRML1State);
   FreeAndNil(ClipPlanes);
   FreeAndNil(Effects);
   inherited;
@@ -320,7 +307,6 @@ begin
   HumanoidInvertedTransform := TMatrix4.Identity;
 
   TextureTransform := TMatrix4.Identity;
-  FVRML1State.Assign(VRML1DefaultState);
   ShapeNode := nil;
   InsideInline := 0;
   InsidePrototype := 0;
@@ -344,7 +330,6 @@ begin
   AssignTransform(Source);
 
   TextureTransform := Source.TextureTransform;
-  FVRML1State.Assign(Source.FVRML1State);
   ShapeNode := Source.ShapeNode;
   InsideInline := Source.InsideInline;
   InsidePrototype := Source.InsidePrototype;
@@ -381,8 +366,6 @@ end;
 
 function TX3DGraphTraverseState.Equals(SecondValue: TX3DGraphTraverseState;
   const IgnoreTransform: boolean): boolean;
-var
-  SN: TVRML1StateNode;
 begin
   { Many fields are ignored by Equals, as they have no effect on generated
     TGeometryArrays for shapes. Like InsideInline, InsidePrototype and many
@@ -393,20 +376,11 @@ begin
     TMatrix4.PerfectlyEquals(TextureTransform, SecondValue.TextureTransform) and
     (ShapeNode = SecondValue.ShapeNode) ;
 
-  if Result then
-  begin
-    for SN := Low(SN) to High(SN) do
-      if SecondValue.VRML1State.Nodes[SN] <> VRML1State.Nodes[SN] then
-        Exit(false);
-  end;
 end;
 
 function TX3DGraphTraverseState.DiffuseAlphaTexture: TAbstractTextureNode;
 begin
   Result := nil;
-  if ShapeNode = nil then
-    Result := VRML1State.Texture2
-  else
   if ShapeNode.Appearance <> nil then
     Result := ShapeNode.Appearance.DiffuseAlphaTexture;
 end;
@@ -429,8 +403,7 @@ begin
       else
         Result := nil;
     end;
-  end else
-    Result := VRML1State.Material.MaterialInfo;
+  end
 end;
 
 { TX3DGraphTraverseStateStack --------------------------------------------- }

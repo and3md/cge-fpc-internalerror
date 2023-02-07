@@ -111,19 +111,6 @@ begin
   finally FreeAndNil(Polygonizer) end;
 end;
 
-procedure TIndexedTriangleMeshNode_1.InternalCoordPolygons(
-  State: TX3DGraphTraverseState;
-  PolygonHandler: TIndexedPolygonHandler);
-var
-  Polygonizer: TTriangleStripSetPolygonizer;
-begin
-  Polygonizer := TTriangleStripSetPolygonizer.Create;
-  try
-    Polygonizer.Polygon := PolygonHandler;
-    InternalMakeCoordRanges(State, {$ifdef CASTLE_OBJFPC}@{$endif} Polygonizer.HandleCoordRange);
-  finally FreeAndNil(Polygonizer) end;
-end;
-
 { TriangleSet ---------------------------------------------------------------- }
 
 procedure TriangleSetPolygonizer(
@@ -214,19 +201,6 @@ begin
     for I := 0 to High(Indexes) do
       Indexes[I] := I + Cardinal(BeginIndex);
   Polygon(Indexes);
-end;
-
-procedure TIndexedFaceSetNode_1.InternalCoordPolygons(
-  State: TX3DGraphTraverseState;
-  PolygonHandler: TIndexedPolygonHandler);
-var
-  Polygonizer: TIndexedFaceSetPolygonizer;
-begin
-  Polygonizer := TIndexedFaceSetPolygonizer.Create;
-  try
-    Polygonizer.Polygon := PolygonHandler;
-    InternalMakeCoordRanges(State, {$ifdef CASTLE_OBJFPC}@{$endif} Polygonizer.HandleCoordRange);
-  finally FreeAndNil(Polygonizer) end;
 end;
 
 procedure TIndexedFaceSetNode.InternalCoordPolygons(

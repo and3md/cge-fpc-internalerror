@@ -18,15 +18,6 @@
   { Forward declarations } { }
   TX3DNodeList = class;
   TX3DNode = class;
-  TCoordinate3Node_1 = class;
-  TShapeHintsNode_1 = class;
-  TFontStyleNode_1 = class;
-  TMaterialNode_1 = class;
-  TMaterialBindingNode_1 = class;
-  TNormalNode = class;
-  TNormalBindingNode_1 = class;
-  TTexture2Node_1 = class;
-  TTextureCoordinate2Node_1 = class;
   TAbstractGeometryNode = class;
   TAbstractLightNode = class;
   TAbstractShapeNode = class;
