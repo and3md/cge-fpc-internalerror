@@ -190,7 +190,6 @@ type
   {$I x3dnodes_standard_shape.inc}
   {$I x3dnodes_standard_interpolation.inc}
   {$I x3dnodes_standard_interpolation_cubic_bezier.inc}
-  {$I x3dnodes_standard_eventutilities.inc}
 
   { More X3D nodes, not from X3D standard }
   {$I x3dnodes_x3dinterfacedeclaration.inc}
@@ -244,8 +243,6 @@ uses
 {$I x3dnodes_standard_interpolation.inc}
 {$I x3dnodes_standard_interpolation_cubic_bezier.inc}
 
-{$I x3dnodes_standard_eventutilities.inc}
-
 { More X3D nodes, not from X3D standard }
 
 
@@ -253,8 +250,6 @@ uses
 { Auto-generated nodes code }
 {$I auto_generated_node_helpers/x3dnodes_appearance.inc}
 {$I auto_generated_node_helpers/x3dnodes_booleanfilter.inc}
-{$I auto_generated_node_helpers/x3dnodes_booleansequencer.inc}
-{$I auto_generated_node_helpers/x3dnodes_booleantoggle.inc}
 {$I auto_generated_node_helpers/x3dnodes_booleantrigger.inc}
 {$I auto_generated_node_helpers/x3dnodes_contour2d.inc}
 {$I auto_generated_node_helpers/x3dnodes_contourpolyline2d.inc}
@@ -264,8 +259,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_easeineaseout.inc}
 {$I auto_generated_node_helpers/x3dnodes_fillproperties.inc}
 {$I auto_generated_node_helpers/x3dnodes_group.inc}
-{$I auto_generated_node_helpers/x3dnodes_integersequencer.inc}
-{$I auto_generated_node_helpers/x3dnodes_integertrigger.inc}
 {$I auto_generated_node_helpers/x3dnodes_kambiappearance.inc}
 {$I auto_generated_node_helpers/x3dnodes_keysensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_linepicksensor.inc}
@@ -331,7 +324,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_x3dparametricgeometrynode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dpointingdevicesensornode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dsensornode.inc}
-{$I auto_generated_node_helpers/x3dnodes_x3dsequencernode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dshapenode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dtexturecoordinatenode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dtexturetransformnode.inc}
@@ -367,7 +359,6 @@ initialization
   RegisterShapeNodes;
   RegisterInterpolationNodes;
   RegisterInterpolationCubicBezierNodes;
-  RegisterEventUtilitiesNodes;
 
   //X3DCache := TX3DFontTexturesCache.Create;
   //TextureCache := X3DCache;

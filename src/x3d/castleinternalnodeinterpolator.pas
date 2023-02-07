@@ -835,41 +835,7 @@ var
     const SwitchChooseAnimation: TSwitchNode): TAbstractChildNode;
   var
     AnimationX3DName: string;
-
-    procedure AddAnimationVisibilityRoutes(TimeSensor: TTimeSensorNode);
-    var
-      BooleanFilter: TBooleanFilterNode;
-      IntegerTrigger: TIntegerTriggerNode;
-      Route: TX3DRoute;
-    begin
-      BooleanFilter := TBooleanFilterNode.Create(
-        AnimationX3DName + '_BooleanFilter', BaseUrl);
-      RootNode.AddChildren(BooleanFilter);
-
-      IntegerTrigger := TIntegerTriggerNode.Create(
-        AnimationX3DName + '_IntegerTrigger', BaseUrl);
-      IntegerTrigger.IntegerKey := AnimationIndex;
-      RootNode.AddChildren(IntegerTrigger);
-
-      Route := TX3DRoute.Create;
-      Route.SetSourceDirectly(TimeSensor.EventIsActive);
-      Route.SetDestinationDirectly(BooleanFilter.EventSet_boolean);
-      RootNode.AddRoute(Route);
-
-      Route := TX3DRoute.Create;
-      Route.SetSourceDirectly(BooleanFilter.EventInputTrue);
-      Route.SetDestinationDirectly(IntegerTrigger.EventSet_boolean);
-      RootNode.AddRoute(Route);
-
-      Route := TX3DRoute.Create;
-      Route.SetSourceDirectly(IntegerTrigger.EventTriggerValue);
-      Route.SetDestinationDirectly(SwitchChooseAnimation.FdWhichChoice.EventIn);
-      RootNode.AddRoute(Route);
-    end;
-
-  var
     TimeSensor: TTimeSensorNode;
-    IntSequencer: TIntegerSequencerNode;
     Switch: TSwitchNode;
     I, NodesCount: Integer;
     Route: TX3DRoute;
@@ -882,33 +848,6 @@ var
 
     NodesCount := BakedAnimation.Nodes.Count;
 
-    IntSequencer := TIntegerSequencerNode.Create(
-      AnimationX3DName + '_IntegerSequencer', BaseUrl);
-    if BakedAnimation.Backwards then
-    begin
-      IntSequencer.FdKey.Count := NodesCount * 2;
-      IntSequencer.FdKeyValue.Count := NodesCount * 2;
-      for I := 0 to NodesCount - 1 do
-      begin
-        IntSequencer.FdKey.Items[I] := I / IntSequencer.FdKey.Count;
-        IntSequencer.FdKeyValue.Items[I] := I;
-      end;
-      for I := 0 to NodesCount - 1 do
-      begin
-        IntSequencer.FdKey.Items[NodesCount + I] := (NodesCount + I) / IntSequencer.FdKey.Count;
-        IntSequencer.FdKeyValue.Items[NodesCount + I] := NodesCount - 1 - I;
-      end;
-    end else
-    begin
-      IntSequencer.FdKey.Count := NodesCount;
-      IntSequencer.FdKeyValue.Count := NodesCount;
-      for I := 0 to NodesCount - 1 do
-      begin
-        IntSequencer.FdKey.Items[I] := I / NodesCount;
-        IntSequencer.FdKeyValue.Items[I] := I;
-      end;
-    end;
-    Group.AddChildren(IntSequencer);
 
     Switch := TSwitchNode.Create(
       AnimationX3DName + '_Switch_ChooseAnimationFrame', BaseUrl);
@@ -938,17 +877,13 @@ var
 
     Route := TX3DRoute.Create;
     Route.SetSourceDirectly(TimeSensor.EventFraction_changed);
-    Route.SetDestinationDirectly(IntSequencer.EventSet_fraction);
     RootNode.AddRoute(Route);
 
     Route := TX3DRoute.Create;
-    Route.SetSourceDirectly(IntSequencer.EventValue_changed);
     Route.SetDestinationDirectly(Switch.FdWhichChoice);
     RootNode.AddRoute(Route);
 
     RootNode.ManuallyExportNode(TimeSensor);
-
-    AddAnimationVisibilityRoutes(TimeSensor);
 
     { We use WrapInCollisionNode, to make the object
       collide always as a bounding box.
