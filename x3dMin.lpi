@@ -136,10 +136,6 @@
         <UnitName Value="CastleMaterialProperties"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/octreeconf.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dfields.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="X3DFields"/>
@@ -437,11 +433,6 @@
         <Filename Value="src/base/castleshaders.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleShaders"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/3d/castleinternaloctree.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleInternalOctree"/>
       </Unit>
       <Unit>
         <Filename Value="src/base/castleunicode.pas"/>

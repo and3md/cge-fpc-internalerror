@@ -19,8 +19,7 @@ uses
   CastleLog, CastleProjection,
   CastleRectangles, CastleRendererBaseTypes, CastleStringUtils,
   CastleTimeUtils, CastleUtils, CastleVectors, CastleVectorsInternalDouble,
-  CastleVectorsInternalSingle, CastleUnicode, CastleBoxes,
-  CastleInternalOctree;
+  CastleVectorsInternalSingle, CastleUnicode, CastleBoxes;
 
 {$R *.res}
 
