@@ -170,8 +170,7 @@ uses SysUtils, Generics.Collections, Classes, XMLRead, DOM,
   CastleInternalX3DLexer, CastleUtils, CastleClassUtils,
   X3DFields,
   X3DTime,
-  CastleStringUtils, CastleMaterialProperties,
-  CastleProjection;
+  CastleStringUtils, CastleMaterialProperties;
 
 {$define read_interface}
 

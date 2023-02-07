@@ -348,11 +348,6 @@
         <UnitName Value="CastleInterfaces"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castleprojection.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleProjection"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castlerectangles.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleRectangles"/>
