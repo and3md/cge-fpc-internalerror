@@ -192,7 +192,6 @@ type
   {$I x3dnodes_standard_shape.inc}
   {$I x3dnodes_standard_interpolation.inc}
   {$I x3dnodes_standard_interpolation_cubic_bezier.inc}
-  {$I x3dnodes_standard_dis.inc}
   {$I x3dnodes_standard_eventutilities.inc}
   {$I x3dnodes_standard_layering.inc}
   {$I x3dnodes_standard_followers.inc}
@@ -259,7 +258,6 @@ uses
 {$I x3dnodes_standard_interpolation.inc}
 {$I x3dnodes_standard_interpolation_cubic_bezier.inc}
 
-{$I x3dnodes_standard_dis.inc}
 {$I x3dnodes_standard_eventutilities.inc}
 {$I x3dnodes_standard_layering.inc}
 {$I x3dnodes_standard_followers.inc}
@@ -281,10 +279,7 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_coordinateinterpolator.inc}
 {$I auto_generated_node_helpers/x3dnodes_coordinateinterpolator2d.inc}
 {$I auto_generated_node_helpers/x3dnodes_directionallight.inc}
-{$I auto_generated_node_helpers/x3dnodes_disentitymanager.inc}
-{$I auto_generated_node_helpers/x3dnodes_disentitytypemapping.inc}
 {$I auto_generated_node_helpers/x3dnodes_easeineaseout.inc}
-{$I auto_generated_node_helpers/x3dnodes_espdutransform.inc}
 {$I auto_generated_node_helpers/x3dnodes_fillproperties.inc}
 {$I auto_generated_node_helpers/x3dnodes_group.inc}
 {$I auto_generated_node_helpers/x3dnodes_inline.inc}
@@ -322,13 +317,11 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_projectedtexturecoordinate.inc}
 {$I auto_generated_node_helpers/x3dnodes_proximitysensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_quadset.inc}
-{$I auto_generated_node_helpers/x3dnodes_receiverpdu.inc}
 {$I auto_generated_node_helpers/x3dnodes_scalarchaser.inc}
 {$I auto_generated_node_helpers/x3dnodes_scalarinterpolator.inc}
 {$I auto_generated_node_helpers/x3dnodes_screengroup.inc}
 {$I auto_generated_node_helpers/x3dnodes_shadertexture.inc}
 {$I auto_generated_node_helpers/x3dnodes_shape.inc}
-{$I auto_generated_node_helpers/x3dnodes_signalpdu.inc}
 {$I auto_generated_node_helpers/x3dnodes_splinepositioninterpolator.inc}
 {$I auto_generated_node_helpers/x3dnodes_splinepositioninterpolator2d.inc}
 {$I auto_generated_node_helpers/x3dnodes_splinescalarinterpolator.inc}
@@ -341,7 +334,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_touchsensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_transform.inc}
 {$I auto_generated_node_helpers/x3dnodes_transformsensor.inc}
-{$I auto_generated_node_helpers/x3dnodes_transmitterpdu.inc}
 {$I auto_generated_node_helpers/x3dnodes_triangleset.inc}
 {$I auto_generated_node_helpers/x3dnodes_vectorinterpolator.inc}
 {$I auto_generated_node_helpers/x3dnodes_viewport.inc}
@@ -412,7 +404,6 @@ initialization
   RegisterShapeNodes;
   RegisterInterpolationNodes;
   RegisterInterpolationCubicBezierNodes;
-  RegisterDISNodes;
   RegisterEventUtilitiesNodes;
   RegisterLayeringNodes;
   //RegisterLayoutNodes;
