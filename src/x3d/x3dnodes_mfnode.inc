@@ -495,20 +495,6 @@ var
   Node: TX3DNode;
   UsedNodeFinished: boolean;
 begin
-  Node := (Reader as TX3DReaderNames).Nodes.Bound(AttributeValue, UsedNodeFinished);
-  if Node = nil then
-  begin
-    { NULL not allowed for MFNode, unlike the SFNode }
-    WritelnWarning('VRML/X3D', Format('Invalid node name for MFNode field: "%s"', [AttributeValue]));
-  end else
-  if not UsedNodeFinished then
-  begin
-    WritelnWarning('VRML/X3D', Format('Cycles in VRML/X3D graph: MFNode value inside node "%s" refers to the same name', [AttributeValue]));
-  end else
-  begin
-    Add(Node);
-    WarningIfChildNotAllowed(Node);
-  end;
 end;
 
 procedure TMFNode.ParseXMLElement(Element: TDOMElement; Reader: TX3DReader);

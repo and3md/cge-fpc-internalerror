@@ -198,7 +198,6 @@ type
   {$I x3dnodes_x3droute.inc}
   {$I x3dnodes_importexport.inc}
   {$I x3dnodes_names.inc}
-  {$I x3dnodes_load.inc}
 
 {$I x3dnodes_nodesmanager.inc}
 {$I x3dnodes_encoding_xml.inc}
@@ -227,7 +226,6 @@ uses
 {$I x3dnodes_destructionnotification.inc}
 {$I x3dnodes_x3dnodeclasseslist.inc}
 
-{$I x3dnodes_load.inc}
 {$I x3dnodes_encoding_xml.inc}
 {$I x3dnodes_x3dinterfacedeclaration.inc}
 {$I x3dnodes_prototypes.inc}

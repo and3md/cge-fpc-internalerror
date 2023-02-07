@@ -134,7 +134,6 @@
     procedure SetMaterial(const Value: TMaterialNode);
   protected
     function DirectEnumerateActive(Func: TEnumerateChildrenFunction): Pointer; override;
-    procedure ParseAfter(Reader: TX3DReaderNames); override;
   public
     procedure CreateNode; override;
     class function ClassX3DType: string; override;
@@ -868,16 +867,6 @@ begin
 
   {if Tex is TMovieTextureNode then
     Result := TryUrl(TMovieTextureNode(Tex).FdUrl);}
-end;
-
-procedure TAppearanceNode.ParseAfter(Reader: TX3DReaderNames);
-var
-  MP: TMaterialProperty;
-begin
-  inherited;
-
-  MP := InternalMaterialProperty;
-
 end;
 
 procedure TFillPropertiesNode.CreateNode;

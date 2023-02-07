@@ -37,7 +37,6 @@
   TX3DExport = class;
   TX3DInterfaceDeclaration = class;
   TX3DNodeNames = class;
-  TX3DReaderNames = class;
   TX3DPrototypeNames = class;
   TX3DInterfaceDeclarationList = class;
   TX3DGraphTraverseStateStack = class;

@@ -146,10 +146,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dnodes_load.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dnodes_mfnode.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -171,10 +167,6 @@
       </Unit>
       <Unit>
         <Filename Value="src/x3d/x3dnodes_prototypes.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dnodes_save.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>

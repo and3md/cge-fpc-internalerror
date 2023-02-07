@@ -345,8 +345,8 @@ begin
     (other values for SFNode / MFNode cannot be expressed inside
     the attribute). }
 
-  V := (Reader as TX3DReaderNames).Nodes.Bound(AttributeValue, UsedNodeFinished);
-  if (V <> nil) and (not UsedNodeFinished) then
+  V := nil;// (Reader as TX3DReaderNames).Nodes.Bound(AttributeValue, UsedNodeFinished);
+  if (V <> nil)  then
   begin
     WritelnWarning('VRML/X3D', Format('Cycles in VRML/X3D graph: SFNode value inside node "%s" refers to the same name', [AttributeValue]));
     Value := nil;

@@ -88,22 +88,6 @@
     property Event: TX3DEvent read FEvent;
     { @groupEnd }
 
-    procedure Parse(Lexer: TX3DLexer; Reader: TX3DReaderNames;
-      FieldValue, IsClauseAllowed: boolean);
-
-    { Parse interface declaration encoded in XML.
-
-      Note that classic VRML parser has here IsClauseAllowed: boolean
-      parameter, this was set to @true when parsing InterfaceDeclarations
-      of special nodes (Script, ComposedShader etc.), since they could
-      have IS clause (at least, as far as I understood the spec).
-      But for X3D XML encoding, it's not available, since (AFAI understand
-      the X3D XML encoding spec) the <IS> element inside node body may
-      point from nodeField to any interface field of this node, including
-      InterfaceDeclarations. So ParseISStatement handles this. }
-    procedure ParseXML(Element: TDOMElement; Reader: TX3DReaderNames;
-      FieldValue: boolean);
-
     { Save this interface declaration to stream.
       This assumes that it starts at the beginning of the line,
       and at the end always writes NL, so at the end it's also
@@ -195,85 +179,6 @@ begin
     FField := nil;
     FEvent := TX3DEvent(FFieldOrEvent);
   end;
-end;
-
-procedure TX3DInterfaceDeclaration.Parse(Lexer: TX3DLexer; Reader: TX3DReaderNames;
-  FieldValue, IsClauseAllowed: boolean);
-var
-  X3DType: string;
-  Access: TX3DAccessType;
-  FieldType: TX3DFieldClass;
-  ParsedName: string;
-begin
-  { clear instance before parsing }
-  FieldOrEvent.Free;
-  FieldOrEvent := nil;
-
-  if Lexer.Token = vtKeyword then
-  begin
-    case Lexer.TokenKeyword of
-      vkEventIn, vkInputOnly: Access := atInputOnly;
-      vkEventOut, vkOutputOnly: Access := atOutputOnly;
-      vkField, vkInitializeOnly: Access := atInitializeOnly;
-      vkExposedField, vkInputOutput: Access := atInputOutput;
-      else raise EX3DParserError.Create(
-        Lexer, Format(SExpectedInterfaceDeclaration, [Lexer.DescribeToken]));
-    end;
-  end else
-    raise EX3DParserError.Create(
-      Lexer, Format(SExpectedInterfaceDeclaration, [Lexer.DescribeToken]));
-
-  Lexer.NextToken;
-  Lexer.CheckTokenIs(vtName, 'field type (for interface declaration)');
-  X3DType := Lexer.TokenName;
-  FieldType := X3DFieldsManager.X3DTypeToClass(X3DType);
-  if FieldType = nil then
-    raise EX3DParserError.Create(
-      Lexer, Format(SExpectedFieldType, [Lexer.DescribeToken]));
-
-  Lexer.NextToken;
-  Lexer.CheckTokenIs(vtName, 'name (for interface declaration)');
-  ParsedName := Lexer.TokenName;
-
-  { we know everything now to create Event/Field instance }
-  case Access of
-    atInputOnly, atOutputOnly:
-      FieldOrEvent := FieldType.CreateEvent(ParentNode, ParsedName, Access = atInputOnly);
-    atInitializeOnly, atInputOutput:
-      FieldOrEvent := FieldType.CreateUndefined(ParentNode, Access = atInputOutput, ParsedName);
-    else raise EInternalError.Create('Access ? in TX3DInterfaceDeclaration.Parse');
-  end;
-
-  Lexer.NextToken;
-
-  if Event <> nil then
-  begin
-    if IsClauseAllowed then
-      Event.Parse(Lexer);
-  end else
-  begin
-    if FieldValue then
-      Field.Parse(Lexer, Reader, IsClauseAllowed) else
-    if IsClauseAllowed then
-      Field.ParseIsClause(Lexer);
-  end;
-
-  FieldOrEvent.ParentInterfaceDeclaration := Self;
-end;
-
-procedure TX3DInterfaceDeclaration.ParseXML(
-  Element: TDOMElement; Reader: TX3DReaderNames; FieldValue: boolean);
-var
-  Access: TX3DAccessType;
-  AccessIndex: Integer;
-  AccessName: string;
-  FieldX3DType: string;
-  FieldType: TX3DFieldClass;
-  ParsedName, FieldActualValue: string;
-begin
-  { clear instance before parsing }
-  FieldOrEvent.Free;
-  FieldOrEvent := nil;
 end;
 
 function TX3DInterfaceDeclaration.CopyFieldOrEvent(

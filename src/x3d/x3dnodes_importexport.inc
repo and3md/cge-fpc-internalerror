@@ -19,12 +19,6 @@
   public
     InlineNodeName, ImportedNodeName, ImportedNodeAlias: string;
 
-    procedure Parse(Lexer: TX3DLexer; Reader: TX3DReaderNames);
-
-    { Parse the IMPORT declaration (XML encoding).
-      Given Element here must have TagName = 'IMPORT'. }
-    procedure ParseXML(Element: TDOMElement; Reader: TX3DReaderNames);
-
     procedure SaveToStream(Writer: TX3DWriter); override;
     function DeepCopy(CopyState: TX3DNodeDeepCopyState): TX3DImport;
   end;
@@ -32,12 +26,6 @@
   TX3DExport = class(TX3DFileItem)
   public
     ExportedNodeName, ExportedNodeAlias: string;
-
-    procedure Parse(Lexer: TX3DLexer; Reader: TX3DReaderNames);
-
-    { Parse the EXPORT declaration (XML encoding).
-      Given Element here must have TagName = 'EXPORT'. }
-    procedure ParseXML(Element: TDOMElement; Reader: TX3DReaderNames);
 
     procedure SaveToStream(Writer: TX3DWriter); override;
     function DeepCopy(CopyState: TX3DNodeDeepCopyState): TX3DExport;
@@ -48,37 +36,6 @@
 {$ifdef read_implementation}
 
 { TX3DImport ---------------------------------------------------------------- }
-
-procedure TX3DImport.Parse(Lexer: TX3DLexer; Reader: TX3DReaderNames);
-begin
-  Lexer.NextToken;
-  Lexer.CheckTokenIs(vtName, 'Inline node name');
-  InlineNodeName := Lexer.TokenName;
-
-  Lexer.NextToken;
-  Lexer.CheckTokenIs(vtPeriod);
-
-  Lexer.NextToken;
-  Lexer.CheckTokenIs(vtName, 'imported node name');
-  ImportedNodeName := Lexer.TokenName;
-
-  Lexer.NextToken;
-  if Lexer.TokenIsKeyword(vkAS) then
-  begin
-    Lexer.NextToken;
-    Lexer.CheckTokenIs(vtName, 'alias for imported node name');
-    ImportedNodeAlias := Lexer.TokenName;
-
-    Lexer.NextToken;
-  end else
-    ImportedNodeAlias := ImportedNodeName;
-
-  Reader.DoImport(Self);
-end;
-
-procedure TX3DImport.ParseXML(Element: TDOMElement; Reader: TX3DReaderNames);
-begin
-end;
 
 procedure TX3DImport.SaveToStream(Writer: TX3DWriter);
 begin
@@ -112,30 +69,6 @@ begin
 end;
 
 { TX3DExport ---------------------------------------------------------------- }
-
-procedure TX3DExport.Parse(Lexer: TX3DLexer; Reader: TX3DReaderNames);
-begin
-  Lexer.NextToken;
-  Lexer.CheckTokenIs(vtName, 'exported node name');
-  ExportedNodeName := Lexer.TokenName;
-
-  Lexer.NextToken;
-  if Lexer.TokenIsKeyword(vkAS) then
-  begin
-    Lexer.NextToken;
-    Lexer.CheckTokenIs(vtName, 'alias for exported node name');
-    ExportedNodeAlias := Lexer.TokenName;
-
-    Lexer.NextToken;
-  end else
-    ExportedNodeAlias := ExportedNodeName;
-
-  Reader.DoExport(Self);
-end;
-
-procedure TX3DExport.ParseXML(Element: TDOMElement; Reader: TX3DReaderNames);
-begin
-end;
 
 procedure TX3DExport.SaveToStream(Writer: TX3DWriter);
 begin

@@ -181,21 +181,6 @@
 
     FBaseUrl: string;
 
-    { Parses InterfaceDeclarations. Also inits BaseUrl from
-      Names.BaseUrl, by the way. }
-    procedure ParseInterfaceDeclarations(ExternalProto: boolean;
-      Lexer: TX3DLexer; Reader: TX3DReaderNames);
-
-    { Parse interface declarations in XML encoding.
-      Handle sequence of <field> elements.
-
-      Note: unlike classic ParseInterfaceDeclarations,
-      this doesn't set BaseUrl, do it yourself (because often
-      you do not have 'ProtoInterface', so you would have to do it yourself
-      anyway). }
-    procedure ParseInterfaceDeclarationsXML(ExternalProto: boolean;
-      Element: TDOMElement; Reader: TX3DReaderNames);
-
     { Saves interface declarations of the prototype.
       For classic encoding, they are already enclosed in [ ]. }
     procedure SaveInterfaceDeclarationsToStream(
@@ -208,11 +193,6 @@
     property InterfaceDeclarations: TX3DInterfaceDeclarationList
       read FInterfaceDeclarations;
 
-    { Parse prototype, and add it to Names.Prototypes.
-      Adds to @code(Names) by @code(Names.Prototypes.Bind(Self)).
-      @groupBegin }
-    procedure Parse(Lexer: TX3DLexer; Reader: TX3DReaderNames); virtual; abstract;
-    procedure ParseXML(Element: TDOMElement; Reader: TX3DReaderNames); virtual; abstract;
     { @groupEnd }
 
     { The base URL path used to resolve urls inside.
@@ -229,8 +209,6 @@
   public
     destructor Destroy; override;
 
-    procedure Parse(Lexer: TX3DLexer; Reader: TX3DReaderNames); override;
-    procedure ParseXML(Element: TDOMElement; Reader: TX3DReaderNames); override;
     procedure SaveToStream(Writer: TX3DWriter); override;
 
     { Prototype contents: all nodes, prototypes, routes defined inside. }
@@ -258,8 +236,6 @@
     destructor Destroy; override;
     property URLList: TMFString read FURLList;
 
-    procedure Parse(Lexer: TX3DLexer; Reader: TX3DReaderNames); override;
-    procedure ParseXML(Element: TDOMElement; Reader: TX3DReaderNames); override;
     procedure SaveToStream(Writer: TX3DWriter); override;
 
     property ReferencedPrototype: TX3DPrototype read FReferencedPrototype;
@@ -787,36 +763,6 @@ begin
   inherited;
 end;
 
-procedure TX3DPrototypeBase.ParseInterfaceDeclarations(ExternalProto: boolean;
-  Lexer: TX3DLexer; Reader: TX3DReaderNames);
-var
-  I: TX3DInterfaceDeclaration;
-begin
-  while Lexer.Token <> vtCloseSqBracket do
-  begin
-    I := TX3DInterfaceDeclaration.Create(nil);
-    InterfaceDeclarations.Add(I);
-
-    if Lexer.TokenIsKeyword([vkDef]) then
-    begin
-      I.Parse(Lexer, Reader, not ExternalProto, false);
-    end else
-      raise EX3DParserError.Create(
-        Lexer, Format(SExpectedInterfaceDeclaration, [Lexer.DescribeToken]));
-  end;
-
-  { eat "]" token }
-  Lexer.NextToken;
-
-  FBaseUrl := Reader.BaseUrl;
-end;
-
-procedure TX3DPrototypeBase.ParseInterfaceDeclarationsXML(ExternalProto: boolean;
-  Element: TDOMElement; Reader: TX3DReaderNames);
-var
-  I: TX3DInterfaceDeclaration;
-begin
-end;
 
 procedure TX3DPrototypeBase.SaveInterfaceDeclarationsToStream(
   Writer: TX3DWriter; ExternalProto: boolean);
@@ -837,77 +783,6 @@ destructor TX3DPrototype.Destroy;
 begin
   FreeAndNil(FNode);
   inherited;
-end;
-
-procedure TX3DPrototype.Parse(Lexer: TX3DLexer; Reader: TX3DReaderNames);
-var
-  OldReader: TX3DReaderNames;
-begin
-  Lexer.NextToken;
-  Lexer.CheckTokenIs(vtName);
-  FX3DName := Lexer.TokenName;
-
-  Lexer.NextToken;
-  Lexer.CheckTokenIs(vtOpenSqBracket);
-
-  Lexer.NextToken;
-  ParseInterfaceDeclarations(false, Lexer, Reader);
-
-  Lexer.CheckTokenIs(vtOpenCurlyBracket);
-
-  Lexer.NextToken;
-  FreeAndNil(FNode);
-
-  { VRML 2.0 spec explicitly says that inside prototype has it's own DEF/USE
-    scope, completely independent from the outside.
-
-    Also prototype name scope is local within the prototype,
-    however it starts from current prototype name scope (not empty,
-    like in case of Reader.Nodes). So prototypes defined outside
-    are available inside, but nested prototypes inside are not
-    available outside. }
-  OldReader := Reader;
-  Reader := TX3DReaderNames.CreateCopy(true, OldReader);
-  try
-    Reader.Prototypes.Assign(OldReader.Prototypes);
-  finally
-    FreeAndNil(Reader);
-    Reader := OldReader;
-  end;
-
-  { consume last vtCloseCurlyBracket, ParseStatements doesn't do it }
-  Lexer.NextToken;
-
-  Reader.Prototypes.Bind(Self);
-end;
-
-procedure TX3DPrototype.ParseXML(Element: TDOMElement; Reader: TX3DReaderNames);
-var
-  OldReader: TX3DReaderNames;
-  NewName: string;
-  E: TDOMElement;
-begin
-  BaseUrl := Reader.BaseUrl;
-
-  { VRML 2.0 spec explicitly says that inside prototype has it's own DEF/USE
-    scope, completely independent from the outside.
-
-    Also prototype name scope is local within the prototype,
-    however it starts from current prototype name scope (not empty,
-    like in case of Reader.Nodes). So prototypes defined outside
-    are available inside, but nested prototypes inside are not
-    available outside. }
-  OldReader := Reader;
-  Reader := TX3DReaderNames.CreateCopy(true, OldReader);
-  try
-    Reader.Prototypes.Assign(OldReader.Prototypes);
-    FNode := ParseStatements(E, false, nil, Reader);
-  finally
-    FreeAndNil(Reader);
-    Reader := OldReader;
-  end;
-
-  Reader.Prototypes.Bind(Self);
 end;
 
 procedure TX3DPrototype.SaveToStream(Writer: TX3DWriter);
@@ -956,36 +831,6 @@ begin
   UnloadReferenced;
   FreeAndNil(FURLList);
   inherited;
-end;
-
-procedure TX3DExternalPrototype.Parse(Lexer: TX3DLexer; Reader: TX3DReaderNames);
-begin
-  Lexer.NextToken;
-  Lexer.CheckTokenIs(vtName);
-  FX3DName := Lexer.TokenName;
-
-  Lexer.NextToken;
-  Lexer.CheckTokenIs(vtOpenSqBracket);
-
-  Lexer.NextToken;
-  ParseInterfaceDeclarations(true, Lexer, Reader);
-
-  URLList.Parse(Lexer, Reader, false);
-
-  Reader.Prototypes.Bind(Self);
-
-  LoadReferenced;
-end;
-
-procedure TX3DExternalPrototype.ParseXML(Element: TDOMElement; Reader: TX3DReaderNames);
-var
-  NewName, URLListValue: string;
-begin
-  BaseUrl := Reader.BaseUrl;
-
-  Reader.Prototypes.Bind(Self);
-
-  LoadReferenced;
 end;
 
 procedure TX3DExternalPrototype.SaveToStream(Writer: TX3DWriter);

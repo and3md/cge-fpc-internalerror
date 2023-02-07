@@ -35,11 +35,6 @@
       const DestEnding: boolean;
       RemoveFromDestructionNotification: boolean = true);
 
-    procedure SetEnding(const NodeName, FieldOrEventName: string;
-      Reader: TX3DReaderNames;
-      var Node: TX3DNode; var Event: TX3DEvent;
-      const DestEnding: boolean);
-
     { Set Event, based on FieldOrEvent (may be actual event,
       or exposed field containing it) and DestEnding.
       Assumes that Event is clear on enter (cleared by UnsetEnding). }
@@ -86,27 +81,6 @@
     property DestinationEvent: TX3DEvent read FDestinationEvent;
     { @groupEnd }
 
-    { Set source/destination of the route.
-
-      This does everything that VRML parser should
-      do when parsed VRML route. It looks for given node name
-      (in Names.Nodes, then Names.Imported),
-      then it looks for field/event within this node,
-      and if everything is successful --- sets route properties.
-
-      If something goes wrong, WritelnWarning is generated
-      and route ending is left unset.
-
-      @groupBegin }
-    procedure SetSource(
-      const SourceNodeName, SourceFieldOrEventName: string;
-      Reader: TX3DReaderNames);
-
-    procedure SetDestination(
-      const DestinationNodeName, DestinationFieldOrEventName: string;
-      Reader: TX3DReaderNames);
-    { @groupEnd }
-
     { These set source/destination of the route in more direct way.
 
       FieldOrEvent is used to set SourceEvent (or DestinationEvent).
@@ -133,15 +107,6 @@
     procedure SetSourceDirectly(const FieldOrEvent: TX3DFieldOrEvent); overload;
     procedure SetDestinationDirectly(const FieldOrEvent: TX3DFieldOrEvent); overload;
     { @groupEnd }
-
-    { Parse the route (classic VRML encoding).
-      Implementation should be able to safely assume that current token
-      is ROUTE. }
-    procedure Parse(Lexer: TX3DLexer; Reader: TX3DReaderNames);
-
-    { Parse the route (XML encoding).
-      Given Element here must have TagName = 'ROUTE'. }
-    procedure ParseXML(Element: TDOMElement; Reader: TX3DReaderNames);
 
     { Save a ROUTE to VRML file.
 
@@ -203,65 +168,6 @@ begin
   UnsetEnding(FSourceNode     , FSourceEvent     , false);
   UnsetEnding(FDestinationNode, FDestinationEvent, true);
   inherited;
-end;
-
-procedure TX3DRoute.Parse(Lexer: TX3DLexer; Reader: TX3DReaderNames);
-var
-  SourceNodeName, SourceEventName: string;
-  DestinationNodeName, DestinationEventName: string;
-begin
-  { We don't use NextTokenForceVTName here, as then the dot "."
-    is treated like part the VRML name. So this assumes that VRML node names
-    are really correct VRML names. }
-
-  Lexer.NextToken;
-  Lexer.CheckTokenIs(vtName, 'VRML node name');
-  SourceNodeName := Lexer.TokenName;
-
-  Lexer.NextToken;
-  Lexer.CheckTokenIs(vtPeriod);
-
-  Lexer.NextToken;
-  Lexer.CheckTokenIs(vtName, 'VRML field/event name');
-  SourceEventName := Lexer.TokenName;
-
-  Lexer.NextToken;
-  Lexer.CheckTokenIsKeyword(vkTO);
-
-  Lexer.NextToken;
-  Lexer.CheckTokenIs(vtName, 'VRML node name');
-  DestinationNodeName := Lexer.TokenName;
-
-  Lexer.NextToken;
-  Lexer.CheckTokenIs(vtPeriod);
-
-  Lexer.NextToken;
-  Lexer.CheckTokenIs(vtName, 'VRML field/event name');
-  DestinationEventName := Lexer.TokenName;
-
-  Lexer.NextToken;
-
-  SetSource     (SourceNodeName     , SourceEventName     , Reader);
-  SetDestination(DestinationNodeName, DestinationEventName, Reader);
-end;
-
-procedure TX3DRoute.ParseXML(Element: TDOMElement; Reader: TX3DReaderNames);
-
-  function RequiredAttrib(const AttrName: string): string;
-  begin
-  end;
-
-var
-  SourceNodeName, SourceEventName: string;
-  DestinationNodeName, DestinationEventName: string;
-begin
-  SourceNodeName := RequiredAttrib('fromNode');
-  SourceEventName := RequiredAttrib('fromField');
-  DestinationNodeName := RequiredAttrib('toNode');
-  DestinationEventName := RequiredAttrib('toField');
-
-  SetSource     (SourceNodeName     , SourceEventName     , Reader);
-  SetDestination(DestinationNodeName, DestinationEventName, Reader);
 end;
 
 procedure TX3DRoute.UnsetEnding(
@@ -356,69 +262,6 @@ begin
 
   if (Event <> nil) and (not DestEnding) then
     Event.AddNotification({$ifdef CASTLE_OBJFPC}@{$endif} EventReceive);
-end;
-
-procedure TX3DRoute.SetEnding(const NodeName, FieldOrEventName: string;
-  Reader: TX3DReaderNames;
-  var Node: TX3DNode; var Event: TX3DEvent;
-  const DestEnding: boolean);
-var
-  N: TX3DNode;
-  FieldOrEvent: TX3DFieldOrEvent;
-  IgnoreNodeFinished: boolean;
-begin
-  UnsetEnding(Node, Event, DestEnding);
-
-  try
-    N := Reader.Nodes.Bound(NodeName, IgnoreNodeFinished);
-    if N = nil then
-      N := Reader.Imported.Bound(NodeName, IgnoreNodeFinished);
-    if N = nil then
-      raise ERouteSetEndingError.CreateFmt('Route %s node name "%s" not found',
-        [ DestEndingNames[DestEnding], NodeName ]);
-
-    Node := N;
-    if Node.PrototypeInstanceSourceNode <> nil then
-    begin
-      Node := Node.PrototypeInstanceSourceNode;
-      { Actually, SearchNode.PrototypeInstanceSourceNode may also be non-nil,
-        in case we have nested prototype. But it doesn't matter,
-        that is we don't want to go all the way down to find the
-        final PrototypeInstanceSourceNode --- we only want to see the first
-        PrototypeInstanceSourceNode. }
-    end;
-
-    Node.AddDestructionNotification({$ifdef CASTLE_OBJFPC}@{$endif} DestructionNotification);
-
-    FieldOrEvent := Node.FieldOrEvent(FieldOrEventName);
-    if FieldOrEvent = nil then
-      raise ERouteSetEndingError.CreateFmt('Route %s field/event name "%s" (for node "%s", type "%s") not found',
-        [ DestEndingNames[DestEnding], FieldOrEventName, NodeName, Node.X3DType ]);
-
-    SetEndingInternal(Node, FieldOrEvent, Event, DestEnding);
-  except
-    on E: ERouteSetEndingError do
-    begin
-      UnsetEnding(Node, Event, DestEnding);
-      WritelnWarning('VRML/X3D', E.Message);
-    end;
-  end;
-end;
-
-procedure TX3DRoute.SetSource(
-  const SourceNodeName, SourceFieldOrEventName: string;
-  Reader: TX3DReaderNames);
-begin
-  SetEnding(SourceNodeName, SourceFieldOrEventName,
-    Reader, FSourceNode, FSourceEvent, false);
-end;
-
-procedure TX3DRoute.SetDestination(
-  const DestinationNodeName, DestinationFieldOrEventName: string;
-  Reader: TX3DReaderNames);
-begin
-  SetEnding(DestinationNodeName, DestinationFieldOrEventName,
-    Reader, FDestinationNode, FDestinationEvent, true);
 end;
 
 procedure TX3DRoute.SetEndingDirectly(
