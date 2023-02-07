@@ -38,14 +38,5 @@
 
 { TAbstractPointingDeviceSensorNode ----------------------------------------------- }
 
-function TAbstractPointingDeviceSensorNode.GetDescription: string;
-begin
-  Result := FdDescription.Value;
-end;
-
-procedure TAbstractPointingDeviceSensorNode.SetDescription(const Value: string);
-begin
-  FdDescription.Send(Value);
-end;
 
 {$endif read_implementation}

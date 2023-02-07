@@ -707,7 +707,7 @@ begin
     Although NLerp doesn't guarantee constant velocity, and should be
     faster --- neither of these qualities seem to be noticeable
     in practice. }
-  Result := SLerp(A, V1, V2);
+  Result := V1;
 end;
 
 class function TPositionInterpolatorNode.ClassX3DType: string;

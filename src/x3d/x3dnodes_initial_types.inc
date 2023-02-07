@@ -40,7 +40,6 @@
   // TEffectNode = class;
   TX3DRootNode = class;
   TX3DGraphTraverseState = class;
-  TPointingDeviceSensorList = class;
   TMaterialInfo = class;
   TSFNode = class;
   TMFNode = class;

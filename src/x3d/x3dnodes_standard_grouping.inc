@@ -410,15 +410,6 @@ type
   begin
     { Testing for WasPointingDeviceSensor guarantees that multiple
       pointing devices within the same grouping node will all work. }
-    if not WasPointingDeviceSensor then
-    begin
-      State.PointingDeviceSensors.Clear;
-      State.PointingDeviceSensors.Transform := State.Transform;
-      State.PointingDeviceSensors.InvertedTransform := State.InvertedTransform;
-      WasPointingDeviceSensor := true;
-    end;
-
-    State.PointingDeviceSensors.Add(Child);
   end;
 
   function TGeneralGroupingEnumerator.EnumerateChildrenFunction(
@@ -439,10 +430,6 @@ type
         E.g. PointLight with global = false should be limited by *both*
         scope (in graph hierarchy) and radius, as far as I understand. }
       else
-    if Child is TAbstractPointingDeviceSensorNode then
-    begin
-      AddPointingDeviceSensor(Child);
-    end else
     if Child is TClipPlaneNode then
     begin
       CP := State.AddClipPlane;

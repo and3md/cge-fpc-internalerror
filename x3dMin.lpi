@@ -346,10 +346,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dnodes_standard_pointingdevicesensor.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dnodes_standard_rendering.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -691,11 +687,6 @@
       <Unit>
         <Filename Value="src/base/norqcheckend.inc"/>
         <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/3d/castlequaternions.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleQuaternions"/>
       </Unit>
       <Unit>
         <Filename Value="src/3d/castletriangles_istrianglespherecollision.inc"/>

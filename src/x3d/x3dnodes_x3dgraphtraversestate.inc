@@ -161,17 +161,6 @@
       visible. }
     InsideInvisible: Cardinal;
 
-    { Active pointing device sensors in this state.
-      This can contain only nodes descending from
-      X3DPointingDeviceSensorNode, and additionally an Anchor node.
-
-      This list automatically honours VRML / X3D rules for what
-      pointing device sensor is active: pointing device within some
-      group node affects all children in this group node.
-      (And when multiple pointing device sensors are within the same
-      grouping node, they all work.) }
-    PointingDeviceSensors: TPointingDeviceSensorList;
-
     { For Humanoid skeleton, these contain cummulated joint transformation. }
     HumanoidTransform, HumanoidInvertedTransform: TMatrix4;
     { Humanoid node containing us, or @nil if none. }
@@ -283,7 +272,6 @@ var
 procedure TX3DGraphTraverseState.CommonCreate;
 begin
   inherited Create;
-  PointingDeviceSensors := TPointingDeviceSensorList.Create(false);
   FVRML1State := TVRML1State.Create;
 end;
 
@@ -317,7 +305,6 @@ end;
 destructor TX3DGraphTraverseState.Destroy;
 begin
   FreeAndNil(FVRML1State);
-  FreeAndNil(PointingDeviceSensors);
   FreeAndNil(ClipPlanes);
   FreeAndNil(Effects);
   inherited;
@@ -341,7 +328,6 @@ begin
   InsideInvisible := 0;
   //LocalFog := nil;
 
-  PointingDeviceSensors.Count := 0;
   FreeAndNil(ClipPlanes);
   FreeAndNil(Effects);
 end;
@@ -365,9 +351,6 @@ begin
   InsideIgnoreCollision := Source.InsideIgnoreCollision;
   InsideInvisible := Source.InsideInvisible;
   Humanoid := Source.Humanoid;
-//  LocalFog := Source.LocalFog;
-
-  PointingDeviceSensors.Assign(Source.PointingDeviceSensors);
 end;
 
 procedure TX3DGraphTraverseState.AssignTransform(
@@ -378,12 +361,6 @@ begin
   InvertedTransform := Source.InvertedTransform;
   HumanoidTransform := Source.HumanoidTransform;
   HumanoidInvertedTransform := Source.HumanoidInvertedTransform;
-
-  if PointingDeviceSensors.Count <> 0 then
-  begin
-    PointingDeviceSensors.Transform := Source.PointingDeviceSensors.Transform;
-    PointingDeviceSensors.InvertedTransform := Source.PointingDeviceSensors.InvertedTransform;
-  end;
 
   if Source.ClipPlanes <> nil then
   begin

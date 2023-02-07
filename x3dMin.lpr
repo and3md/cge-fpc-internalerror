@@ -20,7 +20,7 @@ uses
   CastleRectangles, CastleRendererBaseTypes, CastleStringUtils,
   CastleTimeUtils, CastleUtils, CastleVectors, CastleVectorsInternalDouble,
   CastleVectorsInternalSingle, CastleUnicode, CastleBoxes,
-  CastleInternalOctree, CastleQuaternions, CastleTriangles;
+  CastleInternalOctree, CastleTriangles;
 
 {$R *.res}
 

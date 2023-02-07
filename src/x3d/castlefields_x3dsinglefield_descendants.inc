@@ -1383,7 +1383,7 @@ procedure TSFRotation.AssignLerp(const A: Double; Value1, Value2: TX3DField);
 begin
   { interpolate using slerp (testcase when linear interpolation on axis/vector fails:
     god triangle in escape_universe) }
-  Value := SLerp(A, (Value1 as TSFRotation).Value, (Value2 as TSFRotation).Value);
+  // Value := SLerp(A, (Value1 as TSFRotation).Value, (Value2 as TSFRotation).Value);
 end;
 
 function TSFRotation.CanAssignLerp: boolean;

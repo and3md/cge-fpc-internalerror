@@ -200,7 +200,6 @@ type
   {$I x3dnodes_standard_texturing.inc}
   {$I x3dnodes_standard_interpolation.inc}
   {$I x3dnodes_standard_interpolation_cubic_bezier.inc}
-  {$I x3dnodes_standard_pointingdevicesensor.inc}
   {$I x3dnodes_standard_environmentalsensor.inc}
   {$I x3dnodes_standard_h-anim.inc}
   {$I x3dnodes_standard_dis.inc}
@@ -246,7 +245,7 @@ uses
   Math,
   StrUtils,
   CastleLog,
-  CastleQuaternions, X3DLoadInternalUtils;
+  X3DLoadInternalUtils;
 
 {$warnings on}
 
@@ -300,7 +299,7 @@ uses
 {$I x3dnodes_standard_texturing.inc}
 {$I x3dnodes_standard_interpolation.inc}
 {$I x3dnodes_standard_interpolation_cubic_bezier.inc}
-{$I x3dnodes_standard_pointingdevicesensor.inc}
+
 {$I x3dnodes_standard_environmentalsensor.inc}
 {$I x3dnodes_standard_h-anim.inc}
 {$I x3dnodes_standard_dis.inc}
@@ -353,7 +352,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_coordinateinterpolator.inc}
 {$I auto_generated_node_helpers/x3dnodes_coordinateinterpolator2d.inc}
 {$I auto_generated_node_helpers/x3dnodes_cylinder.inc}
-{$I auto_generated_node_helpers/x3dnodes_cylindersensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_directionallight.inc}
 {$I auto_generated_node_helpers/x3dnodes_disentitymanager.inc}
 {$I auto_generated_node_helpers/x3dnodes_disentitytypemapping.inc}
@@ -418,7 +416,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_pickablegroup.inc}
 {$I auto_generated_node_helpers/x3dnodes_pixeltexture.inc}
 {$I auto_generated_node_helpers/x3dnodes_pixeltexture3d.inc}
-{$I auto_generated_node_helpers/x3dnodes_planesensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_pointemitter.inc}
 {$I auto_generated_node_helpers/x3dnodes_pointlight.inc}
 {$I auto_generated_node_helpers/x3dnodes_pointpicksensor.inc}
@@ -449,7 +446,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_shape.inc}
 {$I auto_generated_node_helpers/x3dnodes_signalpdu.inc}
 {$I auto_generated_node_helpers/x3dnodes_sphere.inc}
-{$I auto_generated_node_helpers/x3dnodes_spheresensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_splinepositioninterpolator.inc}
 {$I auto_generated_node_helpers/x3dnodes_splinepositioninterpolator2d.inc}
 {$I auto_generated_node_helpers/x3dnodes_splinescalarinterpolator.inc}
@@ -495,7 +491,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_x3dcomposedgeometrynode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dcoordinatenode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3ddampernode.inc}
-{$I auto_generated_node_helpers/x3dnodes_x3ddragsensornode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3denvironmentalsensornode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3denvironmenttexturenode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dfollowernode.inc}
@@ -574,7 +569,6 @@ initialization
   RegisterTexturingNodes;
   RegisterInterpolationNodes;
   RegisterInterpolationCubicBezierNodes;
-  RegisterPointingDeviceSensorNodes;
   //RegisterKeyDeviceSensorNodes;
   RegisterEnvironmentalSensorNodes;
   //RegisterNavigationNodes;
