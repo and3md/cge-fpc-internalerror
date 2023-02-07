@@ -191,7 +191,6 @@ type
   {$I x3dnodes_standard_interpolation.inc}
   {$I x3dnodes_standard_interpolation_cubic_bezier.inc}
   {$I x3dnodes_standard_eventutilities.inc}
-  {$I x3dnodes_standard_layering.inc}
   {$I x3dnodes_standard_followers.inc}
 
   { More X3D nodes, not from X3D standard }
@@ -255,7 +254,6 @@ uses
 {$I x3dnodes_standard_interpolation_cubic_bezier.inc}
 
 {$I x3dnodes_standard_eventutilities.inc}
-{$I x3dnodes_standard_layering.inc}
 {$I x3dnodes_standard_followers.inc}
 
 { More X3D nodes, not from X3D standard }
@@ -281,8 +279,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_integertrigger.inc}
 {$I auto_generated_node_helpers/x3dnodes_kambiappearance.inc}
 {$I auto_generated_node_helpers/x3dnodes_keysensor.inc}
-{$I auto_generated_node_helpers/x3dnodes_layer.inc}
-{$I auto_generated_node_helpers/x3dnodes_layerset.inc}
 {$I auto_generated_node_helpers/x3dnodes_linepicksensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_lineproperties.inc}
 {$I auto_generated_node_helpers/x3dnodes_lod.inc}
@@ -329,7 +325,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_transformsensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_triangleset.inc}
 {$I auto_generated_node_helpers/x3dnodes_vectorinterpolator.inc}
-{$I auto_generated_node_helpers/x3dnodes_viewport.inc}
 {$I auto_generated_node_helpers/x3dnodes_visibilitysensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_volumepicksensor.inc}
 {$I auto_generated_node_helpers/x3dnodes_worldinfo.inc}
@@ -350,7 +345,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_x3dinfonode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dinterpolatornode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dkeydevicesensornode.inc}
-{$I auto_generated_node_helpers/x3dnodes_x3dlayernode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dlayoutnode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dmaterialnode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dnetworksensornode.inc}
@@ -397,7 +391,6 @@ initialization
   RegisterInterpolationNodes;
   RegisterInterpolationCubicBezierNodes;
   RegisterEventUtilitiesNodes;
-  RegisterLayeringNodes;
   //RegisterLayoutNodes;
   RegisterFollowersNodes;
 

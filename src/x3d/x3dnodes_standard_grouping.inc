@@ -831,7 +831,7 @@ begin
     "4.3.2 Root nodes" from X3D 3.2 spec.
   }
 
-  if not (Supports(Child, IAbstractChildNode) or (Child is TLayerSetNode)) then
+  if not (Supports(Child, IAbstractChildNode)) then
     WritelnWarning('VRML/X3D', Format('Node "%s" is not allowed at the top level of the VRML/X3D file',
       [Child.X3DType]));
 end;
