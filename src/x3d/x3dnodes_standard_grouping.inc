@@ -762,12 +762,6 @@ begin
       for I := 0 to RoutesCount - 1 do
         FileItems.Add(Routes[I]);
 
-      for I := 0 to ImportsCount - 1 do
-        FileItems.Add(ImportsList[I]);
-
-      for I := 0 to ExportsCount - 1 do
-        FileItems.Add(ExportsList[I]);
-
       FileItems.SaveToStream(Writer);
     finally FreeAndNil(FileItems) end;
   end else
@@ -852,16 +846,9 @@ begin
 end;
 
 procedure TX3DRootNode.ManuallyExportNode(const Node: TX3DNode; const ExportedAlias: string);
-var
-  ExportItem: TX3DExport;
 begin
   if Node.X3DName = '' then
     raise Exception.Create('You cannot export nodes with empty names');
-
-  ExportItem := TX3DExport.Create;
-  AddExport(ExportItem);
-  ExportItem.ExportedNodeName := Node.X3DName;
-  ExportItem.ExportedNodeAlias := ExportedAlias;
 
   { merely adding ExportItem is not enough, we have to also replicate what
     parsing of EXPORT clause does, and add it to ExportedNames. }

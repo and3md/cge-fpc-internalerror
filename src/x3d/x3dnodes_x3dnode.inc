@@ -95,8 +95,6 @@
       ParentInfo: PTraversingInfo; var TraverseIntoChildren: boolean): Pointer;
     function GetPrototypes(const Index: Integer): TX3DPrototypeBase;
     function GetRoutes(const Index: Integer): TX3DRoute;
-    function GetImports(const Index: Integer): TX3DImport;
-    function GetExports(const Index: Integer): TX3DExport;
     function GetFields(const Index: Integer): TX3DField;
     function GetEvents(const Index: Integer): TX3DEvent;
     procedure UnregisterSceneCallback(Node: TX3DNode);
@@ -794,14 +792,6 @@
     property Routes [Index: Integer]: TX3DRoute read GetRoutes;
     function RoutesCount: Integer;
     procedure AddRoute(const Value: TX3DRoute);
-
-    property ImportsList [Index: Integer]: TX3DImport read GetImports;
-    function ImportsCount: Integer;
-    procedure AddImport(const Value: TX3DImport);
-
-    property ExportsList [Index: Integer]: TX3DExport read GetExports;
-    function ExportsCount: Integer;
-    procedure AddExport(const Value: TX3DExport);
 
     { Create a deep copy of this node and all it's children.
 
@@ -2014,11 +2004,6 @@ procedure TX3DNode.NodeSaveToStream(Writer: TX3DWriter; const CurrentContainerFi
       for I := 0 to RoutesCount - 1 do
         Result.Add(Routes[I]);
 
-      for I := 0 to ImportsCount - 1 do
-        Result.Add(ImportsList[I]);
-
-      for I := 0 to ExportsCount - 1 do
-        Result.Add(ExportsList[I]);
     except FreeAndNil(Result) end;
   end;
 
@@ -2448,12 +2433,6 @@ begin
     for I := 0 to RoutesCount - 1 do
       Result.AddRoute(Routes[I].DeepCopy(CopyState));
 
-    for I := 0 to ImportsCount - 1 do
-      Result.AddImport((ImportsList[I] as TX3DImport).DeepCopy(CopyState));
-
-    for I := 0 to ExportsCount - 1 do
-      Result.AddExport((ExportsList[I] as TX3DExport).DeepCopy(CopyState));
-
     if PrototypeInstance then
     begin
       Result.FPrototypeInstance := PrototypeInstance;
@@ -2609,50 +2588,6 @@ begin
   if FRoutes = nil then
     FRoutes := TX3DRouteList.Create(true);
   FRoutes.Add(Value);
-end;
-
-function TX3DNode.GetImports(const Index: Integer): TX3DImport;
-begin
-  if FImports = nil then
-    raise ERangeError.CreateFmt('Imports list is empty, but tried to access index %d', [Index]);
-  Result := FImports[Index] as TX3DImport;
-end;
-
-function TX3DNode.ImportsCount: Integer;
-begin
-  if FImports <> nil then
-    Result := FImports.Count else
-    Result := 0;
-end;
-
-procedure TX3DNode.AddImport(const Value: TX3DImport);
-begin
-  { create FImports at demand }
-  if FImports = nil then
-    FImports := TX3DFileItemList.Create(true);
-  FImports.Add(Value);
-end;
-
-function TX3DNode.GetExports(const Index: Integer): TX3DExport;
-begin
-  if FExports = nil then
-    raise ERangeError.CreateFmt('Exports list is empty, but tried to access index %d', [Index]);
-  Result := FExports[Index] as TX3DExport;
-end;
-
-function TX3DNode.ExportsCount: Integer;
-begin
-  if FExports <> nil then
-    Result := FExports.Count else
-    Result := 0;
-end;
-
-procedure TX3DNode.AddExport(const Value: TX3DExport);
-begin
-  { create FExports at demand }
-  if FExports = nil then
-    FExports := TX3DFileItemList.Create(true);
-  FExports.Add(Value);
 end;
 
 procedure TX3DNode.UnregisterSceneCallback(Node: TX3DNode);

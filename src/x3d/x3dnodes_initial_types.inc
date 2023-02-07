@@ -33,8 +33,6 @@
   TX3DPrototypeBaseList = class;
   TX3DRoute = class;
   TX3DRouteList = class;
-  TX3DImport = class;
-  TX3DExport = class;
   TX3DInterfaceDeclaration = class;
   TX3DNodeNames = class;
   TX3DPrototypeNames = class;
