@@ -116,11 +116,6 @@
         <UnitName Value="CastleInternalNodeInterpolator"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/castleinternalshadowmaps.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleInternalShadowMaps"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/castleinternalx3dlexer.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleInternalX3DLexer"/>

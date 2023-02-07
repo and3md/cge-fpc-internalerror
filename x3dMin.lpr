@@ -11,7 +11,6 @@ uses
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, UMinX3d, CastleInternalNodeInterpolator,
-  CastleInternalShadowMaps,
   CastleInternalX3DLexer,
   CastleMaterialProperties, X3DFields, X3DLoadInternalUtils,
   X3DNodes, X3DTime, CastleClassUtils,
