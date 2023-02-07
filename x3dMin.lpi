@@ -130,14 +130,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dnodes_encoding_xml.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dnodes_importexport.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dnodes_initial_types.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
