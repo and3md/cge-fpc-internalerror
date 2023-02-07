@@ -9,8 +9,7 @@ uses
   {$IFDEF HASAMIGA}
   athreads,
   {$ENDIF}
-  Interfaces, // this includes the LCL widgetset
-  Forms, UMinX3d, CastleInternalNodeInterpolator,
+  CastleInternalNodeInterpolator,
   CastleInternalX3DLexer,
   CastleMaterialProperties, X3DFields, X3DLoadInternalUtils,
   X3DNodes, X3DTime, CastleClassUtils,
@@ -23,10 +22,6 @@ uses
 {$R *.res}
 
 begin
-  RequireDerivedFormResource := True;
-  Application.Scaled := True;
-  Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
-  Application.Run;
+  Writeln('test');
 end.
 

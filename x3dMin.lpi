@@ -23,23 +23,10 @@
     <RunParams>
       <FormatVersion Value="2"/>
     </RunParams>
-    <RequiredPackages>
-      <Item>
-        <PackageName Value="LCL"/>
-      </Item>
-    </RequiredPackages>
     <Units>
       <Unit>
         <Filename Value="x3dMin.lpr"/>
         <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="uminx3d.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="Form1"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="UMinX3d"/>
       </Unit>
       <Unit>
         <Filename Value="src/x3d/castlefields_internalglobals.inc"/>
