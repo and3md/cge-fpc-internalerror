@@ -233,11 +233,6 @@ uses
 {$I x3dnodes_destructionnotification.inc}
 {$I x3dnodes_x3dnodeclasseslist.inc}
 
-{$I x3dnodes_utils_extrusion.inc}
-{$I x3dnodes_utils_elevationgrid.inc}
-{$I x3dnodes_utils_cone_cylinder.inc}
-{$I x3dnodes_utils_sphere.inc}
-{$I x3dnodes_utils_box.inc}
 {$I x3dnodes_save.inc}
 {$I x3dnodes_load.inc}
 {$I x3dnodes_encoding_xml.inc}
