@@ -98,7 +98,7 @@ function CreateSmoothNormalsCoordinateNode(
 implementation
 
 uses Generics.Collections,
-  X3DFields, CastleTriangulate;
+  X3DFields;
 
 type
   TFace = record
@@ -160,10 +160,10 @@ var
       ThisFace^.IndicesCount := i-ThisFace^.StartIndex;
 
       { calculate ThisFace.Normal }
-      ThisFace^.Normal := IndexedPolygonNormal(
+      {ThisFace^.Normal := IndexedPolygonNormal(
         PLongIntArray(CoordIndex.Ptr(ThisFace^.StartIndex)), ThisFace^.IndicesCount,
         PVector3Array(Vertices.List), Vertices.Count,
-        Vector3(0, 0, 1), Convex);
+        Vector3(0, 0, 1), Convex);}
 
       { move to next face (omits the negative index we're standing on) }
       Inc(I);
@@ -278,9 +278,9 @@ begin
     begin
       StartIndex := I;
       while (I < CoordIndex.Count) and (CoordIndex.List^[I] >= 0) do Inc(I);
-      Result.List^[FaceNumber] := IndexedPolygonNormal(
+      {Result.List^[FaceNumber] := IndexedPolygonNormal(
         PLongIntArray(CoordIndex.Ptr(StartIndex)), I - StartIndex,
-        PVector3Array(Vertices.List), Vertices.Count, Vector3(0, 0, 0), Convex);
+        PVector3Array(Vertices.List), Vertices.Count, Vector3(0, 0, 0), Convex);}
       Inc(FaceNumber);
 
       Inc(I);
@@ -325,9 +325,9 @@ begin
       DirectIndexes[I] := Indexes[I];
   end;
 
-  FaceNormal := IndexedPolygonNormal(
+  {FaceNormal := IndexedPolygonNormal(
     PLongIntArray(DirectIndexes), Length(DirectIndexes),
-    PVector3Array(Coord.List), Coord.Count, Vector3(0, 0, 0), Convex);
+    PVector3Array(Coord.List), Coord.Count, Vector3(0, 0, 0), Convex);}
 
   for I := 0 to Length(Indexes) - 1 do
   begin

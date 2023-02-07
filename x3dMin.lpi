@@ -701,11 +701,6 @@
         <Filename Value="src/3d/castletriangles_istrianglespherecollision.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
-      <Unit>
-        <Filename Value="src/3d/castletriangulate.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleTriangulate"/>
-      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
