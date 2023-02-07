@@ -126,20 +126,6 @@
         <UnitName Value="CastleInternalShadowMaps"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/castleinternalshapeoctree.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleInternalShapeOctree"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/castleinternaltriangleoctree.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleInternalTriangleOctree"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/castleinternaltriangleoctree_raysegmentcollisions.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/castleinternalx3dlexer.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleInternalX3DLexer"/>
@@ -413,15 +399,6 @@
         <Filename Value="src/x3d/x3dtime.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="X3DTime"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dtriangles.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X3DTriangles"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dtriangles_raysegment_nonleaf.inc"/>
-        <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="src/base/castleutils_miscella.inc"/>
