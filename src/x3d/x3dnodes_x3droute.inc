@@ -486,22 +486,6 @@ procedure TX3DRoute.SaveToStream(Writer: TX3DWriter);
     if Node.X3DName = '' then
       raise EX3DRouteSaveError.CreateFmt('Cannot save VRML route: %s node not named', [S]);
 
-    BoundNode := (Writer as TX3DWriterNames).NodeNames.Bound(Node.X3DName, IgnoreNodeFinished);
-    if BoundNode = nil then
-      raise EX3DRouteSaveError.CreateFmt('Cannot save VRML route: %s node name "%s" not bound',
-        [S, Node.X3DName]);
-
-    { Just like when setting node by TX3DRoute.SetEnding:
-      we actually keep the Node that contains the route, which is
-      sometimes TX3DPrototypeNode hidden inside PrototypeInstanceSourceNode. }
-    if BoundNode.PrototypeInstanceSourceNode <> nil then
-      BoundNode := BoundNode.PrototypeInstanceSourceNode;
-    if BoundNode <> Node then
-      raise EX3DRouteSaveError.CreateFmt('Cannot save VRML route: %s node name "%s" not bound (another node bound to the same name)',
-        [S, Node.X3DName]);
-
-    NodeName := Node.X3DName;
-
     { Check Event }
     if Event = nil then
       raise EX3DRouteSaveError.CreateFmt('Cannot save VRML route: %s event not assigned', [S]);

@@ -2409,38 +2409,7 @@ procedure TX3DNode.NodeSaveToStream(Writer: TX3DWriter; const CurrentContainerFi
     NodeFields, ProtoFields: TCastleStringList;
     I: Integer;
   begin
-    if (Writer as TX3DWriterNames).NodeNames.Bound(Self) then
-    begin
-      Writer.WriteIndent('USE ' + X3DName);
-    end else
-    begin
-      (Writer as TX3DWriterNames).NodeNames.Bind(Self, false);
 
-      CollectIsClauses(NodeFields, ProtoFields);
-      try
-        Writer.WriteIndent('');
-        if X3DName <> '' then Writer.Write('DEF ' + X3DName + ' ');
-        Writer.Writeln(X3DType +' {');
-
-        Writer.IncIndent;
-        FileItems := ContentsToSave;
-        try
-          FileItems.SaveToStream(Writer);
-        finally FreeAndNil(FileItems) end;
-
-        { save IS clauses }
-        for I := 0 to NodeFields.Count - 1 do
-          Writer.WritelnIndent(Format('%s IS %s', [NodeFields[I], ProtoFields[I]]));
-        Writer.DecIndent;
-
-        Writer.WriteIndent('}');
-      finally
-        FreeAndNil(NodeFields);
-        FreeAndNil(ProtoFields);
-      end;
-
-      (Writer as TX3DWriterNames).NodeNames.Bind(Self, true);
-    end;
   end;
 
   procedure Xml;
@@ -2466,103 +2435,6 @@ procedure TX3DNode.NodeSaveToStream(Writer: TX3DWriter; const CurrentContainerFi
     if ProtoInstance then
       ElementName := 'ProtoInstance' else
       ElementName := X3DType;
-
-    if (Writer as TX3DWriterNames).NodeNames.Bound(Self) then
-    begin
-      Writer.WritelnIndent(Format('<%s USE=%s%s />',
-        [ElementName, StringToX3DXml(X3DName), WriteContainerField]));
-    end else
-    begin
-      (Writer as TX3DWriterNames).NodeNames.Bind(Self, false);
-
-      CollectIsClauses(NodeFields, ProtoFields);
-      try
-        Writer.WriteIndent('<' + ElementName);
-        if ProtoInstance then
-          Writer.Write(' name=' + StringToX3DXml(X3DType));
-        if X3DName <> '' then Writer.Write(' DEF=' +StringToX3DXml(X3DName));
-        Writer.Write(WriteContainerField);
-
-        HasContent := false;
-        FileItems := ContentsToSave;
-        try
-          FileItems.SortPositionInParent;
-
-          Writer.IncIndent;
-          for I := 0 to FileItems.Count - 1 do
-            case FileItems[I].SaveToXml of
-              sxAttribute, sxAttributeCustomQuotes:
-                if ProtoInstance then
-                  { for a prototype, every field must be wrapped in <fieldValue> }
-                  HasContent := true else
-                  FileItems[I].SaveToStream(Writer);
-              sxChildElement: HasContent := true;
-            end;
-          Writer.DecIndent;
-
-          if NodeFields.Count <> 0 then
-            HasContent := true;
-
-          if HasContent then
-          begin
-            Writer.Writeln('>');
-            Writer.IncIndent;
-
-            for I := 0 to FileItems.Count - 1 do
-              if ProtoInstance and
-                 (FileItems[I] is TX3DField) and
-                 (FileItems[I].SaveToXml <> sxNone) then
-              begin
-                { prototype instance fields must be wrapped in <fieldValue> }
-                Writer.WriteIndent('<fieldValue name=' +
-                  StringToX3DXml((FileItems[I] as TX3DField).X3DName));
-                if FileItems[I].SaveToXml = sxChildElement then
-                begin
-                  Writer.Writeln('>');
-                  Writer.IncIndent;
-                  FileItems[I].SaveToStream(Writer);
-                  Writer.DecIndent;
-                  Writer.WritelnIndent('</fieldValue>');
-                end else
-                begin
-                  Assert(FileItems[I].SaveToXml in [sxAttribute, sxAttributeCustomQuotes]);
-                  Writer.IncIndent;
-                  Writer.Writeln;
-                  Writer.WriteIndent('value=');
-                  (FileItems[I]  as TX3DField).FieldSaveToStream(Writer, true, true);
-                  Writer.DecIndent;
-                  Writer.Writeln(' />');
-                end;
-              end else
-              if FileItems[I].SaveToXml = sxChildElement then
-                FileItems[I].SaveToStream(Writer);
-
-            { save IS clauses }
-            { TODO: should be before all, but *after* interface declarations and fieldValue }
-            if NodeFields.Count <> 0 then
-            begin
-              Writer.WritelnIndent('<IS>');
-              Writer.IncIndent;
-              for I := 0 to NodeFields.Count - 1 do
-                Writer.WritelnIndent(Format('<connect nodeField=%s protoField=%s />',
-                  [ StringToX3DXml(NodeFields[I]),
-                    StringToX3DXml(ProtoFields[I])]));
-              Writer.DecIndent;
-              Writer.WritelnIndent('</IS>');
-            end;
-
-            Writer.DecIndent;
-            Writer.WritelnIndent('</' + ElementName + '>');
-          end else
-            Writer.Writeln(' />');
-        finally FreeAndNil(FileItems) end;
-      finally
-        FreeAndNil(NodeFields);
-        FreeAndNil(ProtoFields);
-      end;
-
-      (Writer as TX3DWriterNames).NodeNames.Bind(Self, true);
-    end;
   end;
 
 begin
@@ -2589,13 +2461,6 @@ begin
       Routes when saving check this (to make sure correct names are bound).
       So we bind again Self, instead of PrototypeInstanceSourceNode,
       to this name. }
-
-    (Writer as TX3DWriterNames).NodeNames.Bind(Self, true);
-  end else
-  case Writer.Encoding of
-    xeClassic: Classic;
-    xeXML    : Xml;
-    else raise EInternalError.Create('TX3DNode.SaveToStream Encoding?');
   end;
 end;
 

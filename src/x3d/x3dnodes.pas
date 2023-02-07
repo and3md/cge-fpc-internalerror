@@ -202,7 +202,6 @@ type
 
 {$I x3dnodes_nodesmanager.inc}
 {$I x3dnodes_encoding_xml.inc}
-{$I x3dnodes_save.inc}
 {$I x3dnodes_miscellaneous_globals.inc}
 
 {$undef read_interface}
@@ -228,7 +227,6 @@ uses
 {$I x3dnodes_destructionnotification.inc}
 {$I x3dnodes_x3dnodeclasseslist.inc}
 
-{$I x3dnodes_save.inc}
 {$I x3dnodes_load.inc}
 {$I x3dnodes_encoding_xml.inc}
 {$I x3dnodes_x3dinterfacedeclaration.inc}

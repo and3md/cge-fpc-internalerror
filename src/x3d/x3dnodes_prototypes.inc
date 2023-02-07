@@ -913,7 +913,6 @@ end;
 procedure TX3DPrototype.SaveToStream(Writer: TX3DWriter);
 var
   OldNodeNames: TX3DNodeNames;
-  WriterNames: TX3DWriterNames;
 begin
   // TODO: We should save/load prototype names using EncodeX3DName/DecodeX3DName too
   case Writer.Encoding of
@@ -935,32 +934,6 @@ begin
   begin
     Writer.DecIndent;
     Writer.WritelnIndent('</ProtoInterface>');
-  end;
-
-  WriterNames := Writer as TX3DWriterNames;
-
-  { Inside prototype has it's own DEF/USE scope. }
-  OldNodeNames := WriterNames.NodeNames;
-  WriterNames.NodeNames := TX3DNodeNames.Create(false);
-  try
-    case Writer.Encoding of
-      xeClassic: Writer.WritelnIndent('{');
-      xeXML    : Writer.WritelnIndent('<ProtoBody>');
-      else raise EInternalError.Create('TX3DPrototype.SaveToStream 2 Encoding?');
-    end;
-    { Node may be TX3DRootNode here, that's OK,
-      TX3DRootNode.SaveToStream will magically handle this right. }
-    Writer.IncIndent;
-    Node.SaveToStream(Writer);
-    Writer.DecIndent;
-    case Writer.Encoding of
-      xeClassic: Writer.WritelnIndent('}');
-      xeXML    : Writer.WritelnIndent('</ProtoBody>');
-      else raise EInternalError.Create('TX3DPrototype.SaveToStream 3 Encoding?');
-    end;
-  finally
-    FreeAndNil(WriterNames.NodeNames);
-    WriterNames.NodeNames := OldNodeNames;
   end;
 
   if Writer.Encoding = xeXML then
