@@ -16,7 +16,7 @@ uses
   X3DNodes, X3DTime, CastleClassUtils,
   CastleInterfaces,
   CastleLog,
-  CastleRectangles, CastleRendererBaseTypes, CastleStringUtils,
+  CastleRectangles, CastleStringUtils,
   CastleTimeUtils, CastleUtils, CastleVectors, CastleVectorsInternalDouble,
   CastleVectorsInternalSingle, CastleUnicode;
 

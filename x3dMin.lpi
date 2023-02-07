@@ -353,11 +353,6 @@
         <UnitName Value="CastleRectangles"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castlerendererbasetypes.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleRendererBaseTypes"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castletimeutils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleTimeUtils"/>
