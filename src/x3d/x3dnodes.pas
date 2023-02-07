@@ -345,7 +345,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_x3dinfonode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dinterpolatornode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dkeydevicesensornode.inc}
-{$I auto_generated_node_helpers/x3dnodes_x3dlayoutnode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dmaterialnode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dnetworksensornode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dnode.inc}
@@ -354,7 +353,6 @@ uses
 {$I auto_generated_node_helpers/x3dnodes_x3dpointingdevicesensornode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dsensornode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dsequencernode.inc}
-{$I auto_generated_node_helpers/x3dnodes_x3dshadernode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dshapenode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dtexturecoordinatenode.inc}
 {$I auto_generated_node_helpers/x3dnodes_x3dtexturetransformnode.inc}
