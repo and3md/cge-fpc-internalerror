@@ -324,7 +324,7 @@ begin
   end else
   begin
     { This is one case when we can use NilIfUnresolvedUSE = @true }
-    Value := ParseNode(Lexer, Reader as TX3DReaderNames, true);
+    //Value := ParseNode(Lexer, Reader as TX3DReaderNames, true);
     if Value <> nil then
     begin
       WarningIfChildNotAllowed(Value);

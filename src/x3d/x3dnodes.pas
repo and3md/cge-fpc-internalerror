@@ -198,7 +198,6 @@ type
   {$I x3dnodes_standard_followers.inc}
 
   { More X3D nodes, not from X3D standard }
-  {$I x3dnodes_x3dunknownnode.inc}
   {$I x3dnodes_x3dinterfacedeclaration.inc}
   {$I x3dnodes_prototypes.inc}
   {$I x3dnodes_x3droute.inc}
@@ -207,7 +206,6 @@ type
   {$I x3dnodes_load.inc}
 
 {$I x3dnodes_nodesmanager.inc}
-{$I x3dnodes_encoding_classic.inc}
 {$I x3dnodes_encoding_xml.inc}
 {$I x3dnodes_save.inc}
 {$I x3dnodes_miscellaneous_globals.inc}
@@ -222,8 +220,7 @@ implementation
 uses
   Math,
   StrUtils,
-  CastleLog,
-  X3DLoadInternalUtils;
+  CastleLog;
 
 {$warnings on}
 
@@ -243,10 +240,8 @@ uses
 {$I x3dnodes_utils_box.inc}
 {$I x3dnodes_save.inc}
 {$I x3dnodes_load.inc}
-{$I x3dnodes_encoding_classic.inc}
 {$I x3dnodes_encoding_xml.inc}
 {$I x3dnodes_generatedtextures.inc}
-{$I x3dnodes_x3dunknownnode.inc}
 {$I x3dnodes_x3dinterfacedeclaration.inc}
 {$I x3dnodes_prototypes.inc}
 {$I x3dnodes_x3droute.inc}

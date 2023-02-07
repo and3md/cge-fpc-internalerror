@@ -1652,7 +1652,7 @@ begin
     begin
       if VRML1ChildrenParsingAllowed then
       begin
-        ChildNode := ParseNode(Lexer, Reader, false);
+        //ChildNode := ParseNode(Lexer, Reader, false);
         ChildNode.PositionInParent := Position;
         VRML1ChildAdd(ChildNode);
       end else
@@ -1807,7 +1807,7 @@ begin
       end;
     end;
   end else
-  if Lexer.TokenIsKeyword(InterfaceDeclarationKeywords(HasInterfaceDeclarations)) then
+  if Lexer.TokenIsKeyword([vkDEF]) then
   begin
     Result := true;
 
@@ -2411,7 +2411,7 @@ procedure TX3DNode.NodeSaveToStream(Writer: TX3DWriter; const CurrentContainerFi
   begin
     if (Writer as TX3DWriterNames).NodeNames.Bound(Self) then
     begin
-      Writer.WriteIndent('USE ' + EncodeX3DName(X3DName));
+      Writer.WriteIndent('USE ' + X3DName);
     end else
     begin
       (Writer as TX3DWriterNames).NodeNames.Bind(Self, false);
@@ -2419,7 +2419,7 @@ procedure TX3DNode.NodeSaveToStream(Writer: TX3DWriter; const CurrentContainerFi
       CollectIsClauses(NodeFields, ProtoFields);
       try
         Writer.WriteIndent('');
-        if X3DName <> '' then Writer.Write('DEF ' + EncodeX3DName(X3DName) + ' ');
+        if X3DName <> '' then Writer.Write('DEF ' + X3DName + ' ');
         Writer.Writeln(X3DType +' {');
 
         Writer.IncIndent;
@@ -2470,7 +2470,7 @@ procedure TX3DNode.NodeSaveToStream(Writer: TX3DWriter; const CurrentContainerFi
     if (Writer as TX3DWriterNames).NodeNames.Bound(Self) then
     begin
       Writer.WritelnIndent(Format('<%s USE=%s%s />',
-        [ElementName, StringToX3DXml(EncodeX3DName(X3DName)), WriteContainerField]));
+        [ElementName, StringToX3DXml(X3DName), WriteContainerField]));
     end else
     begin
       (Writer as TX3DWriterNames).NodeNames.Bind(Self, false);
@@ -2480,7 +2480,7 @@ procedure TX3DNode.NodeSaveToStream(Writer: TX3DWriter; const CurrentContainerFi
         Writer.WriteIndent('<' + ElementName);
         if ProtoInstance then
           Writer.Write(' name=' + StringToX3DXml(X3DType));
-        if X3DName <> '' then Writer.Write(' DEF=' +StringToX3DXml(EncodeX3DName(X3DName)));
+        if X3DName <> '' then Writer.Write(' DEF=' +StringToX3DXml(X3DName));
         Writer.Write(WriteContainerField);
 
         HasContent := false;

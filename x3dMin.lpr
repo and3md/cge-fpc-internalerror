@@ -11,7 +11,7 @@ uses
   {$ENDIF}
   CastleInternalNodeInterpolator,
   CastleInternalX3DLexer,
-  CastleMaterialProperties, X3DFields, X3DLoadInternalUtils,
+  CastleMaterialProperties, X3DFields,
   X3DNodes, X3DTime, CastleClassUtils,
   CastleInterfaces,
   CastleLog,

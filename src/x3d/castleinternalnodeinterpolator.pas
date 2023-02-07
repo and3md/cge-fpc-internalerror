@@ -178,7 +178,7 @@ implementation
 
 uses SysUtils, XMLRead, DOM, Math,
   CastleLog, X3DFields, CastleVectors,
-  CastleClassUtils, X3DLoadInternalUtils;
+  CastleClassUtils;
 
 { EModelsStructureDifferent -------------------------------------------------- }
 

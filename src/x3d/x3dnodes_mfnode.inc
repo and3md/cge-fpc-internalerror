@@ -466,8 +466,8 @@ procedure TMFNode.ParseValue(Lexer: TX3DLexer; Reader: TX3DReader);
   var
     Node: TX3DNode;
   begin
-    Node := ParseNode(Lexer, Reader as TX3DReaderNames, false);
-    Add(Node);
+    //Node := ParseNode(Lexer, Reader as TX3DReaderNames, false);
+    //Add(Node);
     WarningIfChildNotAllowed(Node);
   end;
 

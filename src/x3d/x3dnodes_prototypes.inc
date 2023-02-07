@@ -797,7 +797,7 @@ begin
     I := TX3DInterfaceDeclaration.Create(nil);
     InterfaceDeclarations.Add(I);
 
-    if Lexer.TokenIsKeyword(InterfaceDeclarationKeywords(AllAccessTypes)) then
+    if Lexer.TokenIsKeyword([vkDef]) then
     begin
       I.Parse(Lexer, Reader, not ExternalProto, false);
     end else
@@ -870,7 +870,6 @@ begin
   Reader := TX3DReaderNames.CreateCopy(true, OldReader);
   try
     Reader.Prototypes.Assign(OldReader.Prototypes);
-    FNode := ParseStatements(Lexer, Reader, vtCloseCurlyBracket, false);
   finally
     FreeAndNil(Reader);
     Reader := OldReader;
