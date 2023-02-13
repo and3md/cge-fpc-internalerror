@@ -130,7 +130,6 @@ uses {$ifdef MSWINDOWS} Windows, {$ifndef FPC} ShlObj, {$endif} {$endif}
 {$I castleutils_struct_list.inc}
 {$I castleutils_primitive_lists.inc}
 {$I castleutils_math.inc}
-{$I castleutils_read_write.inc}
 
 {$undef read_interface}
 
@@ -146,8 +145,6 @@ implementation
 {$I castleutils_struct_list.inc}
 {$I castleutils_primitive_lists.inc}
 {$I castleutils_math.inc}
-
-{$I castleutils_read_write.inc}
 
 {$undef read_implementation}
 
