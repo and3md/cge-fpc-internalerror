@@ -52,8 +52,6 @@ uses Math, Generics.Defaults,
 
 {$define read_implementation}
 
-{$I castlefields_internalglobals.inc}
-
 {$I castlefields_misctypes.inc}
 {$I castlefields_x3dwriter.inc}
 {$I castlefields_x3dreader.inc}

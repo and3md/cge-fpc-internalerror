@@ -182,8 +182,6 @@
       declaration in X3D file. }
     property Angle: boolean read FAngle write FAngle default false;
 
-    procedure ParseValue(Lexer: TX3DLexer; Reader: TX3DReader); override;
-
     function EqualsDefaultValue: boolean; override;
     function Equals(SecondValue: TX3DField): boolean; override;
     function FastEqualsValue(SecondValue: TX3DField): boolean; override;
@@ -221,8 +219,6 @@
       make sure it's expressed in radians, honoring optional "UNIT angle ..."
       declaration in X3D file. }
     property Angle: boolean read FAngle write FAngle default false;
-
-    procedure ParseValue(Lexer: TX3DLexer; Reader: TX3DReader); override;
 
     function EqualsDefaultValue: boolean; override;
     function Equals(SecondValue: TX3DField): boolean; override;
@@ -416,7 +412,6 @@
       it only presents them to you differently. }
     property ValueDeg: TVector4 read GetValueDeg write SetValueDeg;
 
-    procedure ParseValue(Lexer: TX3DLexer; Reader: TX3DReader); override;
     { Rotate point Pt around Self. }
     function RotatedPoint(const pt: TVector3): TVector3;
 
@@ -748,13 +743,6 @@ begin
   AssignDefaultValueFromValue;
 end;
 
-procedure TSFFloat.ParseValue(Lexer: TX3DLexer; Reader: TX3DReader);
-begin
-  Value := ParseFloat(Lexer);
-  if Angle then
-    FValue := FValue * Reader.AngleConversionFactor;
-end;
-
 procedure TSFFloat.SaveToStreamValue(Writer: TX3DWriter);
 begin
   Writer.Write(Format('%g', [Value]));
@@ -853,13 +841,6 @@ end;
 procedure TSFDouble.SetValue(const AValue: Double);
 begin
   FValue := AValue;
-end;
-
-procedure TSFDouble.ParseValue(Lexer: TX3DLexer; Reader: TX3DReader);
-begin
-  Value := ParseFloat(Lexer);
-  if Angle then
-    FValue := FValue * Reader.AngleConversionFactor;
 end;
 
 procedure TSFDouble.SaveToStreamValue(Writer: TX3DWriter);
@@ -1299,12 +1280,6 @@ begin
   RotationRad := AValue[3];
 
   AssignDefaultValueFromValue;
-end;
-
-procedure TSFRotation.ParseValue(Lexer: TX3DLexer; Reader: TX3DReader);
-begin
-  ParseVector(Axis.Data, Lexer);
-  RotationRad := ParseFloat(Lexer) * Reader.AngleConversionFactor;
 end;
 
 function TSFRotation.GetValue: TVector4;
