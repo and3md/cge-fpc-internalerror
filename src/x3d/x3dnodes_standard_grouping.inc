@@ -128,8 +128,6 @@
       This automatically propagates the changes appropriately
       to the parent TCastleSceneCore. }
     procedure ClearChildren;
-
-    {$I auto_generated_node_helpers/x3dnodes_x3dgroupingnode.inc}
   end;
 
   { Contains children nodes without introducing a new transformation.
@@ -145,8 +143,6 @@
       override;
 
     class function URNMatching(const URN: string): boolean; override;
-
-    {$I auto_generated_node_helpers/x3dnodes_group.inc}
   end;
   TGroupNode_2 = TGroupNode;
 
@@ -307,8 +303,6 @@
 
     strict private FFdBboxSize: TSFVec3f;
     public property FdBboxSize: TSFVec3f read FFdBboxSize;
-
-    {$I auto_generated_node_helpers/x3dnodes_staticgroup.inc}
   end;
 
   { Choose only one (or none) of the child nodes for processing.
@@ -338,8 +332,6 @@
     class function URNMatching(const URN: string): boolean; override;
 
     function TransformationChange: TNodeTransformationChange; override;
-
-    {$I auto_generated_node_helpers/x3dnodes_switch.inc}
   end;
   TSwitchNode_2 = TSwitchNode;
 
@@ -384,8 +376,6 @@
 
     strict private FFdTranslation: TSFVec3f;
     public property FdTranslation: TSFVec3f read FFdTranslation;
-
-    {$I auto_generated_node_helpers/x3dnodes_transform.inc}
   end;
   TTransformNode_2 = TTransformNode;
 

@@ -858,8 +858,6 @@ var
       Switch.AddChildren(WrapRootNode(BakedAnimation.Nodes[I] as TX3DRootNode));
     Assert(Switch.FdChildren.Count = NodesCount);
 
-    { we set whichChoice to 0 to see something before you run the animation }
-    Switch.WhichChoice := 0;
     Group.AddChildren(Switch);
 
     { Name of the TimeSensor is important, this is the animation name,
@@ -871,7 +869,6 @@ var
       TimeSensor.CycleInterval := 2 * BakedAnimation.Duration
     else
       TimeSensor.CycleInterval := BakedAnimation.Duration;
-    TimeSensor.Loop := BakedAnimation.Loop;
     RootNode.AddChildren(TimeSensor);
 
     RootNode.ManuallyExportNode(TimeSensor);
@@ -905,7 +902,6 @@ begin
       ConvertOneAnimation(BakedAnimations[I], I, Result, SwitchChooseAnimation));
   end;
   { we set whichChoice to 0 to see something before you run the animation }
-  SwitchChooseAnimation.WhichChoice := 0;
 
   Result.AddChildren(SwitchChooseAnimation);
 end;

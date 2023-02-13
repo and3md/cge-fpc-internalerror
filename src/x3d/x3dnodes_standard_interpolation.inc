@@ -27,8 +27,6 @@
 
     strict private FFdKey: TMFFloat;
     public property FdKey: TMFFloat read FFdKey;
-
-    {$I auto_generated_node_helpers/x3dnodes_x3dinterpolatornode.inc}
   end;
 
   { Basis for all nodes interpolating (animating) a single value. }
@@ -115,8 +113,6 @@
   public
     class function ClassX3DType: string; override;
     class function URNMatching(const URN: string): boolean; override;
-
-    {$I auto_generated_node_helpers/x3dnodes_coordinateinterpolator.inc}
   end;
 
   { Interpolate (animate) a set of 2D positions,
@@ -127,8 +123,6 @@
   public
     class function ClassX3DType: string; override;
     class function URNMatching(const URN: string): boolean; override;
-
-    {$I auto_generated_node_helpers/x3dnodes_coordinateinterpolator2d.inc}
   end;
 
   { Support controlled gradual transitions by modifying
@@ -153,8 +147,6 @@
     { Event out } { }
     strict private FEventModifiedFraction_changed: TSFFloatEvent;
     public property EventModifiedFraction_changed: TSFFloatEvent read FEventModifiedFraction_changed;
-
-    {$I auto_generated_node_helpers/x3dnodes_easeineaseout.inc}
   end;
 
   { Interpolate (animate) a set of 3D directions, for example normal vectors. }
@@ -168,8 +160,6 @@
   public
     class function ClassX3DType: string; override;
     class function URNMatching(const URN: string): boolean; override;
-
-    {$I auto_generated_node_helpers/x3dnodes_normalinterpolator.inc}
   end;
 
   { Interpolate (animate) an orientation,
@@ -184,8 +174,6 @@
   public
     class function ClassX3DType: string; override;
     class function URNMatching(const URN: string): boolean; override;
-
-    {$I auto_generated_node_helpers/x3dnodes_orientationinterpolator.inc}
   end;
 
   { Interpolate (animate) a 3D position,
@@ -200,8 +188,6 @@
   public
     class function ClassX3DType: string; override;
     class function URNMatching(const URN: string): boolean; override;
-
-    {$I auto_generated_node_helpers/x3dnodes_positioninterpolator.inc}
   end;
 
   { Interpolate (animate) a 2D position. }
@@ -215,8 +201,6 @@
   public
     class function ClassX3DType: string; override;
     class function URNMatching(const URN: string): boolean; override;
-
-    {$I auto_generated_node_helpers/x3dnodes_positioninterpolator2d.inc}
   end;
 
   { Interpolate (animate) a single floating-point value,
@@ -231,8 +215,6 @@
   public
     class function ClassX3DType: string; override;
     class function URNMatching(const URN: string): boolean; override;
-
-    {$I auto_generated_node_helpers/x3dnodes_scalarinterpolator.inc}
   end;
 
   { Non-linearly interpolate (animate) a 3D position.
@@ -258,8 +240,6 @@
     { Event out } { }
     strict private FEventValue_changed: TSFVec3fEvent;
     public property EventValue_changed: TSFVec3fEvent read FEventValue_changed;
-
-    {$I auto_generated_node_helpers/x3dnodes_splinepositioninterpolator.inc}
   end;
 
   { Non-linearly interpolate (animate) a 2D position.
@@ -285,8 +265,6 @@
     { Event out } { }
     strict private FEventValue_changed: TSFVec2fEvent;
     public property EventValue_changed: TSFVec2fEvent read FEventValue_changed;
-
-    {$I auto_generated_node_helpers/x3dnodes_splinepositioninterpolator2d.inc}
   end;
 
   { Non-linearly interpolate (animate) a single floating-point value.
@@ -312,8 +290,6 @@
     { Event out } { }
     strict private FEventValue_changed: TSFFloatEvent;
     public property EventValue_changed: TSFFloatEvent read FEventValue_changed;
-
-    {$I auto_generated_node_helpers/x3dnodes_splinescalarinterpolator.inc}
   end;
 
   { Non-linearly interpolate (animate) a rotation.
@@ -333,8 +309,6 @@
     { Event out } { }
     strict private FEventValue_changed: TSFRotationEvent;
     public property EventValue_changed: TSFRotationEvent read FEventValue_changed;
-
-    {$I auto_generated_node_helpers/x3dnodes_squadorientationinterpolator.inc}
   end;
 
   { Interpolate (animate) a set of floats, for example to animate
@@ -345,8 +319,6 @@
   public
     class function ClassX3DType: string; override;
     class function URNMatching(const URN: string): boolean; override;
-
-    {$I auto_generated_node_helpers/x3dnodes_vectorinterpolator.inc}
   end;
 
 {$endif read_interface}

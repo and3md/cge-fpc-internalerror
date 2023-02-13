@@ -144,13 +144,11 @@
     property TransformScale: Single read FTransformScale;
     { @groupEnd }
 
-    {$I auto_generated_node_helpers/x3dnodes_x3dbindablenode.inc}
   end;
 
   { Base class for all nodes that contain only information without visual
     semantics. }
   TAbstractInfoNode = class(TAbstractChildNode)
-    {$I auto_generated_node_helpers/x3dnodes_x3dinfonode.inc}
   end;
 
   { Base interface type for all sensors.
@@ -175,8 +173,6 @@
     { Event out } { }
     strict private FEventIsActive: TSFBoolEvent;
     public property EventIsActive: TSFBoolEvent read FEventIsActive;
-
-    {$I auto_generated_node_helpers/x3dnodes_x3dsensornode.inc}
   end;
 
   { A metadata (extra, custom information at a node) with a boolean type. }
@@ -194,8 +190,6 @@
 
     strict private FFdValue: TMFBool;
     public property FdValue: TMFBool read FFdValue;
-
-    {$I auto_generated_node_helpers/x3dnodes_metadataboolean.inc}
   end;
 
   { A metadata (extra, custom information at a node) with
@@ -214,8 +208,6 @@
 
     strict private FFdValue: TMFDouble;
     public property FdValue: TMFDouble read FFdValue;
-
-    {$I auto_generated_node_helpers/x3dnodes_metadatadouble.inc}
   end;
 
   { A metadata (extra, custom information at a node) with
@@ -234,8 +226,6 @@
 
     strict private FFdValue: TMFFloat;
     public property FdValue: TMFFloat read FFdValue;
-
-    {$I auto_generated_node_helpers/x3dnodes_metadatafloat.inc}
   end;
 
   { A metadata (extra, custom information at a node) with an integer type. }
@@ -253,8 +243,6 @@
 
     strict private FFdValue: TMFInt32;
     public property FdValue: TMFInt32 read FFdValue;
-
-    {$I auto_generated_node_helpers/x3dnodes_metadatainteger.inc}
   end;
 
   { A metadata (extra, custom information at a node) set,
@@ -273,8 +261,6 @@
 
     strict private FFdValue: TMFNode;
     public property FdValue: TMFNode read FFdValue;
-
-    {$I auto_generated_node_helpers/x3dnodes_metadataset.inc}
   end;
 
   { A metadata (extra, custom information at a node) with a string type. }
@@ -292,8 +278,6 @@
 
     strict private FFdValue: TMFString;
     public property FdValue: TMFString read FFdValue;
-
-    {$I auto_generated_node_helpers/x3dnodes_metadatastring.inc}
   end;
 
   { Information about the world.
@@ -310,8 +294,6 @@
 
     strict private FFdTitle: TSFString;
     public property FdTitle: TSFString read FFdTitle;
-
-    {$I auto_generated_node_helpers/x3dnodes_worldinfo.inc}
   end;
 
 {$endif read_interface}

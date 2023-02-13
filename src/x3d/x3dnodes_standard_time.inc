@@ -300,8 +300,6 @@
       When @link(GetCycleInterval) = 0, this is always 0.
       When @link(GetCycleInterval) <> 0, this is always >= 0 and < CycleInterval . }
     function ElapsedTimeInCycle: TFloatTime;
-
-    {$I auto_generated_node_helpers/x3dnodes_x3dtimedependentnode.inc}
   end;
 
   { Generate events as time passes. }
@@ -378,8 +376,6 @@
       const TimeOfEvents: TX3DTime;
       const PartialSend: TPartialSend = nil); overload;
     { @groupEnd }
-
-    {$I auto_generated_node_helpers/x3dnodes_timesensor.inc}
   end;
 
 {$endif read_interface}
