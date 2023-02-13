@@ -167,10 +167,6 @@
         <UnitName Value="X3DTime"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castleutils_miscella.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castleutils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleUtils"/>
@@ -204,31 +200,7 @@
         <UnitName Value="CastleRectangles"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castleutils_filenames.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/base/castleutils_os_specific_unix.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/base/castleutils_platform.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/base/castleutils_pointers.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castleutils_primitive_lists.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/base/castleutils_program_exit.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/base/castleutils_read_write.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
