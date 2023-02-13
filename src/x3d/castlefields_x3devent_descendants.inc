@@ -87,26 +87,6 @@
     constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
   end;
 
-  TMFBoolEvent = class(TX3DEvent)
-  public
-    constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-  end;
-
-  TMFDoubleEvent = class(TX3DEvent)
-  public
-    constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-  end;
-
-  TMFTimeEvent = class(TX3DEvent)
-  public
-    constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-  end;
-
-  TMFFloatEvent = class(TX3DEvent)
-  public
-    constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-  end;
-
   TMFNodeEvent = class(TX3DEvent)
   public
     constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
@@ -307,26 +287,6 @@ end;
 constructor TXFAnyEvent.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
 begin
   inherited Create(AParentNode, AName, TX3DField, AInEvent);
-end;
-
-constructor TMFBoolEvent.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-begin
-  inherited Create(AParentNode, AName, TMFBool, AInEvent);
-end;
-
-constructor TMFDoubleEvent.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-begin
-  inherited Create(AParentNode, AName, TMFDouble, AInEvent);
-end;
-
-constructor TMFTimeEvent.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-begin
-  inherited Create(AParentNode, AName, TMFTime, AInEvent);
-end;
-
-constructor TMFFloatEvent.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-begin
-  inherited Create(AParentNode, AName, TMFFloat, AInEvent);
 end;
 
 constructor TMFNodeEvent.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);

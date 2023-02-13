@@ -32,7 +32,6 @@ type
   strict private
     { Helpers for Load implementation. }
     LoadToX3D_KeyNodes: TX3DNodeList; static;
-    LoadToX3D_KeyTimes: TSingleList; static;
     class procedure LoadToX3D_GetKeyNodeWithTime(const Index: Cardinal;
       out KeyNode: TX3DRootNode; out Time: Single);
   public
@@ -51,7 +50,6 @@ type
           @link(FreeKeyNodesContents) to easily free them).
           @groupBegin }
         KeyNodes: TX3DNodeList;
-        KeyTimes: TSingleList;
         { @groupEnd }
         Name: string;
         ScenesPerTime: Cardinal;
@@ -549,13 +547,11 @@ end;
 constructor TNodeInterpolator.TAnimation.Create;
 begin
   inherited;
-  KeyTimes := TSingleList.Create;
   KeyNodes := TX3DNodeList.Create(false);
 end;
 
 destructor TNodeInterpolator.TAnimation.Destroy;
 begin
-  FreeAndNil(KeyTimes);
   FreeAndNil(KeyNodes);
   inherited;
 end;
@@ -796,7 +792,6 @@ class procedure TNodeInterpolator.LoadToX3D_GetKeyNodeWithTime(const Index: Card
   out KeyNode: TX3DRootNode; out Time: Single);
 begin
   KeyNode := LoadToX3D_KeyNodes[Index] as TX3DRootNode;
-  Time := LoadToX3D_KeyTimes[Index];
 end;
 
 class function TNodeInterpolator.LoadToX3D(const Animations: TAnimationList): TX3DRootNode;
@@ -813,7 +808,6 @@ begin
       begin
         Animation := Animations[I];
         LoadToX3D_KeyNodes := Animation.KeyNodes;
-        LoadToX3D_KeyTimes := Animation.KeyTimes;
         BakedAnimation := BakeToSequence(
           {$ifdef CASTLE_OBJFPC}@{$endif} LoadToX3D_GetKeyNodeWithTime,
           Animation.KeyNodes.Count, Animation.ScenesPerTime, Animation.Epsilon);

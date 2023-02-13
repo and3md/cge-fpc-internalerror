@@ -127,7 +127,6 @@ uses {$ifdef MSWINDOWS} Windows, {$ifndef FPC} ShlObj, {$endif} {$endif}
 { include everything }
 
 {$I castleutils_struct_list.inc}
-{$I castleutils_primitive_lists.inc}
 
 {$undef read_interface}
 
@@ -140,7 +139,6 @@ implementation
 {$define read_implementation}
 
 {$I castleutils_struct_list.inc}
-{$I castleutils_primitive_lists.inc}
 
 {$undef read_implementation}
 

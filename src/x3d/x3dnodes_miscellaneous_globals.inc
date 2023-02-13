@@ -277,8 +277,6 @@ procedure X3DNodeList_FreeUnusedAndNil(var List: TX3DNodeList);
 
   This is useful to interpreting TAbstractInterpolatorNode.KeyRange
   and such fields. }
-function KeyRange(Key: TSingleList;
-  const Fraction: Single; out T: Single): Integer;
 
 { Free TX3DNode if it is unused (see TX3DNode.FreeIfUnused),
   setting reference to @nil. Analogous to standard FreeAndNil,
@@ -303,70 +301,6 @@ begin
       if List.Items[I].VRML1ParentsCount + List.Items[I].ParentFieldsCount = 0 then
         List.Items[I].Free;
     FreeAndNil(List);
-  end;
-end;
-
-function KeyRange(Key: TSingleList;
-  const Fraction: Single; out T: Single): Integer;
-var
-  A, B: Integer;
-begin
-  Assert(Key.Count > 0);
-  Assert(not IsNan(Fraction));
-
-  if Fraction <= Key.First then
-    Result := 0 else
-  if Fraction >= Key.Last then
-    Result := Key.Count else
-  begin
-    { Then for sure we're between two Key values.
-      Note that we know that Key.Count > 1 (otherwise, Key.First = Key.Last
-      so one of <= or >= comparisons above would occur; we check
-      IsNan(Fraction) at the beginning to eliminate Fraction=NaN case). }
-    Assert(Key.Count > 1);
-
-    { Always A < B.
-      We're considering range from Key[A] to Key[B].
-
-      Remember that we cannot actually depend on the fact that
-      Key values are non-decreasing. They should be non-decreasing,
-      and we have to output correct result only when they are non-decreasing,
-      but we also have to terminate (with any result) in any situation.
-      Reason: Key values are supplied in X3D file, so they may be broken
-      in every possible way. }
-
-    A := 0;
-    B := Key.Count - 1;
-    while B - A > 1 do
-    begin
-      Result := (A + B) div 2;
-      { A < B => (A + B) < 2B => (A + B) div 2 < B => Result < B.
-        Also, Result > A (the only way how Result could be = A
-        would be when B = A + 1, but we eliminated this case by "while"
-        condition".
-
-        This is good, it means A < Result < B, so Result is good candidate
-        for next A or B, it will for sure shorten the distance
-        between A and B. }
-      Assert(A < Result);
-      Assert(Result < B);
-      { Using "<" instead of "<=" below: when the Fraction = Key[Result],
-        we want to go to right part, not left. See
-        - X3D specification
-          http://www.web3d.org/documents/specifications/19775-1/V3.3/Part01/components/utils.html#SequencingEvents
-          It says that f(t) = vn, if tn <= t < tn-1
-        - Testcase on https://github.com/castle-engine/view3dscene/issues/2
-      }
-      if Fraction < Key[Result] then
-        B := Result else
-        A := Result;
-    end;
-    Result := B;
-
-    if Key[B] > Key[A] then
-      T := (Fraction - Key[A]) / (Key[B] - Key[A])
-    else
-      T := 0;
   end;
 end;
 

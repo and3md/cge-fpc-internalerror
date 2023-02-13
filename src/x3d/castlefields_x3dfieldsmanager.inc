@@ -50,14 +50,14 @@ begin
   RegisterClasses([
     TSFBitMask,
     TSFEnum,
-    TSFBool,     TMFBool,
-    TSFFloat,    TMFFloat,
+    TSFBool,
+    TSFFloat,
     TSFLong,
     TSFInt32,
 
     TSFString,   TMFString,
-    TSFDouble,   TMFDouble,
-    TSFTime,     TMFTime
+    TSFDouble,
+    TSFTime
   ]);
 end;
 

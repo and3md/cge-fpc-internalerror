@@ -177,9 +177,6 @@
 
     strict private FFdReference: TSFString;
     public property FdReference: TSFString read FFdReference;
-
-    strict private FFdValue: TMFBool;
-    public property FdValue: TMFBool read FFdValue;
   end;
 
   { A metadata (extra, custom information at a node) with
@@ -196,8 +193,6 @@
     strict private FFdReference: TSFString;
     public property FdReference: TSFString read FFdReference;
 
-    strict private FFdValue: TMFDouble;
-    public property FdValue: TMFDouble read FFdValue;
   end;
 
   { A metadata (extra, custom information at a node) with
@@ -214,8 +209,6 @@
     strict private FFdReference: TSFString;
     public property FdReference: TSFString read FFdReference;
 
-    strict private FFdValue: TMFFloat;
-    public property FdValue: TMFFloat read FFdValue;
   end;
 
   { A metadata (extra, custom information at a node) with an integer type. }
@@ -360,9 +353,6 @@ begin
   FFdReference := TSFString.Create(Self, true, 'reference', '');
   AddField(FFdReference);
 
-  FFdValue := TMFBool.Create(Self, true, 'value', []);
-  AddField(FFdValue);
-
   DefaultContainerField := 'metadata';
 end;
 
@@ -387,9 +377,6 @@ begin
   FFdReference := TSFString.Create(Self, true, 'reference', '');
   AddField(FFdReference);
 
-  FFdValue := TMFDouble.Create(Self, true, 'value', []);
-  AddField(FFdValue);
-
   DefaultContainerField := 'metadata';
 end;
 
@@ -413,9 +400,6 @@ begin
 
   FFdReference := TSFString.Create(Self, true, 'reference', '');
   AddField(FFdReference);
-
-  FFdValue := TMFFloat.Create(Self, true, 'value', []);
-  AddField(FFdValue);
 
   DefaultContainerField := 'metadata';
 end;
