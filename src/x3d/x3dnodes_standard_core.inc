@@ -40,8 +40,6 @@
 
     strict private FFdMetadata: TSFNode;
     public property FdMetadata: TSFNode read FFdMetadata;
-
-    {$I auto_generated_node_helpers/x3dnodes_x3dnode.inc}
   end;
 
   { Interface for an abstract node type that indicates that the node may be used as
@@ -57,8 +55,6 @@
   TAbstractChildNode = class(TAbstractNode, IAbstractChildNode)
   public
     procedure CreateNode; override;
-
-    {$I auto_generated_node_helpers/x3dnodes_x3dchildnode.inc}
   end;
 
   { Abstract base type for all bindable children nodes. }

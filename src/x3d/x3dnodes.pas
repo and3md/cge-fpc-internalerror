@@ -237,14 +237,6 @@ uses
 {$I x3dnodes_standard_interpolation.inc}
 {$I x3dnodes_standard_interpolation_cubic_bezier.inc}
 
-{ More X3D nodes, not from X3D standard }
-
-
-
-{ Auto-generated nodes code }
-{$I auto_generated_node_helpers/x3dnodes_x3dchildnode.inc}
-{$I auto_generated_node_helpers/x3dnodes_x3dnode.inc}
-
 { unit init/fini ------------------------------------------------------------ }
 
 procedure X3DNodesFinalization;
