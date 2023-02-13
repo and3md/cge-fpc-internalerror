@@ -73,14 +73,6 @@
     function DeepCopy(CopyState: TX3DNodeDeepCopyState): TX3DNodeNames;
   end;
 
-  TX3DPrototypeNames = class(TStringListCaseSens)
-  public
-    procedure Bind(Proto: TX3DPrototypeBase);
-
-    { Find proto bound to given name. @nil if none. }
-    function Bound(const Name: string): TX3DPrototypeBase;
-  end;
-
   TX3DImportableNames = class(TStringListCaseSens)
   public
     destructor Destroy; override;
@@ -199,28 +191,6 @@ begin
   Result.Count := Count;
   for I := 0 to Count - 1 do
     Result.Items[I] := Items[I].DeepCopy(CopyState);
-end;
-
-{ TX3DPrototypeNames -------------------------------------------------------- }
-
-procedure TX3DPrototypeNames.Bind(Proto: TX3DPrototypeBase);
-var
-  I: Integer;
-begin
-  I := IndexOf(Proto.X3DName);
-  if I <> - 1 then
-    Objects[I] := Proto else
-    AddObject(Proto.X3DName, Proto);
-end;
-
-function TX3DPrototypeNames.Bound(const Name: string): TX3DPrototypeBase;
-var
-  I: Integer;
-begin
-  I := IndexOf(Name);
-  if I <> -1 then
-    Result := Objects[I] as TX3DPrototypeBase else
-    Result := nil;
 end;
 
 { TX3DImportableNames ------------------------------------------------------- }

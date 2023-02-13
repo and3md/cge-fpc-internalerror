@@ -22,12 +22,8 @@
   TX3DGraphTraverseState = class;
   TSFNode = class;
   TMFNode = class;
-  TX3DPrototypeNode = class;
-  TX3DPrototypeBase = class;
-  TX3DPrototypeBaseList = class;
   TX3DInterfaceDeclaration = class;
   TX3DNodeNames = class;
-  TX3DPrototypeNames = class;
   TX3DInterfaceDeclarationList = class;
   TX3DGraphTraverseStateStack = class;
   TTransformNode = class;

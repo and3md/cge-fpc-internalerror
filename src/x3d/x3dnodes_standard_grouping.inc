@@ -190,7 +190,6 @@
     FMeta: TStringStringMap;
     FScale: Single;
   private
-    FPrototypeNames: TX3DPrototypeNames;
     FExportedNames, FImportedNames: TX3DNodeNames;
     procedure TopLevelCheckChild(const Child: TX3DNode);
   protected
@@ -257,10 +256,6 @@
     procedure ForceSaveAsX3D(const AMajor: Integer = 3;
       const AMinor: Integer = 2;
       const AProfile: string = 'Interchange');
-
-    { Global prototype namespace at the end of parsing the file.
-      Useful for things like EXTERNPROTO implementation. }
-    property PrototypeNames: TX3DPrototypeNames read FPrototypeNames;
 
     { Node names exported from the file by EXPORT keyword.
       Useful for importing them later, to handle IMPORT/EXPORT X3D mechanism. }
@@ -729,7 +724,6 @@ destructor TX3DRootNode.Destroy;
 begin
   FreeAndNil(FComponents);
   FreeAndNil(FMeta);
-  FreeAndNil(FPrototypeNames);
   FreeAndNil(FExportedNames);
   FreeAndNil(FImportedNames);
   inherited;
@@ -751,9 +745,6 @@ begin
 
     FileItems := TX3DFileItemList.Create(false);
     try
-      for I := 0 to PrototypesCount - 1 do
-        FileItems.Add(Prototypes[I]);
-
       Assert(VRML1ChildrenCount = 0);
 
       for i := 0 to FdChildren.Count - 1 do

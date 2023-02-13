@@ -50,12 +50,10 @@
     FVRML1Children, FVRML1Parents: TX3DNodeList;
     FKeepExisting: Cardinal;
     FParentFields: TX3DFieldList;
-    FPrototypes: TX3DPrototypeBaseList;
     FImports, FExports: TX3DFileItemList;
     FFields, FFieldsSFNode, FFieldsMFNode: TX3DFieldList;
     FEvents: TX3DEventList;
     FPrototypeInstance: boolean;
-    FPrototypeInstanceSourceNode: TX3DPrototypeNode;
     FPrototypeInstanceHelpers: TX3DNode;
     FDefaultContainerField: string;
     FHasInterfaceDeclarations: TX3DAccessTypes;
@@ -92,7 +90,6 @@
     function TryFindNodeTransformTraverse(
       ANode: TX3DNode; StateStack: TX3DGraphTraverseStateStack;
       ParentInfo: PTraversingInfo; var TraverseIntoChildren: boolean): Pointer;
-    function GetPrototypes(const Index: Integer): TX3DPrototypeBase;
     function GetFields(const Index: Integer): TX3DField;
     function GetEvents(const Index: Integer): TX3DEvent;
     procedure UnregisterSceneCallback(Node: TX3DNode);
@@ -783,10 +780,6 @@
     function RemoveChildrenWithMatchingName(
       const Wildcard: string; IgnoreCase: Boolean): Cardinal;
 
-    property Prototypes [Index: Integer]: TX3DPrototypeBase read GetPrototypes;
-    function PrototypesCount: Integer;
-    procedure AddPrototype(const Value: TX3DPrototypeBase);
-
     { Create a deep copy of this node and all it's children.
 
       New copy is completely independent from original,
@@ -858,8 +851,6 @@
 
       @groupBegin }
     property PrototypeInstance: boolean read FPrototypeInstance;
-    property PrototypeInstanceSourceNode: TX3DPrototypeNode
-      read FPrototypeInstanceSourceNode;
     property PrototypeInstanceHelpers: TX3DNode read FPrototypeInstanceHelpers;
     { @groupEnd }
 
@@ -1098,12 +1089,10 @@ begin
 
   if PrototypeInstance then
   begin
-    FreeAndNil(FPrototypeInstanceSourceNode);
     FreeAndNil(FPrototypeInstanceHelpers);
     FPrototypeInstance := false;
   end;
 
-  FreeAndNil(FPrototypes);
   FreeAndNil(FImports);
   FreeAndNil(FExports);
   FreeAndNil(FFieldsSFNode);
@@ -1394,10 +1383,6 @@ begin
 
   if PrototypeInstance then
   begin
-    Assert(PrototypeInstanceSourceNode <> nil);
-    Result := Func(Self, PrototypeInstanceSourceNode);
-    if Result <> nil then Exit;
-
     if PrototypeInstanceHelpers <> nil then
     begin
       Result := Func(Self, PrototypeInstanceHelpers);
@@ -1966,9 +1951,6 @@ procedure TX3DNode.NodeSaveToStream(Writer: TX3DWriter; const CurrentContainerFi
           Result.Add(InterfaceDeclarations[I]);
       end;
 
-      for I := 0 to PrototypesCount - 1 do
-        Result.Add(Prototypes[I]);
-
       for I := 0 to FieldsCount - 1 do
       begin
         { Saving InterfaceDeclarations already handled saving fields
@@ -2069,39 +2051,12 @@ procedure TX3DNode.NodeSaveToStream(Writer: TX3DWriter; const CurrentContainerFi
       WriteContainerField := ' containerField=' + StringToX3DXml(CurrentContainerField) else
       WriteContainerField := '';
 
-    { For XML encoding, TX3DPrototypeNode is saved a little specially. }
-    ProtoInstance := Self is TX3DPrototypeNode;
-
     if ProtoInstance then
       ElementName := 'ProtoInstance' else
       ElementName := X3DType;
   end;
 
 begin
-  if PrototypeInstance and
-     { TX3DPrototypeNode has somewhat different meaning of PrototypeInstance,
-       we want to save it directly (otherwise
-       PrototypeInstanceSourceNode.SaveToStream could cause another
-       recursive PrototypeInstanceSourceNode.SaveToStream with
-       nested proto). For example test read + save
-       demo_models/x3d/key_sensor.x3dv, to see that check below is needed. }
-     not (Self is TX3DPrototypeNode) then
-  begin
-    { If this is an expanded prototype, then delegate writing to the
-      PrototypeInstanceSourceNode. }
-    PrototypeInstanceSourceNode.NodeSaveToStream(Writer, CurrentContainerField);
-
-    { What to do about
-        NodeNames.Bind(Self)
-      called from PrototypeInstanceSourceNode.SaveToStream ?
-      This means that PrototypeInstanceSourceNode (TX3DPrototypeNode)
-      is bound to given name.
-      But when reading, we bound Self node (the actual expanded proto)
-      to the same name.
-      Routes when saving check this (to make sure correct names are bound).
-      So we bind again Self, instead of PrototypeInstanceSourceNode,
-      to this name. }
-  end;
 end;
 
 class function TX3DNode.ForVRMLVersion(const Version: TX3DVersion): boolean;
@@ -2423,8 +2378,6 @@ begin
     if PrototypeInstance then
     begin
       Result.FPrototypeInstance := PrototypeInstance;
-      Result.FPrototypeInstanceSourceNode :=
-        CopyState.DeepCopy(PrototypeInstanceSourceNode) as TX3DPrototypeNode;
       if PrototypeInstanceHelpers <> nil then
         Result.FPrototypeInstanceHelpers := CopyState.DeepCopy(PrototypeInstanceHelpers);
     end;
@@ -2531,28 +2484,6 @@ end;
 function TX3DNode.IndexOfEvent(const AName: string): Integer;
 begin
   Result := FEvents.IndexOfName(AName);
-end;
-
-function TX3DNode.GetPrototypes(const Index: Integer): TX3DPrototypeBase;
-begin
-  if FPrototypes = nil then
-    raise ERangeError.CreateFmt('Prototypes list is empty, but tried to access index %d', [Index]);
-  Result := FPrototypes[Index];
-end;
-
-function TX3DNode.PrototypesCount: Integer;
-begin
-  if FPrototypes <> nil then
-    Result := FPrototypes.Count else
-    Result := 0;
-end;
-
-procedure TX3DNode.AddPrototype(const Value: TX3DPrototypeBase);
-begin
-  { create FPrototypes at demand }
-  if FPrototypes = nil then
-    FPrototypes := TX3DPrototypeBaseList.Create(true);
-  FPrototypes.Add(Value);
 end;
 
 procedure TX3DNode.UnregisterSceneCallback(Node: TX3DNode);
