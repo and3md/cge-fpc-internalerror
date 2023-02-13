@@ -268,7 +268,7 @@ end;
 
 function SPlatformDescription: String;
 begin
-  Result := PlatformToStr(Platform);
+  Result := '';
   {$ifdef FPC}
   Result +=
     ', OS: ' + {$I %FPCTARGETOS%} +
