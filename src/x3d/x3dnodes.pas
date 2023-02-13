@@ -192,7 +192,6 @@ type
 
   { More X3D nodes, not from X3D standard }
   {$I x3dnodes_x3dinterfacedeclaration.inc}
-  {$I x3dnodes_names.inc}
 
 {$I x3dnodes_nodesmanager.inc}
 {$I x3dnodes_miscellaneous_globals.inc}
@@ -219,7 +218,6 @@ uses
 {$I x3dnodes_x3dnodeclasseslist.inc}
 
 {$I x3dnodes_x3dinterfacedeclaration.inc}
-{$I x3dnodes_names.inc}
 {$I x3dnodes_nodesmanager.inc}
 {$I x3dnodes_miscellaneous_globals.inc}
 

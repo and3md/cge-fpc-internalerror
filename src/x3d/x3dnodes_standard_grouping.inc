@@ -186,7 +186,6 @@
     FMeta: TStringStringMap;
     FScale: Single;
   private
-    FExportedNames, FImportedNames: TX3DNodeNames;
     procedure TopLevelCheckChild(const Child: TX3DNode);
   protected
     function DeepCopyCore(CopyState: TX3DNodeDeepCopyState): TX3DNode; override;
@@ -252,15 +251,6 @@
     procedure ForceSaveAsX3D(const AMajor: Integer = 3;
       const AMinor: Integer = 2;
       const AProfile: string = 'Interchange');
-
-    { Node names exported from the file by EXPORT keyword.
-      Useful for importing them later, to handle IMPORT/EXPORT X3D mechanism. }
-    property ExportedNames: TX3DNodeNames read FExportedNames;
-
-    { Node names imported into this file by the IMPORT keyword.
-      You may want to take this into account when searching nodes by name,
-      this allows the user to rename nodes from Inlined files. }
-    property ImportedNames: TX3DNodeNames read FImportedNames;
 
     { Scale of the model.
       When loading, this is set to honor @code("UNIT length ...")
@@ -714,8 +704,6 @@ destructor TX3DRootNode.Destroy;
 begin
   FreeAndNil(FComponents);
   FreeAndNil(FMeta);
-  FreeAndNil(FExportedNames);
-  FreeAndNil(FImportedNames);
   inherited;
 end;
 
@@ -760,16 +748,6 @@ begin
   Res.Profile := Profile;
   Res.Components.Assign(Components);
   Res.Meta.Assign(Meta);
-  if ExportedNames <> nil then
-  begin
-    FreeAndNil(Res.FExportedNames);
-    Res.FExportedNames := ExportedNames.DeepCopy(CopyState);
-  end;
-  if ImportedNames <> nil then
-  begin
-    FreeAndNil(Res.FImportedNames);
-    Res.FImportedNames := ImportedNames.DeepCopy(CopyState);
-  end;
 end;
 
 procedure TX3DRootNode.ForceSaveAsX3D(const AMajor: Integer = 3;
@@ -827,12 +805,6 @@ procedure TX3DRootNode.ManuallyExportNode(const Node: TX3DNode; const ExportedAl
 begin
   if Node.X3DName = '' then
     raise Exception.Create('You cannot export nodes with empty names');
-
-  { merely adding ExportItem is not enough, we have to also replicate what
-    parsing of EXPORT clause does, and add it to ExportedNames. }
-  if FExportedNames = nil then
-    FExportedNames := TX3DNodeNames.Create(false);
-  ExportedNames.Bind(Node, true, ExportedAlias);
 end;
 
 procedure TX3DRootNode.ManuallyExportNode(const Node: TX3DNode);

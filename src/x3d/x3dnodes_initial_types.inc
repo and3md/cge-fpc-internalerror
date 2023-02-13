@@ -23,7 +23,6 @@
   TSFNode = class;
   TMFNode = class;
   TX3DInterfaceDeclaration = class;
-  TX3DNodeNames = class;
   TX3DInterfaceDeclarationList = class;
   TX3DGraphTraverseStateStack = class;
   TTransformNode = class;
