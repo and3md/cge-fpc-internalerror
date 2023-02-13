@@ -51,7 +51,6 @@
     FKeepExisting: Cardinal;
     FParentFields: TX3DFieldList;
     FPrototypes: TX3DPrototypeBaseList;
-    FRoutes: TX3DRouteList;
     FImports, FExports: TX3DFileItemList;
     FFields, FFieldsSFNode, FFieldsMFNode: TX3DFieldList;
     FEvents: TX3DEventList;
@@ -94,7 +93,6 @@
       ANode: TX3DNode; StateStack: TX3DGraphTraverseStateStack;
       ParentInfo: PTraversingInfo; var TraverseIntoChildren: boolean): Pointer;
     function GetPrototypes(const Index: Integer): TX3DPrototypeBase;
-    function GetRoutes(const Index: Integer): TX3DRoute;
     function GetFields(const Index: Integer): TX3DField;
     function GetEvents(const Index: Integer): TX3DEvent;
     procedure UnregisterSceneCallback(Node: TX3DNode);
@@ -789,10 +787,6 @@
     function PrototypesCount: Integer;
     procedure AddPrototype(const Value: TX3DPrototypeBase);
 
-    property Routes [Index: Integer]: TX3DRoute read GetRoutes;
-    function RoutesCount: Integer;
-    procedure AddRoute(const Value: TX3DRoute);
-
     { Create a deep copy of this node and all it's children.
 
       New copy is completely independent from original,
@@ -1110,7 +1104,6 @@ begin
   end;
 
   FreeAndNil(FPrototypes);
-  FreeAndNil(FRoutes);
   FreeAndNil(FImports);
   FreeAndNil(FExports);
   FreeAndNil(FFieldsSFNode);
@@ -2001,9 +1994,6 @@ procedure TX3DNode.NodeSaveToStream(Writer: TX3DWriter; const CurrentContainerFi
            (Events[I].ParentInterfaceDeclaration = nil) then
           Result.Add(Events[I]);
 
-      for I := 0 to RoutesCount - 1 do
-        Result.Add(Routes[I]);
-
     except FreeAndNil(Result) end;
   end;
 
@@ -2430,9 +2420,6 @@ begin
       if Events[I].ParentInterfaceDeclaration = nil then
         EventDeepCopyContents(Result.Events[I], Events[I]);
 
-    for I := 0 to RoutesCount - 1 do
-      Result.AddRoute(Routes[I].DeepCopy(CopyState));
-
     if PrototypeInstance then
     begin
       Result.FPrototypeInstance := PrototypeInstance;
@@ -2566,28 +2553,6 @@ begin
   if FPrototypes = nil then
     FPrototypes := TX3DPrototypeBaseList.Create(true);
   FPrototypes.Add(Value);
-end;
-
-function TX3DNode.GetRoutes(const Index: Integer): TX3DRoute;
-begin
-  if FRoutes = nil then
-    raise ERangeError.CreateFmt('Routes list is empty, but tried to access index %d', [Index]);
-  Result := FRoutes[Index];
-end;
-
-function TX3DNode.RoutesCount: Integer;
-begin
-  if FRoutes <> nil then
-    Result := FRoutes.Count else
-    Result := 0;
-end;
-
-procedure TX3DNode.AddRoute(const Value: TX3DRoute);
-begin
-  { create FRoutes at demand }
-  if FRoutes = nil then
-    FRoutes := TX3DRouteList.Create(true);
-  FRoutes.Add(Value);
 end;
 
 procedure TX3DNode.UnregisterSceneCallback(Node: TX3DNode);

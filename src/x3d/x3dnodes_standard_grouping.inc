@@ -759,9 +759,6 @@ begin
       for i := 0 to FdChildren.Count - 1 do
         FileItems.Add(FdChildren[I]);
 
-      for I := 0 to RoutesCount - 1 do
-        FileItems.Add(Routes[I]);
-
       FileItems.SaveToStream(Writer);
     finally FreeAndNil(FileItems) end;
   end else

@@ -312,7 +312,6 @@ procedure TX3DPrototypeNode.FieldOrEventHandleIsClause(
 var
   DestinationField, SourceField: TX3DField;
   DestinationEvent, SourceEvent: TX3DEvent;
-  Route: TX3DRoute;
   I: Integer;
 const
   InEventName: array [boolean] of string = ( 'output', 'input' );
@@ -380,26 +379,6 @@ begin
           DestinationEvent.FieldClass.X3DType,
           SourceEvent.FieldClass.X3DType ]));
       Exit;
-    end;
-
-    Route := TX3DRoute.Create;
-    Route.Internal := true;
-
-    try
-      if SourceEvent.InEvent then
-      begin
-        Route.SetSourceDirectly(SourceEvent);
-        Route.SetDestinationDirectly(DestinationEvent);
-      end else
-      begin
-        Route.SetSourceDirectly(DestinationEvent);
-        Route.SetDestinationDirectly(SourceEvent);
-      end;
-
-      AddRoute(Route);
-    except
-      FreeAndNil(Route);
-      raise;
     end;
   end;
 end;

@@ -838,7 +838,6 @@ var
     TimeSensor: TTimeSensorNode;
     Switch: TSwitchNode;
     I, NodesCount: Integer;
-    Route: TX3DRoute;
     Group: TGroupNode;
   begin
     AnimationX3DName := BakedAnimation.Name;
@@ -874,14 +873,6 @@ var
       TimeSensor.CycleInterval := BakedAnimation.Duration;
     TimeSensor.Loop := BakedAnimation.Loop;
     RootNode.AddChildren(TimeSensor);
-
-    Route := TX3DRoute.Create;
-    Route.SetSourceDirectly(TimeSensor.EventFraction_changed);
-    RootNode.AddRoute(Route);
-
-    Route := TX3DRoute.Create;
-    Route.SetDestinationDirectly(Switch.FdWhichChoice);
-    RootNode.AddRoute(Route);
 
     RootNode.ManuallyExportNode(TimeSensor);
 
