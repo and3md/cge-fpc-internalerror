@@ -55,9 +55,9 @@
       TChildrenArray = array of TAbstractChildNode;
     function ToChildrenArray(const Nodes: TMFNode): TChildrenArray;
     procedure EventAddChildrenReceive(
-      Event: TX3DEvent; Value: TX3DField; const Time: TX3DTime);
+      Event: TX3DEvent; Value: TX3DField);
     procedure EventRemoveChildrenReceive(
-      Event: TX3DEvent; Value: TX3DField; const Time: TX3DTime);
+      Event: TX3DEvent; Value: TX3DField);
   public
     procedure CreateNode; override;
 
@@ -477,13 +477,13 @@ begin
 end;
 
 procedure TAbstractX3DGroupingNode.EventAddChildrenReceive(
-  Event: TX3DEvent; Value: TX3DField; const Time: TX3DTime);
+  Event: TX3DEvent; Value: TX3DField);
 begin
   AddChildren(ToChildrenArray(Value as TMFNode), false);
 end;
 
 procedure TAbstractX3DGroupingNode.EventRemoveChildrenReceive(
-  Event: TX3DEvent; Value: TX3DField; const Time: TX3DTime);
+  Event: TX3DEvent; Value: TX3DField);
 begin
   RemoveChildren(ToChildrenArray(Value as TMFNode));
 end;

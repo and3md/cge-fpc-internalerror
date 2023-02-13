@@ -22,8 +22,7 @@
       TX3DEventReceiveList = class(specialize TList<TX3DEventReceive>)
       public
         { Call all functions. }
-        procedure ExecuteAll(Event: TX3DEvent; Value: TX3DField;
-          const Time: TX3DTime);
+        procedure ExecuteAll(Event: TX3DEvent; Value: TX3DField);
       end;
 
     var
@@ -87,7 +86,6 @@
       or if ParentNode.Scene is @nil (which may happen only if events
       processing is not turned on, that is TCastleSceneCore.ProcessEvents is @false)
       then event is not send. }
-    procedure Send(Field: TX3DField; const Time: TX3DTime); overload;
     procedure Send(Field: TX3DField); overload;
 
     { Add notification about receiving new value. For input events,
@@ -176,12 +174,12 @@
 { TX3DEvent.TX3DEventReceiveList -------------------------------------------------- }
 
 procedure TX3DEvent.TX3DEventReceiveList.ExecuteAll(
-  Event: TX3DEvent; Value: TX3DField; const Time: TX3DTime);
+  Event: TX3DEvent; Value: TX3DField);
 var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-    Items[I](Event, Value, Time);
+    Items[I](Event, Value);
 end;
 
 { TX3DEvent ----------------------------------------------------------------- }
@@ -218,7 +216,7 @@ begin
   Result := sxNone;
 end;
 
-procedure TX3DEvent.Send(Field: TX3DField; const Time: TX3DTime);
+procedure TX3DEvent.Send(Field: TX3DField);
 
   procedure RemoveNotifications;
   var
@@ -237,9 +235,9 @@ begin
   Inc(SendLevel);
   try
     if Assigned(FFirstNotification) then
-      FFirstNotification(Self, Field, Time);
+      FFirstNotification(Self, Field);
     if FNotifications <> nil then
-      FNotifications.ExecuteAll(Self, Field, Time);
+      FNotifications.ExecuteAll(Self, Field);
   finally
     Dec(SendLevel);
     if (NotificationsToRemove <> nil) and
@@ -247,14 +245,6 @@ begin
        (SendLevel = 0) then
       RemoveNotifications;
   end;
-end;
-
-procedure TX3DEvent.Send(Field: TX3DField);
-var
-  a:TX3dTime;
-begin
-  if (ParentNode <> nil) then
-    Send(Field, a);
 end;
 
 function TX3DEvent.SendNeeded: boolean;

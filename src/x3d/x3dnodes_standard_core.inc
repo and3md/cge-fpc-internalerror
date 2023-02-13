@@ -62,8 +62,7 @@
   strict private
     FBound: Boolean;
     FTransformScale: Single;
-    procedure EventIsBoundReceive(Event: TX3DEvent; AValue: TX3DField;
-      const Time: TX3DTime);
+    procedure EventIsBoundReceive(Event: TX3DEvent; AValue: TX3DField);
     procedure SetBound(const Value: Boolean);
   protected
     procedure BeforeTraverse(StateStack: TX3DGraphTraverseStateStack); override;
@@ -322,7 +321,7 @@ begin
 end;
 
 procedure TAbstractBindableNode.EventIsBoundReceive(
-  Event: TX3DEvent; AValue: TX3DField; const Time: TX3DTime);
+  Event: TX3DEvent; AValue: TX3DField);
 begin
   FBound := (AValue as TSFBool).Value;
 end;

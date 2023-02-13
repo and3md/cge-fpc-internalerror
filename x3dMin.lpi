@@ -158,11 +158,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dtime.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="X3DTime"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castlestringutils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleStringUtils"/>
@@ -185,10 +180,6 @@
         <Filename Value="src/base/castlerectangles.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleRectangles"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/base/castleutils_struct_list.inc"/>
-        <IsPartOfProject Value="True"/>
       </Unit>
     </Units>
   </ProjectOptions>

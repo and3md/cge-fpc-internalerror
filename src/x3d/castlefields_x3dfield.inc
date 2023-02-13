@@ -22,8 +22,7 @@
 
   { Called when @link(TX3DEvent) is received,
     see @link(TX3DEvent.AddNotification). }
-  TX3DEventReceive = procedure (Event: TX3DEvent; Value: TX3DField;
-    const Time: TX3DTime) of object;
+  TX3DEventReceive = procedure (Event: TX3DEvent; Value: TX3DField) of object;
 
   { Send along with the animation that should be applied only partially
     (because it fades-out or fades-in). }
@@ -211,8 +210,7 @@
       you do not even need to call @code(inherited) in overriden versions.
       This is suitable e.g. for cases when TimeSensor.set_startTime or such
       must be ignored. }
-    procedure ExposedEventReceive(Event: TX3DEvent; Value: TX3DField;
-      const Time: TX3DTime); virtual;
+    procedure ExposedEventReceive(Event: TX3DEvent; Value: TX3DField); virtual;
   public
     { Normal constructor.
 
@@ -671,8 +669,7 @@ begin
   Result := FExposedEvents[false];
 end;
 
-procedure TX3DField.ExposedEventReceive(Event: TX3DEvent; Value: TX3DField;
-  const Time: TX3DTime);
+procedure TX3DField.ExposedEventReceive(Event: TX3DEvent; Value: TX3DField);
 var
   ValuePossiblyChanged: boolean;
 begin
@@ -692,7 +689,7 @@ begin
 
   AssignValue(Value);
 
-  FExposedEvents[false].Send(Value, Time);
+  FExposedEvents[false].Send(Value);
 
   { Tests:
   if not ValuePossiblyChanged then
@@ -731,11 +728,10 @@ end;
 procedure TX3DField.Send(Value: TX3DField);
 var
   ValuePossiblyChanged: boolean;
-  a: TX3dTime;
 begin
   if SendsByEvent then
   begin
-    EventIn.Send(Value, a);
+    EventIn.Send(Value);
   end else
   begin
     ValuePossiblyChanged := not FastEqualsValue(Value);
