@@ -430,9 +430,6 @@ type
       OrthoViewpoint.fieldOfView or DirectionalLight.projectionRectangle. }
     class function FromX3DVector(const V: TVector4): TFloatRectangle; static;
 
-    { Round rectangle coordinates, converting TFloatRectangle to TRectangle. }
-    function Round: TRectangle;
-
     { Is another rectangle equal to this one.
       Floating-point values are compared with an epsilon tolerance. }
     function Equals(const R: TFloatRectangle): Boolean;
@@ -463,39 +460,11 @@ type
 
   TFloatRectangleList = {$ifdef CASTLE_OBJFPC}specialize{$endif} TStructList<TFloatRectangle>;
 
-function Rectangle(const Left, Bottom: Integer;
-  const Width, Height: Cardinal): TRectangle; overload;
-function Rectangle(const LeftBottom: TVector2Integer;
-  const Width, Height: Cardinal): TRectangle; overload;
-function FloatRectangle(const Left, Bottom, Width, Height: Single): TFloatRectangle; overload;
-function FloatRectangle(const R: TRectangle): TFloatRectangle; overload;
-function FloatRectangle(const LeftBottom: TVector2;
-  const Width, Height: Single): TFloatRectangle; overload;
-
 implementation
 
 uses SysUtils, Math;
 
 { TRectangle ----------------------------------------------------------------- }
-
-function Rectangle(const Left, Bottom: Integer;
-  const Width, Height: Cardinal): TRectangle;
-begin
-  Result.Left := Left;
-  Result.Bottom := Bottom;
-  Result.Width := Width;
-  Result.Height := Height;
-end;
-
-function Rectangle(const LeftBottom: TVector2Integer;
-  const Width, Height: Cardinal): TRectangle;
-begin
-  Result.Left := LeftBottom.Data[0];
-  Result.Bottom := LeftBottom.Data[1];
-  Result.Width := Width;
-  Result.Height := Height;
-end;
-
 {$ifndef ENABLE_SELF_RECORD_CONSTANTS}
 class function TRectangle.Empty: TRectangle;
 begin
@@ -961,33 +930,6 @@ begin
 end;
 
 { TFloatRectangle ----------------------------------------------------------------- }
-
-function FloatRectangle(const Left, Bottom, Width, Height: Single): TFloatRectangle;
-begin
-  Result.Left   := Left;
-  Result.Bottom := Bottom;
-  Result.Width  := Width;
-  Result.Height := Height;
-end;
-
-function FloatRectangle(const R: TRectangle): TFloatRectangle;
-begin
-  if R.IsEmpty then
-    Exit(TFloatRectangle.Empty);
-  Result.Left   := R.Left;
-  Result.Bottom := R.Bottom;
-  Result.Width  := R.Width;
-  Result.Height := R.Height;
-end;
-
-function FloatRectangle(const LeftBottom: TVector2;
-  const Width, Height: Single): TFloatRectangle;
-begin
-  Result.Left   := LeftBottom.Data[0];
-  Result.Bottom := LeftBottom.Data[1];
-  Result.Width  := Width;
-  Result.Height := Height;
-end;
 
 {$ifndef ENABLE_SELF_RECORD_CONSTANTS}
 class function TFloatRectangle.Empty: TFloatRectangle;
@@ -1488,18 +1430,6 @@ begin
   Result.Bottom := V.Data[1];
   Result.Width  := V.Data[2] - V.Data[0];
   Result.Height := V.Data[3] - V.Data[1];
-end;
-
-function TFloatRectangle.Round: TRectangle;
-begin
-  if IsEmpty then
-    Result := TRectangle.Empty
-  else
-    Result := Rectangle(
-      System.Round(Left),
-      System.Round(Bottom),
-      System.Round(Width),
-      System.Round(Height));
 end;
 
 function TFloatRectangle.Equals(const R: TFloatRectangle): Boolean;
