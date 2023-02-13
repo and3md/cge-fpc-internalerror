@@ -162,9 +162,6 @@ function StreamReadUpto_EOS(Stream: TStream; const endingChars: TSetOfChars): An
   This procedure ends when GrowingStream ends. If ResetDestStreamPosition
   then at the end we do DestStream.Position := 0 (since it is usually useful
   and it would be easy for you to forget about it). }
-procedure ReadGrowingStream(const GrowingStream, DestStream: TStream;
-  const ResetDestStreamPosition: Boolean;
-  const BufferSize: Cardinal = 10 * 1000);
 
 { Read a growing stream, and returns it's contents as a string.
   A "growing stream" is a stream that we can only read
@@ -316,7 +313,6 @@ type
 const
   DefaultReadBufferSize = 1024 * 1024;
 
-type
   { Read another stream, sequentially, always being able to back one character,
     and buffering it. This implements abstract TPeekCharStream class,
     so this is a purely sequential read-only stream that reads from
@@ -326,43 +322,6 @@ type
     This stream will buffer incoming data from SourceStream.
     This means that reading by a very small chunks (like e.g. byte-by-byte)
     does not hurt performance. }
-  TBufferedReadStream = class(TPeekCharStream)
-  private
-    FPosition: Int64;
-
-    { Always non-nil, allocated for BufferSize bytes. }
-    Buffer: PByteArray;
-
-    { A position of the next unread char in Buffer,
-      i.e. PeekChar simply returns Buffer[BufferPos]
-      (unless BufferPos = BufferEnd, in which case buffer must be refilled). }
-    BufferPos: LongWord;
-
-    { Always BufferPos <= BufferEnd.
-      Always Buffer[BufferPos..BufferEnd - 1] is the data that still must be
-      returned by TBufferedReadStream.Read method. }
-    BufferEnd: LongWord;
-
-    FBufferSize: LongWord;
-
-    { Sets Buffer contents, BufferEnd reading data from SourceStream.
-      BufferPos is always resetted to 0 by this. }
-    procedure FillBuffer;
-  protected
-    function GetPosition: Int64; override;
-  public
-    constructor Create(ASourceStream: TStream; AOwnsSourceStream: boolean;
-      ABufferSize: LongWord = DefaultReadBufferSize);
-    destructor Destroy; override;
-
-    function Read(var LocalBuffer; Count: Longint): Longint; override;
-    function PeekChar: Integer; override;
-    function ReadChar: Integer; override;
-    function ReadUpto(const EndingChars: TSetOfChars): AnsiString; override;
-
-    property BufferSize: LongWord read FBufferSize;
-  end;
-
 { ---------------------------------------------------------------------------- }
 { @section(TComponent utilities) }
 
@@ -1083,24 +1042,6 @@ begin
   result := StreamReadUpto_EOS(Stream, endingChars, false);
 end;
 
-procedure ReadGrowingStream(const GrowingStream, DestStream: TStream;
-  const ResetDestStreamPosition: Boolean;
-  const BufferSize: Cardinal);
-var
-  ReadCount: Integer;
-  Buffer: Pointer;
-begin
-  Buffer := GetMem(BufferSize);
-  try
-    repeat
-      ReadCount := GrowingStream.Read(Buffer^, BufferSize);
-      if ReadCount = 0 then Break;
-      DestStream.WriteBuffer(Buffer^, ReadCount);
-    until false;
-  finally FreeMemNiling(Buffer) end;
-  if ResetDestStreamPosition then DestStream.Position := 0;
-end;
-
 function ReadGrowingStreamToString(const GrowingStream: TStream): String;
 const
   BufferSize = 10000;
@@ -1317,176 +1258,6 @@ begin
 end;
 
 { TBufferedReadStream ----------------------------------------------------- }
-
-constructor TBufferedReadStream.Create(ASourceStream: TStream;
-  AOwnsSourceStream: boolean; ABufferSize: LongWord);
-begin
-  inherited Create(ASourceStream, AOwnsSourceStream);
-
-  FBufferSize := ABufferSize;
-  Buffer := GetMem(BufferSize);
-  BufferPos := 0;
-  BufferEnd := 0;
-end;
-
-destructor TBufferedReadStream.Destroy;
-begin
-  FreeMemNiling(Pointer(Buffer));
-  inherited;
-end;
-
-function TBufferedReadStream.GetPosition: Int64;
-begin
-  Result := FPosition;
-end;
-
-procedure TBufferedReadStream.FillBuffer;
-begin
-  BufferEnd := SourceStream.Read(Buffer^[0], BufferSize);
-  BufferPos := 0;
-end;
-
-function TBufferedReadStream.Read(var LocalBuffer; Count: Longint): Longint;
-var
-  CopyCount: LongWord;
-begin
-  if Count < 0 then
-    Result := 0 else
-  if LongWord(Count) <= BufferEnd - BufferPos then
-  begin
-    { In this case we can fill LocalBuffer using only data from Buffer }
-    Move(Buffer^[BufferPos], LocalBuffer, Count);
-    BufferPos := BufferPos + LongWord(Count);
-    Result := Count;
-  end else
-  begin
-    Move(Buffer^[BufferPos], LocalBuffer, BufferEnd - BufferPos);
-    Result := BufferEnd - BufferPos;
-    BufferPos := BufferEnd;
-    Count := Count - Result;
-
-    { Now we must read remaining Count bytes from SourceStream.
-      If Count < BufferSize I must use Buffer (after all this is the purpose
-      of TBufferedReadStream, to guarantee buffered reading).
-      On the other hand, if Count >= BufferSize I can read it directly
-      from SourceStream, no need to use Buffer in this case. }
-    if LongWord(Count) < BufferSize then
-    begin
-      FillBuffer;
-      CopyCount := Min(Count, BufferEnd - BufferPos);
-      Move(Buffer^[0], PChar(@LocalBuffer)[Result], CopyCount);
-      BufferPos := BufferPos + CopyCount;
-      Result := Result + LongInt(CopyCount);
-    end else
-    begin
-      Result := Result + SourceStream.Read(PChar(@LocalBuffer)[Result], Count);
-    end;
-  end;
-  FPosition := FPosition + Result;
-
-  UpdateLineColumn(LocalBuffer, Result);
-end;
-
-function TBufferedReadStream.PeekChar: Integer;
-begin
-  if BufferPos < BufferEnd then
-    Result := Buffer^[BufferPos] else
-  begin
-    FillBuffer;
-    if BufferPos < BufferEnd then
-      Result := Buffer^[BufferPos] else
-      Result := -1;
-  end;
-end;
-
-function TBufferedReadStream.ReadChar: Integer;
-begin
-  if BufferPos < BufferEnd then
-  begin
-    Result := Buffer^[BufferPos];
-    Inc(BufferPos);
-    Inc(FPosition);
-  end else
-  begin
-    FillBuffer;
-    if BufferPos < BufferEnd then
-    begin
-      Result := Buffer^[BufferPos];
-      Inc(BufferPos);
-      Inc(FPosition);
-    end else
-      Result := -1;
-  end;
-
-  if Result <> -1 then
-    UpdateLineColumn(AnsiChar(Result));
-end;
-
-function TBufferedReadStream.ReadUpto(const EndingChars: TSetOfChars): AnsiString;
-var
-  Peeked: Integer;
-  BufferBeginPos, OldResultLength, ReadCount: LongWord;
-  ConsumingChar: AnsiChar;
-begin
-  Result := '';
-  while true do
-  begin
-    Peeked := PeekChar;
-    if (Peeked = -1) or (AnsiChar(Peeked) in EndingChars) then
-      Exit;
-
-    (*Since this is TBufferedReadStream, we often have a lot of data in our
-      Buffer. It would be wasteful to just check and copy it one-by-one,
-      by code like:
-
-        Result := Result + Chr(Peeked);
-
-        { I could call above "Result := Result + Chr(ReadChar);"
-          to make implementation of ReadUpto cleaner (not dealing
-          with private fields of TStreamPeekChar).
-
-          But doing like I'm doing now works a little faster.
-          After PeekChar with result <> -1 I know that I have one place in the buffer.
-          So I just explicitly increment BufferPos below. }
-        Inc(BufferPos);
-        Inc(FPosition);
-
-      So the optimized version tries to grab as much as large as possible data
-      chunk from the buffer, and copy it to Result at once.
-    *)
-
-    UpdateLineColumn(AnsiChar(Peeked));
-
-    { Increase BufferPos as much as you can. We know that we can increase
-      at least by one, since we just called PeekChar and it returned character
-      <> -1 and not in EndingChars, so we use repeat...until instead of
-      while...do. }
-    BufferBeginPos := BufferPos;
-    repeat
-      Inc(BufferPos);
-      if BufferPos >= BufferEnd then
-        Break
-      else
-      begin
-        ConsumingChar := AnsiChar(Buffer^[BufferPos]);
-        if ConsumingChar in EndingChars then
-          Break
-        else
-          UpdateLineColumn(ConsumingChar);
-      end;
-    until false;
-
-    ReadCount := BufferPos - BufferBeginPos;
-
-    { Increase FPosition by the same amount that BufferPos was incremented }
-    FPosition := FPosition + ReadCount;
-
-    { Append Buffer^[BufferBeginPos... BufferPos - 1] to Result }
-    OldResultLength := Length(Result);
-    SetLength(Result, OldResultLength + ReadCount);
-    Move(Buffer^[BufferBeginPos], Result[OldResultLength + 1], ReadCount);
-  end;
-end;
 
 { TComponent helpers --------------------------------------------------- }
 

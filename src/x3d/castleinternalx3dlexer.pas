@@ -669,12 +669,8 @@ end;
 
 constructor TX3DLexer.CreateForPartialStream(const S: string;
   const AVersion: TX3DVersion);
-var
-  StringStream: TStringStream;
 begin
-  StringStream := TStringStream.Create(S);
-  CreateForPartialStream(
-    TBufferedReadStream.Create(StringStream, true), true, AVersion);
+
 end;
 
 destructor TX3DLexer.Destroy;

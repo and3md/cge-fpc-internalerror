@@ -315,9 +315,6 @@ procedure TX3DEvent.RemoveNotificationNow(const Notification: TX3DEventReceive);
 begin
   { The "else" below is important to remove only the first notification present,
     if you added multiple notifications. }
-  if SameMethods(TMethod(FFirstNotification), TMethod(Notification)) then
-    FFirstNotification := nil
-  else
   if FNotifications <> nil then
     FNotifications.Remove(Notification);
 end;
