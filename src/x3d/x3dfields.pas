@@ -43,8 +43,6 @@ type
   {$I castlefields_x3dsimplemultfield_descendants.inc}
   {$I castlefields_x3dfieldsmanager.inc}
 
-{$I castlefields_miscglobals.inc}
-
 {$undef read_interface}
 
 implementation
@@ -70,7 +68,6 @@ uses Math, Generics.Defaults,
 {$I castlefields_x3dsimplemultfield.inc}
 {$I castlefields_x3dsimplemultfield_descendants.inc}
 {$I castlefields_x3dfieldsmanager.inc}
-{$I castlefields_miscglobals.inc}
 
 finalization
   FreeAndNil(FX3DFieldsManager);
