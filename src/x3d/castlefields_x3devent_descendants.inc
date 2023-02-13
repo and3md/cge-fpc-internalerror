@@ -86,11 +86,6 @@
     constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
   end;
 
-  TMFStringEvent = class(TX3DEvent)
-  public
-    constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-  end;
-
 {$endif read_interface}
 
 {$ifdef read_implementation}
@@ -201,11 +196,6 @@ end;
 constructor TMFNodeEvent.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
 begin
   inherited Create(AParentNode, AName, TMFNode, AInEvent);
-end;
-
-constructor TMFStringEvent.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-begin
-  inherited Create(AParentNode, AName, TMFString, AInEvent);
 end;
 
 {$endif read_implementation}

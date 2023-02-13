@@ -55,7 +55,7 @@ begin
     TSFLong,
     TSFInt32,
 
-    TSFString,   TMFString,
+    TSFString,
     TSFDouble,
     TSFTime
   ]);

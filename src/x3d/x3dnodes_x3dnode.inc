@@ -58,7 +58,6 @@
     FDefaultContainerField: string;
     FHasInterfaceDeclarations: TX3DAccessTypes;
     FInterfaceDeclarations: TX3DInterfaceDeclarationList;
-    FCDataField: TMFString;
     FDestructionNotifications: TNodeDestructionNotificationList;
     ///FScene: TX3DEventsEngine;
     FInternalSceneShape: TObject;
@@ -210,20 +209,6 @@
     { @groupEnd }
 
     procedure CreateNode; virtual;
-
-    { The field where CDATA section from XML is added.
-      Used when loading X3D in XML encoding: XML elements may contain
-      CDATA sections, that are added to "url" field.
-      See X3D XML encoding specification about
-      "Encapsulating Script node code"
-      [http://www.web3d.org/x3d/specifications/ISO-IEC-19776-1.2-X3DEncodings-XML/Part01/concepts.html#EncapsulatingScriptNodeCode].
-      We also allow this for shader nodes (sensible (follows the intention
-      of the spec) and compatible with InstantReality).
-
-      When not assigned, then CDATA section for this node is not allowed.
-
-      This should be set in descendants constructor. }
-    property CDataField: TMFString read FCDataField write FCDataField;
   public
     { Node fields.
 

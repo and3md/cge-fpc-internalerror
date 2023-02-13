@@ -255,8 +255,6 @@
     strict private FFdReference: TSFString;
     public property FdReference: TSFString read FFdReference;
 
-    strict private FFdValue: TMFString;
-    public property FdValue: TMFString read FFdValue;
   end;
 
   { Information about the world.
@@ -267,9 +265,6 @@
     procedure CreateNode; override;
     class function ClassX3DType: string; override;
     class function URNMatching(const URN: string): boolean; override;
-
-    strict private FFdInfo: TMFString;
-    public property FdInfo: TMFString read FFdInfo;
 
     strict private FFdTitle: TSFString;
     public property FdTitle: TSFString read FFdTitle;
@@ -475,9 +470,6 @@ begin
   FFdReference := TSFString.Create(Self, true, 'reference', '');
   AddField(FFdReference);
 
-  FFdValue := TMFString.Create(Self, true, 'value', []);
-  AddField(FFdValue);
-
   DefaultContainerField := 'metadata';
 end;
 
@@ -495,9 +487,6 @@ end;
 procedure TWorldInfoNode.CreateNode;
 begin
   inherited;
-
-  FFdInfo := TMFString.Create(Self, false, 'info', []);
-  AddField(FFdInfo);
 
   FFdTitle := TSFString.Create(Self, false, 'title', '');
   AddField(FFdTitle);
