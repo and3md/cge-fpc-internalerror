@@ -114,10 +114,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dnodes_documentation.txt"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dnodes_initial_types.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -172,10 +168,6 @@
         <UnitName Value="CastleUtils"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castleutils_math.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castlestringutils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleStringUtils"/>
@@ -200,15 +192,7 @@
         <UnitName Value="CastleRectangles"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castleutils_primitive_lists.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castleutils_struct_list.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/base/castleutils_types.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
     </Units>
