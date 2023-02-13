@@ -187,7 +187,6 @@ type
   {$I x3dnodes_standard_core.inc}
   {$I x3dnodes_standard_time.inc}
   {$I x3dnodes_standard_grouping.inc}
-  {$I x3dnodes_standard_interpolation.inc}
 
   { More X3D nodes, not from X3D standard }
   {$I x3dnodes_x3dinterfacedeclaration.inc}
@@ -229,7 +228,6 @@ uses
 {$I x3dnodes_standard_core.inc}
 {$I x3dnodes_standard_time.inc}
 {$I x3dnodes_standard_grouping.inc}
-{$I x3dnodes_standard_interpolation.inc}
 
 { unit init/fini ------------------------------------------------------------ }
 
@@ -254,7 +252,6 @@ initialization
   RegisterCoreNodes;
   RegisterTimeNodes;
   RegisterGroupingNodes;
-  RegisterInterpolationNodes;
 
   //X3DCache := TX3DFontTexturesCache.Create;
   //TextureCache := X3DCache;
