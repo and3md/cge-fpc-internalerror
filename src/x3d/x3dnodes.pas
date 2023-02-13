@@ -188,7 +188,6 @@ type
   {$I x3dnodes_standard_time.inc}
   {$I x3dnodes_standard_grouping.inc}
   {$I x3dnodes_standard_interpolation.inc}
-  {$I x3dnodes_standard_interpolation_cubic_bezier.inc}
 
   { More X3D nodes, not from X3D standard }
   {$I x3dnodes_x3dinterfacedeclaration.inc}
@@ -231,7 +230,6 @@ uses
 {$I x3dnodes_standard_time.inc}
 {$I x3dnodes_standard_grouping.inc}
 {$I x3dnodes_standard_interpolation.inc}
-{$I x3dnodes_standard_interpolation_cubic_bezier.inc}
 
 { unit init/fini ------------------------------------------------------------ }
 
@@ -257,7 +255,6 @@ initialization
   RegisterTimeNodes;
   RegisterGroupingNodes;
   RegisterInterpolationNodes;
-  RegisterInterpolationCubicBezierNodes;
 
   //X3DCache := TX3DFontTexturesCache.Create;
   //TextureCache := X3DCache;
