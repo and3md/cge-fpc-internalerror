@@ -134,10 +134,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dnodes_lightcontribution.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dnodes_mfnode.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -155,10 +151,6 @@
       </Unit>
       <Unit>
         <Filename Value="src/x3d/x3dnodes_nodesmanager.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dnodes_prototypes.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
@@ -182,10 +174,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dnodes_standard_shape.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dnodes_standard_time.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -203,10 +191,6 @@
       </Unit>
       <Unit>
         <Filename Value="src/x3d/x3dnodes_x3dnodeclasseslist.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dnodes_x3droute.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
