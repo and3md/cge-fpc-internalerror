@@ -131,7 +131,6 @@ uses {$ifdef MSWINDOWS} Windows, {$ifndef FPC} ShlObj, {$endif} {$endif}
 {$I castleutils_miscella.inc}
 {$I castleutils_struct_list.inc}
 {$I castleutils_primitive_lists.inc}
-{$I castleutils_program_exit.inc}
 {$ifdef UNIX}      {$I castleutils_os_specific_unix.inc}    {$endif}
 {$ifdef MSWINDOWS} {$I castleutils_os_specific_windows.inc} {$endif}
 {$I castleutils_math.inc}
@@ -153,7 +152,6 @@ implementation
 {$I castleutils_miscella.inc}
 {$I castleutils_struct_list.inc}
 {$I castleutils_primitive_lists.inc}
-{$I castleutils_program_exit.inc}
 {$I castleutils_math.inc}
 
 { We cannot just have
