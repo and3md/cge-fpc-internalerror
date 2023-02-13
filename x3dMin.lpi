@@ -217,19 +217,11 @@
         <UnitName Value="CastleRectangles"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castleutils_basic_algorithms.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castleutils_delphi_compatibility.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="src/base/castleutils_filenames.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/base/castleutils_implement_sort.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
@@ -332,14 +324,6 @@
       </Unit>
       <Unit>
         <Filename Value="src/base/castlevectors_transformation.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/base/norqcheckbegin.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/base/norqcheckend.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
     </Units>
