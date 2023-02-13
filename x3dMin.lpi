@@ -118,10 +118,6 @@
         <UnitName Value="X3DNodes"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dnodes_castle.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dnodes_destructionnotification.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -139,10 +135,6 @@
       </Unit>
       <Unit>
         <Filename Value="src/x3d/x3dnodes_miscellaneous_globals.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dnodes_miscellaneous_internals.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
