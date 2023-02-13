@@ -149,12 +149,6 @@ begin
      CurrentFrameStarted[IndexFrameMetric(fmUpdateGeneratedTextures)] then
     Exit; // do not measure rendering times inside fmUpdateGeneratedTextures, they make output confusing
 
-  if CurrentFrameStarted[Metric] then
-  begin
-    WritelnWarning('Frame metric %d not stopped yet (but started again). Possible causes: mismatched Start/Stop calls, or broken by exception', [
-      Metric
-    ]);
-  end else
   begin
     CurrentFrameStarted[Metric] := true;
     CurrentFrameStart[Metric] := Timer;
@@ -206,42 +200,6 @@ procedure TCastleFrameProfiler.StartFrame;
 
   begin
     TotalTime := FramesTimes[CurrentFrame, IndexTotalMetric];
-    WritelnLogMultiline('FrameProfiler', Format(
-      'Frame time: %f secs (we should have %f FPS based on this):' + NL +
-      '- BeforeRender: %d%%' + NL +
-      '- Render: %d%% (%f secs, we should have %f "only render FPS" based on this)' + NL +
-      '  - TCastleTransform.Render transformation: %d%%' + NL +
-      '  - TCastleScene.Render: %d%%' + NL +
-      '    - ShapesFilterBlending: %d%%' + NL +
-      // '  - RenderFrameProfiler: %d%%' + NL +
-      '%s' +
-      '- Update: %d%%' + NL +
-      '  - TCastleScene.UpdateGeneratedTextures: %d%%' + NL +
-      '  - TCastleSceneCore.Update: %d%%' + NL +
-      '  - Update Kraft Physics: %d%% (%.5f secs)' + NL +
-      '%s' +
-      '- Other:' + NL +
-      '%s'
-    , [
-      TotalTime,
-      1 / TotalTime,
-      PercentTime(fmBeforeRender),
-      PercentTime(fmRender),
-      FramesTimes[CurrentFrame, IndexFrameMetric(fmRender)],
-      1 / FramesTimes[CurrentFrame, IndexFrameMetric(fmRender)],
-      PercentTime(fmRenderTransform),
-      PercentTime(fmRenderScene),
-      PercentTime(fmRenderShapesFilterBlending),
-      // PercentTime(fmRenderFrameProfiler),
-      DisplayUserMetrics(UserMetricsRenderNames, 1 + Ord(High(TFrameMetric)) + 1 + 0),
-      PercentTime(fmUpdate),
-      PercentTime(fmUpdateGeneratedTextures),
-      PercentTime(fmUpdateScene),
-      PercentTime(fmUpdatePhysics),
-      FramesTimes[CurrentFrame, IndexFrameMetric(fmUpdatePhysics)],
-      DisplayUserMetrics(UserMetricsUpdateNames, 1 + Ord(High(TFrameMetric)) + 1 + MaxUserMetrics),
-      DisplayUserMetrics(UserMetricsOtherNames , 1 + Ord(High(TFrameMetric)) + 1 + 2 * MaxUserMetrics)
-    ]));
   end;
 
 const
@@ -264,9 +222,6 @@ begin
       if (OtherMetric <> IndexTotalMetric) and
          CurrentFrameStarted[OtherMetric] then
         begin
-          WritelnWarning('Frame metric %d not stopped within this frame. Possible causes: mismatched Start/Stop calls, or broken by exception', [
-            OtherMetric
-          ]);
           FramesTimes[CurrentFrame, OtherMetric] := FramesTimes[CurrentFrame, OtherMetric] +
             CurrentFrameStart[OtherMetric].ElapsedTime;
         end;
@@ -312,9 +267,6 @@ function TCastleFrameProfiler.IndexUserMetric(const Name: String; out Metric: TM
         Exit(true);
       end;
 
-    WritelnWarning('Cannot find slot to store user metrics %s. Increase MaxUserMetrics in CastleTimeUtils.', [
-      Name
-    ]);
     Result := false;
   end;
 

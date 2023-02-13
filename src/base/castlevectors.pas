@@ -175,7 +175,7 @@ uses SysUtils, Generics.Collections, Classes,
 
 implementation
 
-uses Math, CastleStringUtils, CastleLog;
+uses Math, CastleStringUtils;
 
 {$define read_implementation}
 

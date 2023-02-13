@@ -990,8 +990,7 @@ const
 
 implementation
 
-uses {$ifdef FPC} Regexpr {$else} RegularExpressions {$endif}, StrUtils,
-  CastleLog;
+uses {$ifdef FPC} Regexpr {$else} RegularExpressions {$endif}, StrUtils;
 
 { TStringsHelper ------------------------------------------------------------- }
 
@@ -2522,8 +2521,7 @@ var
   begin
     SError := Format('Invalid character "%s" at position %d in string "%s"', [C, I, S]);
     if RaiseExceptionOnError then
-      raise EInvalidChar.Create(SError) else
-      WritelnWarning('SCheckChars', SError);
+      raise EInvalidChar.Create(SError);
   end;
 
 begin

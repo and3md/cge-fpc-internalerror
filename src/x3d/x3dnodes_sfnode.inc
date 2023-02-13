@@ -291,7 +291,6 @@ procedure TSFNode.WarningIfChildNotAllowed(Child: TX3DNode);
       [Child.X3DType, X3DName]);
     if ParentNode <> nil then
       S := S + Format(' of the node "%s"', [ParentNode.X3DType]);
-    WritelnWarning('VRML/X3D', S);
   end;
 
 begin
@@ -310,8 +309,6 @@ begin
     FValue.FreeIfUnused; // we know it will be freed now
     FValue := nil;
     { do a warning after freeing FValue, to avoid memory leaks in case OnWarning makes exception }
-    WritelnWarning('VRML/X3D', Format('A node inside the field "%s" must be already used elsewhere (use USE clause, do not declare a new node here)',
-      [NiceName]));
   end;
 end;
 
@@ -348,7 +345,6 @@ begin
   V := nil;// (Reader as TX3DReaderNames).Nodes.Bound(AttributeValue, UsedNodeFinished);
   if (V <> nil)  then
   begin
-    WritelnWarning('VRML/X3D', Format('Cycles in VRML/X3D graph: SFNode value inside node "%s" refers to the same name', [AttributeValue]));
     Value := nil;
     Exit;
   end;
@@ -356,8 +352,6 @@ begin
   Value := V;
   if Value = nil then
   begin
-    if AttributeValue <> SNull then
-      WritelnWarning('VRML/X3D', Format('Invalid node name for SFNode field: "%s"', [AttributeValue]));
   end else
   begin
     WarningIfChildNotAllowed(Value);

@@ -177,7 +177,7 @@ type
 implementation
 
 uses SysUtils, XMLRead, DOM, Math,
-  CastleLog, X3DFields, CastleVectors,
+  X3DFields, CastleVectors,
   CastleClassUtils;
 
 { EModelsStructureDifferent -------------------------------------------------- }
@@ -683,9 +683,7 @@ begin
       except
         on E: EModelsStructureDifferent do
         begin
-          WritelnLog('TNodeInterpolator', Format(
-            'Nodes %d and %d structurally different, so animation will not be smoothed between them: ',
-            [I - 1, I]) + E.Message);
+          ;
         end;
       end;
 

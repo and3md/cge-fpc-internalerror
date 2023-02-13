@@ -915,8 +915,7 @@ begin
     try
       ParseXMLAttributeLexer(Lexer, Reader);
     except
-      on E: EX3DClassicReadError do
-        WritelnWarning('VRML/X3D', 'Error when reading field "' + X3DName + '" value: ' + E.Message);
+      ;
     end;
   finally FreeAndNil(Lexer) end;
 end;

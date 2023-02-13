@@ -344,34 +344,19 @@ begin
 
   T := TTime(TimeStart.FTime);
 
-  if T.Finished then
-    WritelnWarning('Called Stop on the same TCastleProfilerTime instance (%s) multiple times',
-      [T.Description]);
-
   T.Finished := true;
   T.Time := TimeStart.FTimeStart.ElapsedTime;
   T.ProcessTime := TimeStart.FProcessTimeStart.ElapsedTime;
 
   // Call this before CurrentStack.Delete, which may free the T instance
-  if LogSummary then
-    WritelnLogMultiline(T.Description, T.Summary(''));
-
   if (CurrentStack.Count <> 0) and
      (CurrentStack.Last = T) then
     CurrentStack.Delete(CurrentStack.Count - 1)
   else
   begin
-    WritelnWarning('Mismatched Profiler.Start/Stop calls, the currently stopped time measurement (%s) is not the last measurement started (%s). Use try...finally to always run "Profiler.Stop" for each "Profiler.Start".', [
-      T.Description,
-      CurrentStack.Last.Description
-    ]);
     IndexInStack := CurrentStack.IndexOf(T);
     if IndexInStack <> - 1 then
       CurrentStack.DeleteRange(IndexInStack, CurrentStack.Count - IndexInStack)
-    else
-      WritelnWarning('Cannot find in stack the start of "%s", profiler information is corrupt, possible Access Violations errors later', [
-        T.Description
-      ]);
   end;
 end;
 

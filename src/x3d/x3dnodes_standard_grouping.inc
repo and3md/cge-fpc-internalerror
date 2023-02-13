@@ -536,7 +536,6 @@ begin
   begin
     if not (Nodes[I] is TAbstractChildNode) then
     begin
-      WritelnWarning('X3D', 'Node on addChildren or removeChildren list is not a TAbstractChildNode, ignoring event');
       SetLength(Result, 0);
       Exit;
     end;
@@ -780,10 +779,6 @@ begin
     This is special (see http://www.web3d.org/x3d/specifications/ISO-IEC-19775-1.2-X3D-AbstractSpecification/Part01/concepts.html#Rootnodes),
     "4.3.2 Root nodes" from X3D 3.2 spec.
   }
-
-  if not (Supports(Child, IAbstractChildNode)) then
-    WritelnWarning('VRML/X3D', Format('Node "%s" is not allowed at the top level of the VRML/X3D file',
-      [Child.X3DType]));
 end;
 
 procedure TX3DRootNode.ApplyTransform(State: TX3DGraphTraverseState);

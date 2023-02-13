@@ -52,7 +52,6 @@ begin
   if (Lexer.TokenInteger < 0) or
      (Lexer.TokenInteger > High(LongWord)) then
   begin
-    WritelnWarning('X3D', 'Expected unsigned 32-bit integer, but got %d', [Lexer.TokenInteger]);
     { Forcefully convert to LongWord, without range check errors. }
     Result := LongWord(Lexer.TokenInteger and High(LongWord));
   end else

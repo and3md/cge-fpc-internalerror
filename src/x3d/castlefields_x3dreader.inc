@@ -75,11 +75,6 @@ end;
 procedure TX3DReader.UnitConversion(const Category, Name: string;
   const ConversionFactor: Float);
 begin
-  if (Version.Major < 3) or
-     ( (Version.Major = 3) and
-       (Version.Minor < 3) ) then
-    WritelnWarning('X3D', 'UNIT declaration found, but X3D version is < 3.3');
-
   { store UNIT inside Reader }
   if Category = 'angle' then
     AngleConversionFactor := ConversionFactor else
@@ -87,10 +82,6 @@ begin
     { TODO } else
   if Category = 'length' then
     LengthConversionFactor := ConversionFactor else
-  if Category = 'mass' then
-    { TODO } else
-    WritelnWarning('X3D', Format('UNIT category "%s" unknown. Only the categories listed in X3D specification as base units are allowed',
-      [Category]));
 end;
 
 {$endif read_implementation}

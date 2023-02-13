@@ -307,8 +307,6 @@ begin
   if not WarningDoneInvalidIndex then
   begin
     WarningDoneInvalidIndex := true;
-    WritelnWarning('VRML/X3D', Format('Invalid index for field %s (%s)',
-      [NiceName, X3DType]));
   end;
 end;
 

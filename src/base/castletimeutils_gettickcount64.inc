@@ -101,7 +101,6 @@ begin
 
   if Result < LastGetTickCount64 then
   begin
-    WritelnLog('Time', 'Detected gettimeofday() going backwards on Unix, workarounding. This is known to happen on some Android devices');
     Result := LastGetTickCount64;
   end else
     LastGetTickCount64 := Result;

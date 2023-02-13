@@ -330,12 +330,6 @@ const
   MaxWrongVertexIndexWarnings = 10;
 begin
   Inc(WrongVertexIndexWarnings);
-  if WrongVertexIndexWarnings < MaxWrongVertexIndexWarnings then
-    WritelnWarning('VRML/X3D', Format('Wrong vertex index in indexed node %s (not enough points in Coordinate node defined: index is %d, we have only %d vertices)',
-      [GeometryX3DType, VertexNum, CoordCount])) else
-  if WrongVertexIndexWarnings = MaxWrongVertexIndexWarnings then
-    WritelnWarning('VRML/X3D', Format('Wrong vertex index in indexed node %s reported for the %dth time. Further warnings regarding this field will not be reported (to avoid wasting time on printing countless warnings...)',
-      [GeometryX3DType, WrongVertexIndexWarnings]));
 end;
 
 { TMFInt32 ------------------------------------------------------------------- }
@@ -731,7 +725,6 @@ begin
   except
     on E: Exception do
     begin
-      WritelnWarning('VRML/X3D', 'Error when reading MFString field "' + X3DName + '" value. Possibly missing double quotes (treating as a single string): ' + E.Message);
       Items.Count := 0;
       Items.Add(AttributeValue);
     end;

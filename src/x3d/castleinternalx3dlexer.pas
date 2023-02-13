@@ -383,7 +383,7 @@ function StringToX3DXmlMulti(const s: string): string;
 
 implementation
 
-uses CastleLog, X3DFields;// remove this X3DFields (X3DLoadInternalUtils was here before) include to get rid of internal error
+uses X3DFields;// remove this X3DFields (X3DLoadInternalUtils was here before) include to get rid of internal error
 
 const
   { utf8 specific constants below }
@@ -730,8 +730,6 @@ begin
         'Unexpected end of file in the middle of string token');
     if not (Chr(NextChar) in ['"', '\']) then
     begin
-      WritelnWarning('X3D', 'Invalid X3D file: Invalid sequence in a string: "\%s". Backslash must be followed by another backslash or double quote, for SFString and MFString (in X3D classic (VRML) encoding) and for MFString (in X3D XML encoding).',
-        [Chr(NextChar)]);
       FTokenString := FTokenString + '\';
     end;
     FTokenString := FTokenString + Chr(NextChar);
@@ -998,8 +996,6 @@ begin
     end;
   end;
 
-  if LogTokens then WritelnLog('X3D lexer', DescribeToken);
-
   result := Token;
 end;
 
@@ -1020,8 +1016,6 @@ begin
   fToken := vtName;
  end;
 
-  if LogTokens then WritelnLog('X3D lexer', DescribeToken);
-
  CheckTokenIs(vtName);
 end;
 
@@ -1038,8 +1032,6 @@ begin
   fTokenString := Chr(FirstBlack) + Stream.ReadUpto(VRMLWhitespaces);
   fToken := vtString;
  end;
-
- if LogTokens then WritelnLog('X3D lexer', DescribeToken);
 
  CheckTokenIs(vtString);
 end;

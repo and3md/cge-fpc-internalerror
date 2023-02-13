@@ -452,7 +452,6 @@ procedure TMFNode.WarningIfChildNotAllowed(Child: TX3DNode);
       [Child.X3DType, X3DName]);
     if ParentNode <> nil then
       S := S + Format(' of the node "%s"', [ParentNode.X3DType]);
-    WritelnWarning('VRML/X3D', S);
   end;
 
 begin

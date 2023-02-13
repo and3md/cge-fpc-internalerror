@@ -203,8 +203,7 @@ implementation
 
 uses
   Math,
-  StrUtils,
-  CastleLog;
+  StrUtils;
 
 {$warnings on}
 

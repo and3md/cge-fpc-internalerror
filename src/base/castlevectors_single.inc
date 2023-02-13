@@ -1010,7 +1010,7 @@ end;
 
 procedure WarningZeroVectorNonZeroAngle;
 begin
-  WritelnWarning('RotatePointAroundAxisRad called with rotation Axis = zero but non-zero rotation Angle, this is invalid');
+  //WritelnWarning('RotatePointAroundAxisRad called with rotation Axis = zero but non-zero rotation Angle, this is invalid');
 end;
 
 function RotatePointAroundAxisRad(const Angle: Single; const Point: TVector3;

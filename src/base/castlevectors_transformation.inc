@@ -256,9 +256,6 @@ begin
     InverseTransform := InvertedMatrix * InverseTransform;
   end else
   begin
-    WritelnLogMultiline('Matrix',
-      'Cannot invert matrix:' + NL + Matrix.ToRawString('  '));
-
     { When determinant is zero, we treat inverted matrix
       like identity (like in TMatrixTransformNode_1.Transformation).
       So no need to multiply InverseTransform by anything. }

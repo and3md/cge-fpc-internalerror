@@ -43,8 +43,7 @@ uses
 
 implementation
 
-uses Generics.Defaults, DateUtils,
-  CastleLog;
+uses Generics.Defaults, DateUtils;
 
 {$define read_implementation}
 {$I castletimeutils_miscellaneous.inc}

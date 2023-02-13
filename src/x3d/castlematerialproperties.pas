@@ -377,8 +377,7 @@ var
 implementation
 
 uses SysUtils, XMLRead, StrUtils, Math,
-  X3DNodes,
-  CastleLog;
+  X3DNodes;
 
 { TSoundInfoList }
 
@@ -586,11 +585,7 @@ begin
       try
         for J := 0 to S.Count - 1 do
         begin
-          if Result.IndexOf(S[J]) <> -1 then
-            WritelnWarning('MaterialProperties', Format('The texture URL "%s" is under the influence of more than one <auto_generated_textures> rule. Use <include> and <exclude> to avoid it',
-              [S[J]]))
-          else
-            Result.Add(S[J]);
+          Result.Add(S[J]);
         end;
       finally FreeAndNil(S) end;
     end;
