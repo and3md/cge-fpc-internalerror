@@ -29,14 +29,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/castlefields_internalglobals.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/castlefields_miscglobals.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/castlefields_misctypes.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -215,10 +207,6 @@
         <Filename Value="src/base/castlerectangles.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleRectangles"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/base/castleutils_delphi_compatibility.inc"/>
-        <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="src/base/castleutils_filenames.inc"/>
