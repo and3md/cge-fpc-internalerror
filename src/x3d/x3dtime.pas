@@ -87,9 +87,6 @@ const
   OldestX3DTime: TX3DTime = (Seconds: -MaxDouble; PlusTicks: 0)
     deprecated 'use TX3DTime.Oldest';
 
-type
-  TX3DTimeList = {$ifdef CASTLE_OBJFPC}specialize{$endif} TStructList<TX3DTime>;
-
 implementation
 
 class function TX3DTime.Oldest: TX3DTime; static;
