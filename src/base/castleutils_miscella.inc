@@ -79,10 +79,6 @@ function Iff(boolval: boolean; trueval, falseval: char)    : char;     overload;
 
 { Some helpful version stuff ------------------------------------------------ }
 
-const
-  { Castle Game Engine version. }
-  CastleEngineVersion = {$I ../base/castleversion.inc};
-
 { Name and version of the Pascal compiler used to compile this unit.
 
   @seealso TCastleApplicationProperties.Description
@@ -287,7 +283,7 @@ function SCastleEngineProgramHelpSuffix(const AppName, AppVersion: String; const
 begin
   Result :=
     AppName + ' version ' + AppVersion + '.' + NL +
-    'Using Castle Game Engine ( https://castle-engine.io/ ) version ' + CastleEngineVersion + '.' + NL +
+    'Using Castle Game Engine ( https://castle-engine.io/ ) ' +  '.' + NL +
     'Compiled with ' + SCompilerDescription + '.' + NL +
     'Platform: ' + SPlatformDescription + '.';
 end;

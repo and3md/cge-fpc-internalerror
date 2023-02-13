@@ -335,14 +335,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castleversion.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/base/gl_texture_compression_constants.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/norqcheckbegin.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
