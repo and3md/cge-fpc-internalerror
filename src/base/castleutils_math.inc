@@ -246,11 +246,9 @@ function DivRoundUp(const Value, Divider: Integer): Integer; overload;
   @groupBegin }
 function MapRange(const SourceVal, SourceBegin, SourceEnd, DestBegin, DestEnd: Integer): Float; overload;
 function MapRange(const SourceVal, SourceBegin, SourceEnd, DestBegin, DestEnd: Int64  ): Float; overload;
-function MapRange(const SourceVal, SourceBegin, SourceEnd, DestBegin, DestEnd: QWord  ): Float; overload;
 function MapRange(const SourceVal, SourceBegin, SourceEnd, DestBegin, DestEnd: Float  ): Float; overload;
 function MapRangeClamped(const SourceVal, SourceBegin, SourceEnd, DestBegin, DestEnd: Integer): Float; overload;
 function MapRangeClamped(const SourceVal, SourceBegin, SourceEnd, DestBegin, DestEnd: Int64  ): Float; overload;
-function MapRangeClamped(const SourceVal, SourceBegin, SourceEnd, DestBegin, DestEnd: QWord  ): Float; overload;
 function MapRangeClamped(const SourceVal, SourceBegin, SourceEnd, DestBegin, DestEnd: Float  ): Float; overload;
 { @groupEnd }
 
@@ -754,16 +752,6 @@ begin
   Result := Result * (DestEnd - DestBegin) + DestBegin;
 end;
 
-function MapRange(const SourceVal, SourceBegin, SourceEnd, DestBegin, DestEnd: QWord  ): Float;
-{$I norqcheckbegin.inc}
-begin
-  { Map range SourceBegin .. SourceEnd to 0..1, and express SourceVal there. }
-  Result := (SourceVal - SourceBegin) / (SourceEnd - SourceBegin);
-  { Map range 0..1 to DestBegin .. DestEnd }
-  Result := Result * (DestEnd - DestBegin) + DestBegin;
-end;
-{$I norqcheckend.inc}
-
 function MapRange(const SourceVal, SourceBegin, SourceEnd, DestBegin, DestEnd: Float  ): Float;
 begin
   { Map range SourceBegin .. SourceEnd to 0..1, and express SourceVal there. }
@@ -782,15 +770,6 @@ begin
 end;
 
 function MapRangeClamped(const SourceVal, SourceBegin, SourceEnd, DestBegin, DestEnd: Int64  ): Float;
-begin
-  Result := MapRange(SourceVal, SourceBegin, SourceEnd, DestBegin, DestEnd);
-  if DestEnd < DestBegin then
-    Result := Clamped(Result, DestEnd, DestBegin)
-  else
-    Result := Clamped(Result, DestBegin, DestEnd);
-end;
-
-function MapRangeClamped(const SourceVal, SourceBegin, SourceEnd, DestBegin, DestEnd: QWord  ): Float;
 begin
   Result := MapRange(SourceVal, SourceBegin, SourceEnd, DestBegin, DestEnd);
   if DestEnd < DestBegin then

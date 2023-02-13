@@ -22,11 +22,6 @@ procedure DecodeX3DColor(const Pixel: LongWord; var G: Byte);
 procedure DecodeX3DColor(const Pixel: LongWord; var GA: TVector2Byte);
 procedure DecodeX3DColor(const Pixel: LongWord; var RGB: TVector3Byte);
 procedure DecodeX3DColor(const Pixel: LongWord; var RGBA: TVector4Byte);
-
-procedure DecodeX3DColor(const Pixel: LongInt; var G: Byte);
-procedure DecodeX3DColor(const Pixel: LongInt; var GA: TVector2Byte);
-procedure DecodeX3DColor(const Pixel: LongInt; var RGB: TVector3Byte);
-procedure DecodeX3DColor(const Pixel: LongInt; var RGBA: TVector4Byte);
 { @groupEnd }
 
 const
@@ -107,30 +102,6 @@ end;
   works on separate bytes. See
   https://castle-engine.io/x3d_implementation_texturing3d.php
   comments about PixelTexture3D. }
-
-{$include norqcheckbegin.inc}
-
-procedure DecodeX3DColor(const Pixel: LongInt; var G: Byte);
-begin
-  DecodeX3DColor(LongWord(Pixel), G);
-end;
-
-procedure DecodeX3DColor(const Pixel: LongInt; var GA: TVector2Byte);
-begin
-  DecodeX3DColor(LongWord(Pixel), GA);
-end;
-
-procedure DecodeX3DColor(const Pixel: LongInt; var RGB: TVector3Byte);
-begin
-  DecodeX3DColor(LongWord(Pixel), RGB);
-end;
-
-procedure DecodeX3DColor(const Pixel: LongInt; var RGBA: TVector4Byte);
-begin
-  DecodeX3DColor(LongWord(Pixel), RGBA);
-end;
-
-{$include norqcheckend.inc}
 
 function X3DChangesToStr(const Changes: TX3DChanges): string;
 var
