@@ -21,7 +21,6 @@
 { Pointer arithmetic. Will wrap over if you add too much. Add may be negative.
   This is just a shortcut for @code(PtrInt(Result) := PtrInt(P)+Add),
   without any range / overflow checks. }
-function PointerAdd(p: pointer; add: integer): pointer;
 
 function GetClearMem(Size: integer; ClearValue: byte = 0): pointer; overload;
 
@@ -63,20 +62,6 @@ function SameMethods(const AMethod1, AMethod2: TMethod): boolean;
 {$endif read_interface}
 
 {$ifdef read_implementation}
-
-{$include norqcheckbegin.inc}
-function PointerAdd(p: pointer; Add: integer): pointer;
-{ Ten kod moze powodowac falszywe alarmy co do rangeChecking / arith. overflow,
-  dlatego powinien dzialac z R-,Q- }
-var
-  { PtrInt aliases for pointer types, to allow for
-    addition on them with Add (signed) without any warnings. }
-  ResultInt: PtrInt absolute Result;
-  PInt: PtrInt absolute P;
-begin
-  ResultInt := PInt + Add;
-end;
-{$include norqcheckend.inc}
 
 function GetClearMem(Size: integer; clearValue: byte{=0}): pointer;
 begin result := GetMem(Size); FillChar(result^,Size, clearvalue) end;

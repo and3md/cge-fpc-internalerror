@@ -128,7 +128,6 @@ uses {$ifdef MSWINDOWS} Windows, {$ifndef FPC} ShlObj, {$endif} {$endif}
 
 {$I castleutils_types.inc}
 {$I castleutils_delphi_compatibility.inc}
-{$I castleutils_basic_algorithms.inc}
 {$I castleutils_platform.inc}
 {$I castleutils_miscella.inc}
 {$I castleutils_struct_list.inc}
@@ -153,7 +152,6 @@ implementation
 
 {$I castleutils_types.inc}
 {$I castleutils_delphi_compatibility.inc}
-{$I castleutils_basic_algorithms.inc}
 {$I castleutils_platform.inc}
 {$I castleutils_miscella.inc}
 {$I castleutils_struct_list.inc}
