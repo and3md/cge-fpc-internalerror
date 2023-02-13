@@ -131,8 +131,6 @@ uses {$ifdef MSWINDOWS} Windows, {$ifndef FPC} ShlObj, {$endif} {$endif}
 {$I castleutils_miscella.inc}
 {$I castleutils_struct_list.inc}
 {$I castleutils_primitive_lists.inc}
-{$ifdef UNIX}      {$I castleutils_os_specific_unix.inc}    {$endif}
-{$ifdef MSWINDOWS} {$I castleutils_os_specific_windows.inc} {$endif}
 {$I castleutils_math.inc}
 {$I castleutils_read_write.inc}
 
@@ -153,22 +151,11 @@ implementation
 {$I castleutils_primitive_lists.inc}
 {$I castleutils_math.inc}
 
-{ We cannot just have
-  windows/castleutils_os_specific.inc and
-     unix/castleutils_os_specific.inc (same filename on all platforms),
-  and depend on paths to choose proper one:
-  For Lazarus package this would prevent maintaining single .lpk file,
-  see ../packages/README. }
-{$ifdef UNIX}      {$I castleutils_os_specific_unix.inc}    {$endif}
-{$ifdef MSWINDOWS} {$I castleutils_os_specific_windows.inc} {$endif}
-
 {$I castleutils_read_write.inc}
 
 {$undef read_implementation}
 
 initialization
-  InitializationOSSpecific;
-
   LocaleDecimalSeparator :=
     {$ifdef FPC} DefaultFormatSettings {$else} FormatSettings {$endif}.DecimalSeparator;
   {$ifdef FPC} DefaultFormatSettings {$else} FormatSettings {$endif}
@@ -195,5 +182,5 @@ initialization
   SetMultiByteRTLFileSystemCodePage(CP_UTF8);
  {$ENDIF}
 finalization
-  FinalizationOSSpecific;
+
 end.
