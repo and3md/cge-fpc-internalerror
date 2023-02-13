@@ -41,7 +41,6 @@
     FDefaultValueExists: boolean;
     FParentNode: TX3DNode;
     AllowedChildren: TAllowedChildren;
-    AllowedChildrenClasses: TX3DNodeClassesList;
     AllowedChildrenInterface: TGUID;
     function GetItems(const Index: Integer): TX3DNode;
   strict protected
@@ -72,9 +71,6 @@
     { Constructor that takes a list of allowed children classes.
       Note that we copy the contents of AAllowedChildrenClasses,
       not the reference. }
-    constructor Create(const AParentNode: TX3DNode;
-      const AExposed: boolean; const AName: string;
-      const AAllowedChildrenClasses: TX3DNodeClassesList); overload;
     { Constructor that allows as children any implementor of given interface. }
     constructor Create(const AParentNode: TX3DNode;
       const AExposed: boolean; const AName: string;
@@ -218,25 +214,10 @@ begin
   FParentNode := AParentNode;
 
   AllowedChildren := acClasses;
-  if AllowedChildrenClasses = nil then
-    AllowedChildrenClasses := TX3DNodeClassesList.Create;
-  AllowedChildrenClasses.AssignArray(AAllowedChildrenClasses);
-
   { In the future, this constructor may also allow setting DefaultItems
     from parameters. For now, this is not needed anywhere.
     We assume DefaultItems = [] if you used this constructor. }
   DefaultValueExists := true;
-end;
-
-constructor TMFNode.Create(const AParentNode: TX3DNode;
-  const AExposed: boolean; const AName: string;
-  const AAllowedChildrenClasses: TX3DNodeClassesList);
-begin
-  Create(AParentNode, AExposed, AName, []);
-
-  Assert(AllowedChildren = acClasses);
-  Assert(AllowedChildrenClasses <> nil);
-  AllowedChildrenClasses.Assign(AAllowedChildrenClasses);
 end;
 
 constructor TMFNode.Create(const AParentNode: TX3DNode;
@@ -261,7 +242,6 @@ begin
   ClearDefault;
   FreeAndNil(FItems);
   FreeAndNil(FDefaultItems);
-  FreeAndNil(AllowedChildrenClasses);
   inherited;
 end;
 
@@ -436,7 +416,7 @@ function TMFNode.ChildAllowed(Child: TX3DNode): boolean;
 begin
   case AllowedChildren of
     acAll      : Result := true;
-    acClasses  : Result := (Child = nil) or (AllowedChildrenClasses.IndexOfAnyAncestor(Child) <> -1);
+    acClasses  : Result := (Child = nil);
     acInterface: Result := (Child = nil) or Supports(Child, AllowedChildrenInterface);
     else raise Exception.Create('AllowedChildren?');
   end;

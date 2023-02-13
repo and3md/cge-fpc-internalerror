@@ -35,7 +35,6 @@
     FValue: TX3DNode;
     FParentNode: TX3DNode;
     AllowedChildren: TAllowedChildren;
-    AllowedChildrenClasses: TX3DNodeClassesList;
     AllowedChildrenInterface: TGUID;
     FDefaultValue: TX3DNode;
     FDefaultValueExists: boolean;
@@ -59,13 +58,6 @@
     constructor Create(const AParentNode: TX3DNode;
       const AExposed: boolean; const AName: string;
       const AAllowedChildrenClasses: array of TX3DNodeClass;
-      const AValue: TX3DNode = nil); overload;
-    { Constructor that takes a list of allowed children classes.
-      Note that we copy the contents of AAllowedChildrenClasses,
-      not the reference. }
-    constructor Create(const AParentNode: TX3DNode;
-      const AExposed: boolean; const AName: string;
-      const AAllowedChildrenClasses: TX3DNodeClassesList;
       const AValue: TX3DNode = nil); overload;
     { Constructor that allows as children any implementor of given interface. }
     constructor Create(const AParentNode: TX3DNode;
@@ -216,24 +208,9 @@ begin
   FParentNode := AParentNode;
 
   AllowedChildren := acClasses;
-  if AllowedChildrenClasses = nil then
-    AllowedChildrenClasses := TX3DNodeClassesList.Create;
-  AllowedChildrenClasses.AssignArray(AAllowedChildrenClasses);
 
   Value := AValue;
   AssignDefaultValueFromValue;
-end;
-
-constructor TSFNode.Create(const AParentNode: TX3DNode;
-  const AExposed: boolean; const AName: string;
-  const AAllowedChildrenClasses: TX3DNodeClassesList;
-  const AValue: TX3DNode);
-begin
-  Create(AParentNode, AExposed, AName, [], AValue);
-
-  Assert(AllowedChildren = acClasses);
-  Assert(AllowedChildrenClasses <> nil);
-  AllowedChildrenClasses.Assign(AAllowedChildrenClasses);
 end;
 
 constructor TSFNode.Create(const AParentNode: TX3DNode;
@@ -260,7 +237,6 @@ begin
   Value := nil;
   { To delete Self from DefaultValue.FParentFields, and eventually free DefaultValue. }
   DefaultValue := nil;
-  FreeAndNil(AllowedChildrenClasses);
   inherited;
 end;
 
@@ -268,7 +244,7 @@ function TSFNode.ChildAllowed(Child: TX3DNode): boolean;
 begin
   case AllowedChildren of
     acAll      : Result := true;
-    acClasses  : Result := (Child = nil) or (AllowedChildrenClasses.IndexOfAnyAncestor(Child) <> -1);
+    acClasses  : Result := (Child = nil);
     acInterface: Result := (Child = nil) or Supports(Child, AllowedChildrenInterface);
     else raise Exception.Create('AllowedChildren?');
   end;

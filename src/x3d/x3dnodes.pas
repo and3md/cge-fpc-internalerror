@@ -178,7 +178,6 @@ type
   {$I x3dnodes_x3dgraphtraversestate.inc}
   {$I x3dnodes_destructionnotification.inc}
   {$I x3dnodes_x3dnode.inc}
-  {$I x3dnodes_x3dnodeclasseslist.inc}
   {$I x3dnodes_sfnode.inc}
   {$I x3dnodes_mfnode.inc}
 
@@ -210,7 +209,6 @@ uses
 {$I x3dnodes_initial_types.inc}
 {$I x3dnodes_x3dgraphtraversestate.inc}
 {$I x3dnodes_destructionnotification.inc}
-{$I x3dnodes_x3dnodeclasseslist.inc}
 
 {$I x3dnodes_x3dinterfacedeclaration.inc}
 {$I x3dnodes_nodesmanager.inc}
