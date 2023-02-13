@@ -46,8 +46,6 @@
   { Basis for all node types that have bounds specified as part of the definition. }
   IAbstractBoundedObject = interface(IX3DNode)
   ['{0EF47711-754B-4BA8-97E5-0A9601E9C542}']
-    property FdBboxCenter: TSFVec3f { read GetFdbboxCenter }; { }
-    property FdBboxSize: TSFVec3f { read GetFdbboxSize }; { }
   end;
 
   { Base node that contains children nodes, in X3D and VRML 2.0. }
@@ -73,12 +71,6 @@
 
     strict private FFdChildren: TMFNode;
     public property FdChildren: TMFNode read FFdChildren;
-
-    strict private FFdBboxCenter: TSFVec3f;
-    public property FdBboxCenter: TSFVec3f read FFdBboxCenter;
-
-    strict private FFdBboxSize: TSFVec3f;
-    public property FdBboxSize: TSFVec3f read FFdBboxSize;
 
     strict private FFdRender: TSFBool;
     { This is an extension from InstantReality, see
@@ -287,12 +279,6 @@
 
     strict private FFdChildren: TMFNode;
     public property FdChildren: TMFNode read FFdChildren;
-
-    strict private FFdBboxCenter: TSFVec3f;
-    public property FdBboxCenter: TSFVec3f read FFdBboxCenter;
-
-    strict private FFdBboxSize: TSFVec3f;
-    public property FdBboxSize: TSFVec3f read FFdBboxSize;
   end;
 
   { Choose only one (or none) of the child nodes for processing.
@@ -351,21 +337,6 @@
     class function ForVRMLVersion(const Version: TX3DVersion): boolean;
       override;
     function TransformationChange: TNodeTransformationChange; override;
-
-    strict private FFdCenter: TSFVec3f;
-    public property FdCenter: TSFVec3f read FFdCenter;
-
-    strict private FFdRotation: TSFRotation;
-    public property FdRotation: TSFRotation read FFdRotation;
-
-    strict private FFdScale: TSFVec3f;
-    public property FdScale: TSFVec3f read FFdScale;
-
-    strict private FFdScaleOrientation: TSFRotation;
-    public property FdScaleOrientation: TSFRotation read FFdScaleOrientation;
-
-    strict private FFdTranslation: TSFVec3f;
-    public property FdTranslation: TSFVec3f read FFdTranslation;
   end;
   TTransformNode_2 = TTransformNode;
 
@@ -511,14 +482,6 @@ begin
   FFdChildren := TMFNode.Create(Self, true, 'children', IAbstractChildNode);
    FdChildren.ChangesAlways := [chChildren];
   AddField(FFdChildren);
-
-  FFdBboxCenter := TSFVec3f.Create(Self, false, 'bboxCenter', TVector3.Zero);
-  AddField(FFdBboxCenter);
-  { X3D specification comment: (-Inf,Inf) }
-
-  FFdBboxSize := TSFVec3f.Create(Self, false, 'bboxSize', Vector3(-1, -1, -1));
-  AddField(FFdBboxSize);
-  { X3D specification comment: [0,Inf) or -1 -1 -1 }
 
   FFdRender := TSFBool.Create(Self, true, 'render', true);
   AddField(FFdRender);
@@ -782,18 +745,8 @@ begin
 end;
 
 procedure TX3DRootNode.ApplyTransform(State: TX3DGraphTraverseState);
-var
-  M, IM: TMatrix4;
 begin
   inherited;
-
-  if Scale <> 1 then
-  begin
-    ScalingMatrices(Vector3(Scale, Scale, Scale), true, M, IM);
-    State.Transform := State.Transform * M;
-    State.InvertedTransform := IM * State.InvertedTransform;
-    State.TransformScale := State.TransformScale * Scale;
-  end;
 end;
 
 procedure TX3DRootNode.ManuallyExportNode(const Node: TX3DNode; const ExportedAlias: string);
@@ -814,14 +767,6 @@ begin
   FFdChildren := TMFNode.Create(Self, false, 'children', IAbstractChildNode);
    FdChildren.ChangesAlways := [chChildren];
   AddField(FFdChildren);
-
-  FFdBboxCenter := TSFVec3f.Create(Self, false, 'bboxCenter', Vector3(0, 0, 0));
-  AddField(FFdBboxCenter);
-  { X3D specification comment: (-Inf,Inf) }
-
-  FFdBboxSize := TSFVec3f.Create(Self, false, 'bboxSize', Vector3(-1, -1, -1));
-  AddField(FFdBboxSize);
-  { X3D specification comment: [0,Inf) or -1 -1 -1 }
 
   DefaultContainerField := 'children';
 end;
@@ -893,31 +838,6 @@ procedure TTransformNode.CreateNode;
 begin
   inherited;
 
-  FFdCenter := TSFVec3f.Create(Self, true, 'center', Vector3(0, 0, 0));
-   FdCenter.ChangesAlways := [chTransform];
-  AddField(FFdCenter);
-  { X3D specification comment: (-Inf,Inf) }
-
-  FFdRotation := TSFRotation.Create(Self, true, 'rotation', Vector3(0, 0, 1), 0);
-   FdRotation.ChangesAlways := [chTransform];
-  AddField(FFdRotation);
-  { X3D specification comment: [-1,1] or (-Inf,Inf) }
-
-  FFdScale := TSFVec3f.Create(Self, true, 'scale', Vector3(1, 1, 1));
-   FdScale.ChangesAlways := [chTransform];
-  AddField(FFdScale);
-  { X3D specification comment: (-Inf, Inf) }
-
-  FFdScaleOrientation := TSFRotation.Create(Self, true, 'scaleOrientation', Vector3(0, 0, 1), 0);
-   FdScaleOrientation.ChangesAlways := [chTransform];
-  AddField(FFdScaleOrientation);
-  { X3D specification comment: [-1,1] or (-Inf,Inf) }
-
-  FFdTranslation := TSFVec3f.Create(Self, true, 'translation', Vector3(0, 0, 0));
-   FdTranslation.ChangesAlways := [chTransform];
-  AddField(FFdTranslation);
-  { X3D specification comment: (-Inf,Inf) }
-
   DefaultContainerField := 'children';
 end;
 
@@ -949,72 +869,9 @@ begin
   Result := ntcTransform;
 end;
 
-procedure TransformState(State: TX3DGraphTraverseState;
-  const Center: TVector3;
-  const Rotation: TVector4;
-  const Scale: TVector3;
-  const ScaleOrientation: TVector4;
-  const Translation: TVector3);
-{ Workaround FPC 3.0.4 bug (internal error) on Darwin for AArch64
-  (not on other platforms):
-  x3dnodes_standard_grouping.inc(1035,3) Fatal: Internal error 2014121702
-}
-{$if defined(VER3_0) and defined(DARWIN) and defined(CPUAARCH64)}
-
-  type
-    TTransformData = record
-      Transform, InverseTransform: TMatrix4;
-      Center: TVector3;
-      Rotation: TVector4;
-      Scale: TVector3;
-      ScaleOrientation: TVector4;
-      Translation: TVector3;
-    end;
-
-  procedure TransformMatricesMultWorkaround(var TransformData: TTransformData);
-  begin
-    CastleTransform.TransformMatricesMult(
-      TransformData.Transform,
-      TransformData.InverseTransform,
-      TransformData.Center,
-      TransformData.Rotation,
-      TransformData.Scale,
-      TransformData.ScaleOrientation,
-      TransformData.Translation);
-  end;
-
-var
-  TransformData: TTransformData;
-begin
-  TransformData.Transform := State.Transform;
-  TransformData.InverseTransform := State.InvertedTransform;
-  TransformData.Center := Center;
-  TransformData.Rotation := Rotation;
-  TransformData.Scale := Scale;
-  TransformData.ScaleOrientation := ScaleOrientation;
-  TransformData.Translation := Translation;
-
-  // Doing it like this avoids
-  // Fatal: Internal error 2014121702
-  // from FPC 3.0.3 for 64-bit iPhone (Darwin for AArch64)
-  TransformMatricesMultWorkaround(TransformData);
-
-  State.Transform := TransformData.Transform;
-  State.InvertedTransform := TransformData.InverseTransform;
-{$else}
-begin
-//  TransformMatricesMult(State.Transform, State.InvertedTransform,
-//    Center, Rotation, Scale, ScaleOrientation, Translation);
-{$endif}
-  State.TransformScale := State.TransformScale * Approximate3DScale(Scale);
-end;
-
 procedure TTransformNode.ApplyTransform(State: TX3DGraphTraverseState);
 begin
   inherited;
-  TransformState(State, Fdcenter.Value, Fdrotation.Value,
-    Fdscale.Value, FdscaleOrientation.Value, Fdtranslation.Value);
-
   {
   if ((Fdscale.Value[0] < 0) or
       (Fdscale.Value[1] < 0) or

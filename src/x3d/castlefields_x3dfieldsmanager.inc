@@ -55,24 +55,9 @@ begin
     TSFLong,     TMFLong,
     TSFInt32,    TMFInt32,
 
-    TSFMatrix3f, TMFMatrix3f,
-    TSFMatrix,
-    TSFMatrix3d, TMFMatrix3d,
-    TSFMatrix4f, TMFMatrix4f,
-    TSFMatrix4d, TMFMatrix4d,
-
-    TSFRotation, TMFRotation,
     TSFString,   TMFString,
     TSFDouble,   TMFDouble,
-    TSFTime,     TMFTime,
-    TSFVec2f,    TMFVec2f,
-    TSFVec3f,    TMFVec3f,
-    TSFColor,    TMFColor,
-    TSFVec4f,    TMFVec4f,
-    TSFVec2d,    TMFVec2d,
-    TSFVec3d,    TMFVec3d,
-    TSFVec4d,    TMFVec4d,
-    TSFColorRGBA,TMFColorRGBA
+    TSFTime,     TMFTime
   ]);
 end;
 

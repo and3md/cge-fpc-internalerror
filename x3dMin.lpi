@@ -180,11 +180,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castlevectors.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleVectors"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castlestringutils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleStringUtils"/>

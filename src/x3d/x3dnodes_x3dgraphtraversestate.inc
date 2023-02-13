@@ -25,28 +25,6 @@
   strict private
     procedure CommonCreate;
   public
-    { Current transformation. }
-    Transform: TMatrix4;
-
-    { Inverted @link(Transform) matrix. This matrix is crucial for some
-      special effects (for example, it's needed for calculating in tangent space
-      for bump mapping).
-
-      This is not calculated using any complex matrix inversion algorithms.
-      Instead, this is calculated by updating this along the way, just like
-      we calculate normal @link(Transform). So it's simple, quick, and
-      guaranteed to be correct @italic(assuming that user didn't use
-      VRML 1.0 MatrixTransform along the way). That's why MatrixTransform node
-      was removed from VRML 2.0, it breaks such things.
-
-      Also, any scale with zero component along the way will make this
-      partially invalid (we'll substitute identity in place of inverted scaling
-      matrix). This is unavoidable, there's no reverse matrix for scaling
-      with zero factor, since one resulting point may correpond to infinitely many
-      source points (i.e., it's natural that such scaling function cannot be
-      reversed). }
-    InvertedTransform: TMatrix4;
-
     { A uniform scale of the matrix @link(Transform). If the matrix
       causes non-uniform scaling, this value represents an average scale.
 
@@ -64,10 +42,6 @@
     procedure AssignTransform(Source: TX3DGraphTraverseState);
 
   public
-    { Current texture transformation. Usable only for VRML 1.0, in VRML 2.0
-      texture transformations don't accumulate like modelview transformations. }
-    TextureTransform: TMatrix4;
-
     constructor CreateCopy(Source: TX3DGraphTraverseState);
 
     { Standard constructor.
@@ -146,9 +120,6 @@
       (with Collision.enabled = TRUE). Collision.proxy is never
       visible. }
     InsideInvisible: Cardinal;
-
-    { For Humanoid skeleton, these contain cummulated joint transformation. }
-    HumanoidTransform, HumanoidInvertedTransform: TMatrix4;
 
     { Local fog settings. When @nil, it means use global fog (or no fog,
       if no global fog defined in file). }
@@ -237,10 +208,7 @@ end;
 constructor TX3DGraphTraverseState.Create;
 begin
   CommonCreate;
-
-  Transform := TMatrix4.Identity;
   TransformScale := 1.0;
-  InvertedTransform := TMatrix4.Identity;
 
   { THAnimHumanoidNode.BeforeTraverse will initialize it anyway.
     But set it also here, just in case we have Joint without surrounding
@@ -248,10 +216,6 @@ begin
     THAnimJointNode.ApplyTransform, when multiplying points with 0 matrix,
     testcase is
     view3dscene ~/3dmodels/vrmlx3d/hanim/tecfa.unige.ch/vrml/objects/avatars/blaxxun/kambi_hanim_10_test.wrl.) }
-  HumanoidTransform := TMatrix4.Identity;
-  HumanoidInvertedTransform := TMatrix4.Identity;
-
-  TextureTransform := TMatrix4.Identity;
 end;
 
 destructor TX3DGraphTraverseState.Destroy;
@@ -262,14 +226,8 @@ end;
 
 procedure TX3DGraphTraverseState.Clear;
 begin
-  Transform := TMatrix4.Identity;
   TransformScale := 1.0;
-  InvertedTransform := TMatrix4.Identity;
 
-  HumanoidTransform := TMatrix4.Identity;
-  HumanoidInvertedTransform := TMatrix4.Identity;
-
-  TextureTransform := TMatrix4.Identity;
   InsideInline := 0;
   InsidePrototype := 0;
   InsideIgnoreCollision := 0;
@@ -283,7 +241,6 @@ procedure TX3DGraphTraverseState.Assign(Source: TX3DGraphTraverseState);
 begin
   AssignTransform(Source);
 
-  TextureTransform := Source.TextureTransform;
   InsideInline := Source.InsideInline;
   InsidePrototype := Source.InsidePrototype;
   InsideIgnoreCollision := Source.InsideIgnoreCollision;
@@ -293,12 +250,7 @@ end;
 procedure TX3DGraphTraverseState.AssignTransform(
   Source: TX3DGraphTraverseState);
 begin
-  Transform := Source.Transform;
   TransformScale := Source.TransformScale;
-  InvertedTransform := Source.InvertedTransform;
-  HumanoidTransform := Source.HumanoidTransform;
-  HumanoidInvertedTransform := Source.HumanoidInvertedTransform;
-
   if Source.Effects <> nil then
   begin
     if Effects = nil then
@@ -316,8 +268,7 @@ begin
     others. }
 
   Result :=
-    (IgnoreTransform or TMatrix4.PerfectlyEquals(Transform, SecondValue.Transform)) and
-    TMatrix4.PerfectlyEquals(TextureTransform, SecondValue.TextureTransform);
+    (IgnoreTransform);
 
 end;
 

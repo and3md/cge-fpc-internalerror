@@ -653,11 +653,6 @@
       NodeClass: TX3DNodeClass;
       out Node: TX3DNode;
       out State: TX3DGraphTraverseState): boolean;
-    function TryFindNodeTransform(
-      NodeClass: TX3DNodeClass;
-      out Node: TX3DNode;
-      out Transform: TMatrix4;
-      out TransformScale: Single): boolean;
     { @groupEnd }
 
     { Seeks Self and parent nodes (from VRML1Parents and ParentFields,
@@ -1782,7 +1777,6 @@ end;
 type
   TTryFindNodeTransformResult = class
     Node: TX3DNode;
-    Transform: TMatrix4;
     TransformScale: Single;
   end;
 
@@ -1794,28 +1788,8 @@ var
 begin
   Res := TTryFindNodeTransformResult.Create;
   Res.Node := ANode;
-  Res.Transform := StateStack.Top.Transform;
   Res.TransformScale := StateStack.Top.TransformScale;
   Result := Res;
-end;
-
-function TX3DNode.TryFindNodeTransform(
-  NodeClass: TX3DNodeClass;
-  out Node: TX3DNode;
-  out Transform: TMatrix4;
-  out TransformScale: Single): boolean;
-var
-  Res: TTryFindNodeTransformResult;
-begin
-  Res := TTryFindNodeTransformResult(Traverse(NodeClass,
-    {$ifdef CASTLE_OBJFPC}@{$endif} TryFindNodeTransformTraverse));
-  Result := Res <> nil;
-  if Result then
-  begin
-    Node := Res.Node;
-    Transform := Res.Transform;
-    TransformScale := Res.TransformScale;
-  end;
 end;
 
 function TX3DNode.TryFindParentByName(const FindName: string): TX3DNode;

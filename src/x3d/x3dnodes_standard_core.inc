@@ -61,7 +61,6 @@
   TAbstractBindableNode = class(TAbstractChildNode)
   strict private
     FBound: Boolean;
-    FTransform: TMatrix4;
     FTransformScale: Single;
     procedure EventIsBoundReceive(Event: TX3DEvent; AValue: TX3DField;
       const Time: TX3DTime);
@@ -132,7 +131,6 @@
       (OpenGL) without any problems.
 
       @groupBegin }
-    property Transform: TMatrix4 read FTransform;
     property TransformScale: Single read FTransformScale;
     { @groupEnd }
 
@@ -322,7 +320,6 @@ begin
    EventIsBound.AddNotification({$ifdef CASTLE_OBJFPC}@{$endif} EventIsBoundReceive);
   AddEvent(FEventIsBound);
 
-  FTransform := TMatrix4.Identity;
   FTransformScale := 1;
 end;
 
@@ -331,7 +328,6 @@ procedure TAbstractBindableNode.BeforeTraverse(
 begin
   inherited;
 
-  FTransform := StateStack.Top.Transform;
   FTransformScale := StateStack.Top.TransformScale;
 end;
 

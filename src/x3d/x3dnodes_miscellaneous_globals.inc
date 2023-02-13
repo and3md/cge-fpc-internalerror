@@ -16,11 +16,7 @@
 {$ifdef read_interface}
 
 const
-  DefaultMaterial_1AmbientColor: TVector3 = (Data: (0.2, 0.2, 0.2)) deprecated 'use TMaterialInfo.DefaultAmbientColor';
   DefaultMaterialAmbientIntensity = 0.2 deprecated 'use TMaterialInfo.DefaultAmbientIntensity';
-  DefaultMaterialDiffuseColor: TVector3 = (Data: (0.8, 0.8, 0.8)) deprecated 'use TMaterialInfo.DefaultDiffuseColor';
-  DefaultMaterialSpecularColor: TVector3 = (Data: (0, 0, 0)) deprecated 'use TMaterialInfo.DefaultSpecularColor';
-  DefaultMaterialEmissiveColor: TVector3 = (Data: (0, 0, 0)) deprecated 'use TMaterialInfo.DefaultEmissiveColor';
   DefaultMaterialShininess = 0.2 deprecated 'use TMaterialInfo.DefaultShininess';
   DefaultMaterialTransparency = 0.0 deprecated 'use TMaterialInfo.DefaultTransparency';
   DefaultMaterialMirror = 0.0 deprecated 'use TMaterialInfo.DefaultMirror';

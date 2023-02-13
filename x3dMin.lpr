@@ -15,7 +15,7 @@ uses
   X3DNodes, X3DTime, CastleClassUtils,
   CastleInterfaces,
   CastleRectangles, CastleStringUtils,
-  CastleUtils, CastleVectors;
+  CastleUtils;
 
 {$R *.res}
 

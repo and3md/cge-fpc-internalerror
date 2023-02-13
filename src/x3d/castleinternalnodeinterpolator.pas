@@ -177,7 +177,7 @@ type
 implementation
 
 uses SysUtils, XMLRead, DOM, Math,
-  X3DFields, CastleVectors,
+  X3DFields,
   CastleClassUtils;
 
 { EModelsStructureDifferent -------------------------------------------------- }
@@ -751,7 +751,6 @@ class function TNodeInterpolator.LoadAnimFramesToKeyNodes(const URL: string): TA
     FrameURL: string;
     NewNode: TX3DRootNode;
     Attr: TDOMAttr;
-    FrameBoxCenter, FrameBoxSize: TVector3;
   begin
     Result := TAnimation.Create;
     try

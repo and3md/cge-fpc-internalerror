@@ -324,113 +324,6 @@
     class function CreateEvent(const AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean): TX3DEvent; override;
   end;
 
-  { X3D field containing a 3x3 matrix with Single precision. }
-  TSFMatrix3f = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TSFGenericMatrix<
-    TMatrix3,
-    TVector3,
-    TSFMatrix3fEvent>)
-  public
-    class function X3DType: string; override;
-  end;
-
-  { X3D field containing a 3x3 matrix with Double precision. }
-  TSFMatrix3d = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TSFGenericMatrix<
-    TMatrix3Double,
-    TVector3Double,
-    TSFMatrix3dEvent>)
-  public
-    class function X3DType: string; override;
-  end;
-
-  { X3D field containing a 4x4 matrix with Single precision. }
-  TSFMatrix4f = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TSFGenericMatrix<
-    TMatrix4,
-    TVector4,
-    TSFMatrix4fEvent>)
-  public
-    class function X3DType: string; override;
-
-    { Return average scale for current matrix Value.
-
-      Note that this doesn't correctly extract scale from matrix,
-      as that is too difficcult. Insted it does simple extraction,
-      which will work for identity, translation and scaling matrices
-      (but e.g. will fail miserably (generate nonsense results) when
-      looking at some rotation matrices). }
-    function TransformScale: Single;
-  end;
-
-  { X3D field containing a 4x4 matrix with Double precision. }
-  TSFMatrix4d = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TSFGenericMatrix<
-    TMatrix4Double,
-    TVector4Double,
-    TSFMatrix4dEvent>)
-  public
-    class function X3DType: string; override;
-  end;
-
-  { VRML 1.0 SFMatrix field.
-    @deprecated This is deprecated, as VRML 1.0 is an ancient format now. }
-  TSFMatrix = class(TSFMatrix4f)
-  public
-    class function X3DType: string; override;
-  end;
-
-  { X3D field representing a 3D rotation around an arbitrary axis. }
-  TSFRotation = class(TX3DSingleField)
-  strict private
-    DefaultAxis: TVector3;
-    DefaultRotationRad: Single;
-    DefaultValueExists: boolean;
-  strict protected
-    procedure SaveToStreamValue(Writer: TX3DWriter); override;
-    function GetValue: TVector4;
-    procedure SetValue(const AValue: TVector4);
-    function GetValueDeg: TVector4;
-    procedure SetValueDeg(const AValue: TVector4);
-  public
-    Axis: TVector3;
-    RotationRad: Single;
-
-    constructor Create(const AParentNode: TX3DFileItem;
-      const AExposed: boolean; const AName: string;
-      const AnAxis: TVector3; const ARotationRad: Single); overload;
-    constructor Create(const AParentNode: TX3DFileItem;
-      const AExposed: boolean; const AName: string;
-      const AValue: TVector4); overload;
-
-    { Current rotation value, with last component expressing rotation in radians.
-
-      This internally gets / sets values from @link(Axis), @link(RotationRad),
-      it only presents them to you differently. }
-    property Value: TVector4 read GetValue write SetValue;
-
-    { Current rotation value, with last component expressing rotation in degrees.
-
-      So this is just like @link(Value), but last component is in degrees.
-      This internally gets / sets values from @link(Axis), @link(RotationRad),
-      it only presents them to you differently. }
-    property ValueDeg: TVector4 read GetValueDeg write SetValueDeg;
-
-    { Rotate point Pt around Self. }
-    function RotatedPoint(const pt: TVector3): TVector3;
-
-    function Equals(SecondValue: TX3DField): boolean; override;
-    function EqualsDefaultValue: boolean; override;
-    function FastEqualsValue(SecondValue: TX3DField): boolean; override;
-
-    procedure AssignLerp(const A: Double; Value1, Value2: TX3DField); override;
-    function CanAssignLerp: boolean; override;
-    procedure Assign(Source: TPersistent); override;
-    procedure AssignValue(Source: TX3DField); override;
-    procedure AssignDefaultValueFromValue; override;
-
-    class function X3DType: string; override;
-    class function CreateEvent(const AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean): TX3DEvent; override;
-
-    procedure Send(const AValue: TVector4); overload;
-  end;
-
   { X3D field containing a single string. }
   TSFString = class(TX3DSingleField)
   strict private
@@ -530,70 +423,6 @@
     procedure Send(const AValue: TItem); overload;
 
     class function CreateEvent(const AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean): TX3DEvent; override;
-  end;
-
-  { X3D field containing a 2D vector with Single precision. }
-  TSFVec2f = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TSFGenericVector<
-    TVector2,
-    TSFVec2fEvent>)
-  public
-    class function X3DType: string; override;
-  end;
-
-  { X3D field containing a 3D vector with Single precision. }
-  TSFVec3f = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TSFGenericVector<
-    TVector3,
-    TSFVec3fEvent>)
-  public
-    class function X3DType: string; override;
-    { Alternative version of @name, change only a given component of the vector. }
-    procedure Send(const Index: Integer; const ComponentValue: Single); overload;
-  end;
-
-  { X3D field containing an RGB color. }
-  TSFColor = class(TSFVec3f)
-  public
-    class function X3DType: string; override;
-    class function CreateEvent(const AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean): TX3DEvent; override;
-  end;
-
-  { X3D field containing a 4D vector with Single precision. }
-  TSFVec4f = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TSFGenericVector<
-    TVector4,
-    TSFVec4fEvent>)
-  public
-    class function X3DType: string; override;
-  end;
-
-  { X3D field containing an RGBA color (with an alpha). }
-  TSFColorRGBA = class(TSFVec4f)
-  public
-    class function X3DType: string; override;
-    class function CreateEvent(const AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean): TX3DEvent; override;
-  end;
-
-  { X3D field containing a 2D vector with Double precision. }
-  TSFVec2d = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TSFGenericVector<
-    TVector2Double,
-    TSFVec2dEvent>)
-  public
-    class function X3DType: string; override;
-  end;
-
-  { X3D field containing a 3D vector with Double precision. }
-  TSFVec3d = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TSFGenericVector<
-    TVector3Double,
-    TSFVec3dEvent>)
-  public
-    class function X3DType: string; override;
-  end;
-
-  { X3D field containing a 4D vector with Double precision. }
-  TSFVec4d = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TSFGenericVector<
-    TVector4Double,
-    TSFVec4dEvent>)
-  public
-    class function X3DType: string; override;
   end;
 
 {$endif read_interface}
@@ -1209,207 +1038,20 @@ end;
 
 { TSFMatrix3f ------------------------------------------------------------------ }
 
-class function TSFMatrix3f.X3DType: string;
-begin
-  Result := 'SFMatrix3f';
-end;
-
 { TSFMatrix3d ------------------------------------------------------------------ }
 
-class function TSFMatrix3d.X3DType: string;
-begin
-  Result := 'SFMatrix3d';
-end;
 
 { TSFMatrix4f ------------------------------------------------------------------ }
 
-class function TSFMatrix4f.X3DType: string;
-begin
-  Result := 'SFMatrix4f';
-end;
-
-function TSFMatrix4f.TransformScale: Single;
-begin
-  { This is a simple method of extracting average scaling factor from
-    a matrix. Works OK for combination of identity, scaling,
-    translation matrices.
-    Fails awfully on rotation (and possibly many other) matrices. }
-  Result := Approximate3DScale(
-    Value[0, 0],
-    Value[1, 1],
-    Value[2, 2]);
-end;
 
 { TSFMatrix4d ------------------------------------------------------------------ }
 
-class function TSFMatrix4d.X3DType: string;
-begin
-  Result := 'SFMatrix4d';
-end;
 
 { TSFMatrix ------------------------------------------------------------------ }
 
-class function TSFMatrix.X3DType: string;
-begin
-  Result := 'SFMatrix';
-end;
 
 { TSFRotation ---------------------------------------------------------------- }
 
-constructor TSFRotation.Create(const AParentNode: TX3DFileItem;
-  const AExposed: boolean; const AName: string;
-  const AnAxis: TVector3; const ARotationRad: Single);
-begin
-  inherited Create(AParentNode, AExposed, AName);
-
-  Axis := AnAxis;
-  RotationRad := ARotationRad;
-
-  AssignDefaultValueFromValue;
-end;
-
-constructor TSFRotation.Create(const AParentNode: TX3DFileItem;
-  const AExposed: boolean; const AName: string;
-  const AValue: TVector4);
-var
-  AnAxis: TVector3 absolute AValue;
-begin
-  inherited Create(AParentNode, AExposed, AName);
-
-  Axis := AnAxis;
-  RotationRad := AValue[3];
-
-  AssignDefaultValueFromValue;
-end;
-
-function TSFRotation.GetValue: TVector4;
-begin
-  Move(Axis.Data[0], Result.Data[0], SizeOf(Single) * 3);
-  Result[3] := RotationRad;
-end;
-
-procedure TSFRotation.SetValue(const AValue: TVector4);
-begin
-  Axis[0] := AValue[0];
-  Axis[1] := AValue[1];
-  Axis[2] := AValue[2];
-  RotationRad := AValue[3];
-end;
-
-function TSFRotation.GetValueDeg: TVector4;
-begin
-  Move(Axis.Data[0], Result.Data[0], SizeOf(Single) * 3);
-  Result[3] := RadToDeg(RotationRad);
-end;
-
-procedure TSFRotation.SetValueDeg(const AValue: TVector4);
-begin
-  Axis[0] := AValue[0];
-  Axis[1] := AValue[1];
-  Axis[2] := AValue[2];
-  RotationRad := DegToRad(AValue[3]);
-end;
-
-procedure TSFRotation.SaveToStreamValue(Writer: TX3DWriter);
-begin
-  Writer.Write(Axis.ToRawString +' ' +Format('%g', [RotationRad]));
-end;
-
-function TSFRotation.RotatedPoint(const pt: TVector3): TVector3;
-begin
-  if not Axis.IsZero then
-    Result := RotatePointAroundAxisRad(RotationRad, pt, Axis) else
-  begin
-    { Safeguard against rotation around zero vector, which produces unpredictable
-      results (actually, Result would be filled with Nan values).
-      VRML spec says that SFRotation should always specify a normalized vector. }
-    Result := Pt;
-  end;
-end;
-
-function TSFRotation.Equals(SecondValue: TX3DField): boolean;
-begin
-  Result := (inherited Equals(SecondValue)) and
-    (SecondValue is TSFRotation) and
-    TVector3.Equals(TSFRotation(SecondValue).Axis, Axis) and
-    SameValue(TSFRotation(SecondValue).RotationRad, RotationRad);
-end;
-
-function TSFRotation.FastEqualsValue(SecondValue: TX3DField): boolean;
-begin
-  Result := (SecondValue is TSFRotation) and
-    TVector3.PerfectlyEquals(TSFRotation(SecondValue).Axis, Axis) and
-    (TSFRotation(SecondValue).RotationRad = RotationRad);
-end;
-
-function TSFRotation.EqualsDefaultValue: boolean;
-begin
-  Result := DefaultValueExists and
-    TVector3.PerfectlyEquals(DefaultAxis, Axis) and
-    (DefaultRotationRad = RotationRad);
-end;
-
-procedure TSFRotation.AssignLerp(const A: Double; Value1, Value2: TX3DField);
-begin
-  { interpolate using slerp (testcase when linear interpolation on axis/vector fails:
-    god triangle in escape_universe) }
-  // Value := SLerp(A, (Value1 as TSFRotation).Value, (Value2 as TSFRotation).Value);
-end;
-
-function TSFRotation.CanAssignLerp: boolean;
-begin
-  Result := true;
-end;
-
-procedure TSFRotation.Assign(Source: TPersistent);
-begin
-  if Source is TSFRotation then
-  begin
-    Axis        := TSFRotation(Source).Axis;
-    RotationRad := TSFRotation(Source).RotationRad;
-    VRMLFieldAssignCommon(TX3DField(Source));
-  end else
-    inherited;
-end;
-
-procedure TSFRotation.AssignValue(Source: TX3DField);
-begin
-  if Source is TSFRotation then
-  begin
-    inherited;
-    Axis := TSFRotation(Source).Axis;
-    RotationRad := TSFRotation(Source).RotationRad;
-  end else
-    AssignValueRaiseInvalidClass(Source);
-end;
-
-procedure TSFRotation.AssignDefaultValueFromValue;
-begin
-  inherited;
-  DefaultAxis := Axis;
-  DefaultRotationRad := RotationRad;
-  DefaultValueExists := true;
-end;
-
-class function TSFRotation.X3DType: string;
-begin
-  Result := 'SFRotation';
-end;
-
-procedure TSFRotation.Send(const AValue: TVector4);
-var
-  FieldValue: TX3DField;
-begin
-  FieldValue := TSFRotation.Create(ParentNode, false, X3DName, AValue);
-  try
-    Send(FieldValue);
-  finally FreeAndNil(FieldValue) end;
-end;
-
-class function TSFRotation.CreateEvent(const AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean): TX3DEvent;
-begin
-  Result := TSFRotationEvent.Create(AParentNode, AName, AInEvent);
-end;
 
 { TSFString ------------------------------------------------------------------ }
 
@@ -1718,78 +1360,24 @@ end;
 
 { TSFVec2f ------------------------------------------------------------------- }
 
-class function TSFVec2f.X3DType: string;
-begin
-  Result := 'SFVec2f';
-end;
 
 { TSFVec3f ------------------------------------------------------------------- }
 
-class function TSFVec3f.X3DType: string;
-begin
-  Result := 'SFVec3f';
-end;
-
-procedure TSFVec3f.Send(const Index: Integer; const ComponentValue: Single);
-var
-  V: TVector3;
-begin
-  V := Value;
-  V[Index] := ComponentValue;
-  Send(V);
-end;
 
 { TSFColor ------------------------------------------------------------------- }
 
-class function TSFColor.X3DType: string;
-begin
-  Result := 'SFColor';
-end;
-
-class function TSFColor.CreateEvent(const AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean): TX3DEvent;
-begin
-  Result := TSFColorEvent.Create(AParentNode, AName, AInEvent);
-end;
-
 { TSFVec4f ------------------------------------------------------------------- }
 
-class function TSFVec4f.X3DType: string;
-begin
-  Result := 'SFVec4f';
-end;
 
 { TSFColorRGBA --------------------------------------------------------------- }
 
-class function TSFColorRGBA.X3DType: string;
-begin
-  Result := 'SFColorRGBA';
-end;
-
-class function TSFColorRGBA.CreateEvent(const AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean): TX3DEvent;
-begin
-  Result := nil; //TSFColorRGBAEvent.Create(AParentNode, AName, AInEvent);
-end;
-
 { TSFVec2d ------------------------------------------------------------------- }
 
-class function TSFVec2d.X3DType: string;
-begin
-  Result := 'SFVec2d';
-end;
 
 { TSFVec3d ------------------------------------------------------------------- }
 
-class function TSFVec3d.X3DType: string;
-begin
-  Result := 'SFVec3d';
-end;
 
 { TSFVec4d ------------------------------------------------------------------- }
-
-class function TSFVec4d.X3DType: string;
-begin
-  Result := 'SFVec4d';
-end;
 
 { TSFBitMask ------------------------------------------------------------ }
 

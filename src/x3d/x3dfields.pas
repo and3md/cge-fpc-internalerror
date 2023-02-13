@@ -21,7 +21,7 @@ unit X3DFields;
 interface
 
 uses Classes, SysUtils, DOM, Generics.Collections,
-  CastleVectors, CastleInternalX3DLexer, CastleUtils, CastleClassUtils,
+  CastleInternalX3DLexer, CastleUtils, CastleClassUtils,
   CastleStringUtils, CastleInterfaces,
   X3DTime;
 
