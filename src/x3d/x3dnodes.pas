@@ -213,8 +213,6 @@ uses
 
 {$define read_implementation}
 
-{$I x3dnodes_miscellaneous_internals.inc}
-
 {$I x3dnodes_initial_types.inc}
 {$I x3dnodes_x3dgraphtraversestate.inc}
 {$I x3dnodes_destructionnotification.inc}
