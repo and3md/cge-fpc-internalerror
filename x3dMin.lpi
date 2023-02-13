@@ -206,11 +206,6 @@
         <UnitName Value="CastleStringUtils"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castlelog.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleLog"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castleclassutils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleClassUtils"/>
