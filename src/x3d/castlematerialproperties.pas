@@ -22,7 +22,7 @@ unit CastleMaterialProperties;
 interface
 
 uses Classes, DOM, Generics.Collections,
-  CastleUtils, CastleClassUtils, CastleStringUtils;
+  CastleClassUtils, CastleStringUtils;
 
 type
 

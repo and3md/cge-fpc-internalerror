@@ -20,7 +20,7 @@ unit CastleInternalX3DLexer;
 
 interface
 
-uses SysUtils, Classes, CastleUtils, CastleStringUtils, CastleClassUtils,
+uses SysUtils, Classes, CastleStringUtils, CastleClassUtils,
   Math;
 
 type

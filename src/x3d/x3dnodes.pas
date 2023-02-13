@@ -167,7 +167,7 @@ interface
 
 uses SysUtils, Generics.Collections, Classes, DOM,
   CastleRectangles,
-  CastleInternalX3DLexer, CastleUtils, CastleClassUtils,
+  CastleInternalX3DLexer, CastleClassUtils,
   X3DFields,
   X3DTime,
   CastleStringUtils, CastleMaterialProperties;

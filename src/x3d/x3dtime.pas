@@ -21,7 +21,7 @@ unit X3DTime;
 interface
 
 uses Generics.Collections,
-  CastleUtils, Math;
+  Math;
 
 type
   { Complete timestamp for X3D events.

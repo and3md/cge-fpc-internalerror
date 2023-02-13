@@ -43,8 +43,7 @@ unit CastleStringUtils;
 
 interface
 
-uses SysUtils, Classes, Generics.Collections,
-  CastleUtils;
+uses SysUtils, Classes, Generics.Collections;
 
 type
   TDynamicStringArray = array of string;

@@ -22,7 +22,7 @@ unit CastleInternalNodeInterpolator;
 interface
 
 uses Classes, Generics.Collections,
-  CastleUtils, X3DNodes;
+  X3DNodes;
 
 type
   TGetKeyNodeWithTime = procedure (const Index: Cardinal;

@@ -163,11 +163,6 @@
         <UnitName Value="X3DTime"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castleutils.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleUtils"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castlestringutils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleStringUtils"/>
