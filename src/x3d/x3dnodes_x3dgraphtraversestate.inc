@@ -68,8 +68,6 @@
       texture transformations don't accumulate like modelview transformations. }
     TextureTransform: TMatrix4;
 
-    ShapeNode: TAbstractShapeNode;
-
     constructor CreateCopy(Source: TX3DGraphTraverseState);
 
     { Standard constructor.
@@ -158,16 +156,6 @@
 
     { Effects (TEffectNode) affecting this state. }
     Effects: TX3DNodeList;
-
-    { Material information at this state.
-      See TMaterialInfo for usage description.
-      Returns @nil when no node determines material properties
-      (which indicates white unlit look).
-
-      Returned TMaterialInfo is valid only as long as the underlying
-      Material or CommonSurfaceShader node exists.
-      Do not free it yourself, it will be automatically freed. }
-    function MaterialInfo: TMaterialInfo;
   end;
 
   { Stack of TX3DGraphTraverseState.
@@ -282,7 +270,6 @@ begin
   HumanoidInvertedTransform := TMatrix4.Identity;
 
   TextureTransform := TMatrix4.Identity;
-  ShapeNode := nil;
   InsideInline := 0;
   InsidePrototype := 0;
   InsideIgnoreCollision := 0;
@@ -297,7 +284,6 @@ begin
   AssignTransform(Source);
 
   TextureTransform := Source.TextureTransform;
-  ShapeNode := Source.ShapeNode;
   InsideInline := Source.InsideInline;
   InsidePrototype := Source.InsidePrototype;
   InsideIgnoreCollision := Source.InsideIgnoreCollision;
@@ -331,25 +317,8 @@ begin
 
   Result :=
     (IgnoreTransform or TMatrix4.PerfectlyEquals(Transform, SecondValue.Transform)) and
-    TMatrix4.PerfectlyEquals(TextureTransform, SecondValue.TextureTransform) and
-    (ShapeNode = SecondValue.ShapeNode) ;
+    TMatrix4.PerfectlyEquals(TextureTransform, SecondValue.TextureTransform);
 
-end;
-
-function TX3DGraphTraverseState.MaterialInfo: TMaterialInfo;
-var
-  M2: TMaterialNode;
-begin
-  if ShapeNode <> nil then
-  begin
-    begin
-      M2 := ShapeNode.Material;
-      if M2 <> nil then
-        Result := M2.MaterialInfo
-      else
-        Result := nil;
-    end;
-  end
 end;
 
 { TX3DGraphTraverseStateStack --------------------------------------------- }

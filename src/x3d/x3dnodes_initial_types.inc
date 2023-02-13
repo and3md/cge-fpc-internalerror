@@ -18,14 +18,8 @@
   { Forward declarations } { }
   TX3DNodeList = class;
   TX3DNode = class;
-  TAbstractShapeNode = class;
-  //TBlendModeNode = class;
-  ///TX3DEventsEngine = class;
-  // TLocalFogNode = class;
-  // TEffectNode = class;
   TX3DRootNode = class;
   TX3DGraphTraverseState = class;
-  TMaterialInfo = class;
   TSFNode = class;
   TMFNode = class;
   TX3DPrototypeNode = class;
@@ -36,9 +30,7 @@
   TX3DPrototypeNames = class;
   TX3DInterfaceDeclarationList = class;
   TX3DGraphTraverseStateStack = class;
-  TShapeNode = class;
   TTransformNode = class;
-  // TFogCoordinateNode = class;
 
   TX3DNodeClass = class of TX3DNode;
 
