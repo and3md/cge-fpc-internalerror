@@ -281,36 +281,6 @@
     public property FdChildren: TMFNode read FFdChildren;
   end;
 
-  { Choose only one (or none) of the child nodes for processing.
-    This allows to choose between a number of nodes for processing
-    (rendering, collision detection), and/or to hide some nodes.
-
-    Compatibility node: this class is used for both VRML 97 and X3D.
-    Although field name changed for X3D (in VRML 97, "children"
-    was called "choice"), this is handled seamlessly using our
-    TX3DFieldOrEvent.AddAlternativeField mechanism. In other words,
-    programmer simply works with FdChildren field, and when reading/writing
-    VRML file we take care to actually use either "children" or "choice" name,
-    depending on used VRML version. }
-  TSwitchNode = class(TAbstractX3DGroupingNode)
-  protected
-    function DirectEnumerateActive(Func: TEnumerateChildrenFunction): Pointer; override;
-  public
-    procedure CreateNode; override;
-    class function ClassX3DType: string; override;
-
-    strict private FFdWhichChoice: TSFInt32;
-    public property FdWhichChoice: TSFInt32 read FFdWhichChoice;
-
-    class function ForVRMLVersion(const Version: TX3DVersion): boolean;
-      override;
-
-    class function URNMatching(const URN: string): boolean; override;
-
-    function TransformationChange: TNodeTransformationChange; override;
-  end;
-  TSwitchNode_2 = TSwitchNode;
-
   { Interface for all VRML 2.0 / X3D transformation nodes.
     These nodes transform all their children (the ones enumerated
     by traversing, so all active children).
@@ -788,52 +758,6 @@ begin
   if Result <> nil then Exit;
 end;
 
-procedure TSwitchNode.CreateNode;
-begin
-  inherited;
-
-  Fdchildren.AddAlternativeName('choice', 2);
-
-  FFdWhichChoice := TSFInt32.Create(Self, true, 'whichChoice', -1);
-   FdWhichChoice.ChangesAlways := [chSwitch2];
-  AddField(FFdWhichChoice);
-  { X3D specification comment: [-1,Inf) }
-
-  DefaultContainerField := 'children';
-end;
-
-class function TSwitchNode.ClassX3DType: string;
-begin
-  Result := 'Switch';
-end;
-
-class function TSwitchNode.URNMatching(const URN: string): boolean;
-begin
-  Result := (inherited URNMatching(URN)) or
-    (URN = URNVRML97Nodes + ClassX3DType) or
-    (URN = URNX3DNodes + ClassX3DType);
-end;
-
-class function TSwitchNode.ForVRMLVersion(const Version: TX3DVersion): boolean;
-begin
-  Result := Version.Major >= 2;
-end;
-
-function TSwitchNode.DirectEnumerateActive(Func: TEnumerateChildrenFunction): Pointer;
-begin
-  Result := nil;
-  if Between(FdWhichChoice.Value, 0, FdChildren.Count - 1) then
-  begin
-    Result := Func(Self, FdChildren[FdWhichChoice.Value]);
-    if Result <> nil then Exit;
-  end;
-end;
-
-function TSwitchNode.TransformationChange: TNodeTransformationChange;
-begin
-  Result := ntcSwitch;
-end;
-
 procedure TTransformNode.CreateNode;
 begin
   inherited;
@@ -888,7 +812,6 @@ begin
   NodesManager.RegisterNodeClasses([
     TGroupNode,
     TStaticGroupNode,
-    TSwitchNode,
     TTransformNode
   ]);
 end;

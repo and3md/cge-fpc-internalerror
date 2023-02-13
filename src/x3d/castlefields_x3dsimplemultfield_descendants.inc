@@ -29,56 +29,6 @@
     class function X3DType: string; override;
   end;
 
-  TMFLong = class(specialize TX3DSimpleMultField<
-    LongInt,
-    TSFLong,
-    TLongIntList,
-    TMFLongEvent>)
-  strict private
-    FSaveToStreamLineUptoNegative: boolean;
-    WrongVertexIndexWarnings: Integer;
-  strict protected
-    function RawItemToString(ItemNum: integer; const Encoding: TX3DEncoding): string; override;
-    function SaveToStreamDoNewLineAfterRawItem(ItemNum: integer): boolean; override;
-  public
-    { When saving to VRML/X3D classic encoding,
-      make newline after each negative value on the list.
-      This makes a nice output for fields like IndexedFaceSet.coordIndex. }
-    property SaveToStreamLineUptoNegative: boolean
-      read FSaveToStreamLineUptoNegative write FSaveToStreamLineUptoNegative
-      default false;
-
-    class function X3DType: string; override;
-
-    { Call WritelnWarning reporting that an invalid vertex index
-      is caused from this field. This simply calls WritelnWarning
-      formatting appropriate message.
-
-      Additionally this guards
-      us against producing too many warnings from the same field.
-      When a given threshold will be reached, further
-      WritelnWarning_WrongVertexIndex calls for this field instance
-      will be simply ignored. This is a good thing, as some invalid models
-      have really an incredible amount of invalid indexes, and the very
-      amount of lines printed on console makes viewing these invalid files
-      (at least, the valid parts of them) impossible.
-
-      Example test cases:
-      content/examples/Basic/HumanoidAnimation/AllenStandShootRifleM24.x3d
-      and
-      content/examples/Basic/HumanoidAnimation/NancyDiving.x3dv
-      from http://www.web3d.org/ example models. }
-    procedure WritelnWarning_WrongVertexIndex(
-      const GeometryX3DType: string;
-      const VertexNum: Integer; const CoordCount: Integer);
-  end;
-
-  TMFInt32 = class(TMFLong)
-  public
-    class function X3DType: string; override;
-    class function CreateEvent(const AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean): TX3DEvent; override;
-  end;
-
   TMFFloat = class(specialize TX3DSimpleMultField<
     Single,
     TSFFloat,
@@ -153,41 +103,7 @@ end;
 
 { TMFLong -------------------------------------------------------------------- }
 
-function TMFLong.SaveToStreamDoNewLineAfterRawItem(ItemNum: integer): boolean;
-begin
-  Result := SaveToStreamLineUptoNegative and (Items[ItemNum] < 0);
-end;
-
-function TMFLong.RawItemToString(ItemNum: integer; const Encoding: TX3DEncoding): string;
-begin
-  Result := IntToStr(Items[ItemNum])
-end;
-
-class function TMFLong.X3DType: string;
-begin
-  Result := 'MFLong';
-end;
-
-procedure TMFLong.WritelnWarning_WrongVertexIndex(
-  const GeometryX3DType: string;
-  const VertexNum: Integer; const CoordCount: Integer);
-const
-  MaxWrongVertexIndexWarnings = 10;
-begin
-  Inc(WrongVertexIndexWarnings);
-end;
-
 { TMFInt32 ------------------------------------------------------------------- }
-
-class function TMFInt32.X3DType: string;
-begin
-  Result := 'MFInt32';
-end;
-
-class function TMFInt32.CreateEvent(const AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean): TX3DEvent;
-begin
-  Result := TMFInt32Event.Create(AParentNode, AName, AInEvent);
-end;
 
 { TMFMatrix3f ------------------------------------------------------------------- }
 

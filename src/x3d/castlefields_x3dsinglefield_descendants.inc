@@ -598,7 +598,7 @@ end;
 
 procedure TSFFloat.AssignLerp(const A: Double; Value1, Value2: TX3DField);
 begin
-  Value := Lerp(A, (Value1 as TSFFloat).Value, (Value2 as TSFFloat).Value);
+  //Value := Lerp(A, (Value1 as TSFFloat).Value, (Value2 as TSFFloat).Value);
 end;
 
 function TSFFloat.CanAssignLerp: boolean;
@@ -697,7 +697,7 @@ end;
 
 procedure TSFDouble.AssignLerp(const A: Double; Value1, Value2: TX3DField);
 begin
-  Value := Lerp(A, (Value1 as TSFDouble).Value, (Value2 as TSFDouble).Value);
+  //Value := Lerp(A, (Value1 as TSFDouble).Value, (Value2 as TSFDouble).Value);
 end;
 
 function TSFDouble.CanAssignLerp: boolean;

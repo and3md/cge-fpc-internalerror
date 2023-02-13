@@ -20,21 +20,8 @@
 type
   TSingleList = class;
   TDoubleList = class;
-  TLongIntList = class;
 
   EListsDifferentCount = class(Exception);
-
-  TWordList = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TStructList<Word>)
-  public
-    function Max: Word;
-    procedure Assign(const Source: TLongIntList);
-  end;
-
-  TLongWordList = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TStructList<LongWord>)
-  public
-    function Max: LongWord;
-    procedure Assign(const Source: TLongIntList);
-  end;
 
   TFloatList = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TStructList<Float>)
     procedure AppendFloats(Floats: TSingleList);
@@ -123,7 +110,6 @@ type
     procedure SetFalse(Index: Integer);
     procedure SetTrue(Index: Integer);
     { @groupEnd }
-    function ToLongInt: TLongIntList;
 
     { Does the SecondValue have equal length and content. }
     function Equals(SecondValue: TObject): boolean; override;
@@ -140,26 +126,6 @@ type
   TLongIntArray = packed array [0..MaxInt div SizeOf(LongInt) - 1] of LongInt;
   PLongIntArray = ^TLongIntArray;
 
-  TLongIntList = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TStructList<LongInt>)
-  public
-    function Max: LongInt;
-    function Sum: LongInt;
-    procedure DeleteRange(const Index: Integer; DelCount: Integer = 1);
-    { Add given Item a number of times to the list. }
-    procedure AddDuplicate(const Item: LongInt; const DuplicateCount: SizeInt);
-
-    { Does the SecondValue have equal length and content. }
-    function Equals(SecondValue: TObject): boolean; override;
-
-    { Does the SecondValue have equal length and content.
-
-      This method does the same thing as @link(Equals).
-      It is defined for consistency -- on some lists, like @link(TSingleList),
-      there is an important difference between Equals (compares with some
-      epsilon tolerance) and PerfectlyEquals. }
-    function PerfectlyEquals(SecondValue: TObject): boolean;
-  end;
-
   TIntegerList = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TStructList<Integer>)
   public
     function Sum: Integer;
@@ -168,54 +134,6 @@ type
 
 {$ifdef read_implementation}
 
-{ TWordList ------------------------------------------------------------ }
-
-function TWordList.Max: Word;
-var
-  I: Integer;
-begin
-  Result := Low(Word);
-  for I := 0 to Count - 1 do
-    MaxVar(Result, Items[I]);
-end;
-
-procedure TWordList.Assign(const Source: TLongIntList);
-var
-  I: Integer;
-  Src: PLongInt;
-  Dest: PWord;
-begin
-  Count := Source.Count;
-  Src := PLongInt(Source.L);
-  Dest := PWord(L);
-  for I := 0 to Count - 1 do
-  begin
-    Dest^ := Src^;
-    Inc(Src);
-    Inc(Dest);
-  end;
-end;
-
-{ TLongWordList ------------------------------------------------------------ }
-
-function TLongWordList.Max: LongWord;
-var
-  I: Integer;
-begin
-  Result := Low(LongWord);
-  for I := 0 to Count - 1 do
-    MaxVar(Result, Items[I]);
-end;
-
-procedure TLongWordList.Assign(const Source: TLongIntList);
-begin
-  { Copy memory directly.
-    This implicitly converts LongInt to LongWord values, without range checking.
-    But, in exchange, it's fast. }
-  Count := Source.Count;
-  if Count <> 0 then
-    System.Move(Source.List^[0], List^[0], SizeOf(LongWord) * Count);
-end;
 
 { TFloatList ------------------------------------------------------------ }
 
@@ -266,8 +184,6 @@ var
   I: Integer;
 begin
   Count := ACount;
-  for I := 0 to Count - 1 do
-    Items[I] := Lerp(Fraction, V1.Items[Index1 + I], V2.Items[Index2 + I]);
 end;
 
 procedure TSingleList.AddListRange(Source: TSingleList; Index, AddCount: Integer);
@@ -294,8 +210,6 @@ begin
       [V1.Count, V2.Count]);
 
   Count := V1.Count;
-  for I := 0 to Count - 1 do
-    List^[I] := Lerp(Fraction, V1.List^[I], V2.List^[I]);
 end;
 
 function TSingleList.Equals(SecondValue: TObject): boolean;
@@ -402,16 +316,12 @@ begin
 end;
 
 procedure TDoubleList.AssignLerp(const Fraction: Double; const V1, V2: TDoubleList);
-var
-  I: Integer;
 begin
   if V1.Count <> V2.Count then
     raise EListsDifferentCount.CreateFmt('Different lists length: %d and %d, cannot do AssignLerp on the lists',
       [V1.Count, V2.Count]);
 
   Count := V1.Count;
-  for I := 0 to Count - 1 do
-    List^[I] := Lerp(Fraction, V1.List^[I], V2.List^[I]);
 end;
 
 function TDoubleList.Equals(SecondValue: TObject): boolean;
@@ -480,16 +390,6 @@ begin
  Items[Index] := true;
 end;
 
-function TBooleanList.ToLongInt: TLongIntList;
-var
-  I: Integer;
-begin
-  Result := TLongIntList.Create;
-  Result.Count := Count;
-  for I := 0 to Count - 1 do
-    Result.Items[I] := Ord(Items[I]);
-end;
-
 function TBooleanList.Equals(SecondValue: TObject): boolean;
 var
   I: Integer;
@@ -514,72 +414,6 @@ begin
 end;
 
 { TLongIntList ----------------------------------------------------------- }
-
-function TLongIntList.Max: LongInt;
-var
-  I: Integer;
-begin
-  Result := Low(LongInt);
-  for I := 0 to Count - 1 do
-    MaxVar(Result, Items[I]);
-end;
-
-function TLongIntList.Sum: LongInt;
-var
-  I: Integer;
-begin
-  Result := 0;
-  for I := 0 to Count - 1 do
-    Result := Result + Items[I];
-end;
-
-procedure TLongIntList.DeleteRange(const Index: Integer; DelCount: Integer);
-var
-  I: Integer;
-begin
-  { Make sure Index and DelCount are sensible first }
-  if Index >= Count then
-    Exit;
-  MinVar(DelCount, Count - Index);
-
-  for I := Index to Count - 1 - DelCount do
-    Items[I] := Items[I + DelCount];
-
-  Count := Count - DelCount;
-end;
-
-procedure TLongIntList.AddDuplicate(const Item: LongInt; const DuplicateCount: SizeInt);
-var
-  I, C: Integer;
-begin
-  C := Count;
-  Count := Count + DuplicateCount;
-  for I := C to Count - 1 do
-    Items[I] := Item;
-end;
-
-function TLongIntList.Equals(SecondValue: TObject): boolean;
-var
-  I: Integer;
-begin
-  Result := SecondValue is TLongIntList;
-  if Result then
-  begin
-    Result := Count = TLongIntList(SecondValue).Count;
-    if Result then
-      for I := 0 to Count - 1 do
-        if TLongIntList(SecondValue).List^[I] <> List^[I] then
-        begin
-          Result := false;
-          Exit;
-        end;
-  end;
-end;
-
-function TLongIntList.PerfectlyEquals(SecondValue: TObject): boolean;
-begin
-  Result := Equals(SecondValue);
-end;
 
 { TIntegerList ----------------------------------------------------------- }
 

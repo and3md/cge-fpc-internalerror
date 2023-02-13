@@ -145,17 +145,6 @@ type
       ScenesPerTime: Cardinal;
       const Epsilon: Single): TBakedAnimation;
 
-    { Convert a node list to animate (like the one from MD3 loader,
-      or from TNodeInterpolator.BakeToSequence,
-      which may come from castle-anim-frames file or from generated animation)
-      into a simple X3D graph that animates it (using TimeSensor,
-      IntegerSequencer and Switch node, wrapping given here Nodes).
-      This allows to read key nodes from any format,
-      like a castle-anim-frames or MD3, and convert them to a simple X3D animation.
-
-      BakedAnimations list must never be empty. }
-    class function LoadSequenceToX3D(const BakedAnimations: TBakedAnimationList): TX3DRootNode;
-
     { Load animations (read by @link(LoadAnimFramesToKeyNodes) to a series
       of key nodes) into a X3D animation.
 
@@ -703,12 +692,7 @@ begin
             Nodes[NodesIndex] := Nodes[LastNodesIndex];
         end else
         begin
-          for NodesIndex := LastNodesIndex + 1 to Nodes.Count - 2 do
-            Nodes[NodesIndex] := NodesLerp(
-              MapRange(NodesIndex, LastNodesIndex, Nodes.Count - 1, 0.0, 1.0),
-              LastKeyNode, NewKeyNode);
-          Nodes[Nodes.Count - 1] := NewKeyNode;
-          LastKeyNode := NewKeyNode;
+          ;
         end;
       end else
       begin
@@ -808,85 +792,6 @@ begin
     end;
 end;
 
-class function TNodeInterpolator.LoadSequenceToX3D(const BakedAnimations: TBakedAnimationList): TX3DRootNode;
-var
-  BaseUrl: string;
-
-  { For VRML 1.0, wrap the contents in SeparateGroup. Prevents leaking
-    transformations between switch node children (testcase:
-    castle-game/data/creatures/alien/walk.kanim). Possibly it could be done
-    differently at higher level (because this is a switch, so it should
-    block leaking anyway, but probably Switch for X3D doesn't work for VRML 1.0
-    so well...). But it's obsolete VRML 1.0, so the hack is acceptable:) }
-  function WrapRootNode(const RootNode: TX3DRootNode): TAbstractChildNode;
-  begin
-    Result := RootNode;
-  end;
-
-  function ConvertOneAnimation(
-    const BakedAnimation: TBakedAnimation;
-    const AnimationIndex: Integer;
-    const RootNode: TX3DRootNode;
-    const SwitchChooseAnimation: TSwitchNode): TAbstractChildNode;
-  var
-    AnimationX3DName: string;
-    Switch: TSwitchNode;
-    I, NodesCount: Integer;
-    Group: TGroupNode;
-  begin
-    AnimationX3DName := BakedAnimation.Name;
-
-    Group := TGroupNode.Create(
-      AnimationX3DName + '_Group', BaseUrl);
-
-    NodesCount := BakedAnimation.Nodes.Count;
-
-
-    Switch := TSwitchNode.Create(
-      AnimationX3DName + '_Switch_ChooseAnimationFrame', BaseUrl);
-    for I := 0 to NodesCount - 1 do
-      { Note that duplicates are possible below,
-        in case two animation frames are exactly equal.
-        See e.g. evil squirrel in https://github.com/castle-engine/wyrd-forest .
-        Fortunately AddChildren by default has AllowDuplicates. }
-      Switch.AddChildren(WrapRootNode(BakedAnimation.Nodes[I] as TX3DRootNode));
-    Assert(Switch.FdChildren.Count = NodesCount);
-
-    Group.AddChildren(Switch);
-
-    { We use WrapInCollisionNode, to make the object
-      collide always as a bounding box.
-      Otherwise, initializing collisions for a long series of nodes is really
-      time-consuming.
-
-      We have to implement actual conversion from a series of nodes
-      -> interpolators to have proper collisions with castle-anim-frames
-      contents. Even then, it's unsure whether it will be sensible,
-      as it will cost at runtime. }
-    Result := RootNode;
-  end;
-
-var
-  I: Integer;
-  SwitchChooseAnimation: TSwitchNode;
-begin
-  Assert(BakedAnimations.Count <> 0);
-  Assert(BakedAnimations[0].Nodes.Count <> 0);
-  BaseUrl := BakedAnimations[0].Nodes[0].BaseUrl;
-
-  Result := TX3DRootNode.Create('', BaseUrl);
-
-  SwitchChooseAnimation := TSwitchNode.Create('ChooseAnimation', BaseUrl);
-  for I := 0 to BakedAnimations.Count - 1 do
-  begin
-    SwitchChooseAnimation.AddChildren(
-      ConvertOneAnimation(BakedAnimations[I], I, Result, SwitchChooseAnimation));
-  end;
-  { we set whichChoice to 0 to see something before you run the animation }
-
-  Result.AddChildren(SwitchChooseAnimation);
-end;
-
 class procedure TNodeInterpolator.LoadToX3D_GetKeyNodeWithTime(const Index: Cardinal;
   out KeyNode: TX3DRootNode; out Time: Single);
 begin
@@ -924,7 +829,7 @@ begin
       BakedAnimations.FreeNodesContents;
       raise;
     end;
-    Result := LoadSequenceToX3D(BakedAnimations);
+    Result := nil;
   finally FreeAndNil(BakedAnimations) end;
 end;
 

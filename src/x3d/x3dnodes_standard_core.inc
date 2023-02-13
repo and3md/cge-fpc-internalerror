@@ -230,9 +230,6 @@
 
     strict private FFdReference: TSFString;
     public property FdReference: TSFString read FFdReference;
-
-    strict private FFdValue: TMFInt32;
-    public property FdValue: TMFInt32 read FFdValue;
   end;
 
   { A metadata (extra, custom information at a node) set,
@@ -443,9 +440,6 @@ begin
 
   FFdReference := TSFString.Create(Self, true, 'reference', '');
   AddField(FFdReference);
-
-  FFdValue := TMFInt32.Create(Self, true, 'value', []);
-  AddField(FFdValue);
 
   DefaultContainerField := 'metadata';
 end;

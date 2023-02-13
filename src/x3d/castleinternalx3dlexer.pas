@@ -982,8 +982,7 @@ begin
         ROUTE statements as name + dot + name (and name doesn't start with
         digit), so it's all OK in practice. Valid VRML files may be
         unambiguously tokenized. }
-      if (FirstBlackChr = '.') and
-         (not Between(Stream.PeekChar, Ord('0'), Ord('9'))) then
+      if (FirstBlackChr = '.') then
         FToken := vtPeriod else
       { X3D only token }
       if ( (FirstBlackChr = ':') and (FVersion.Major >= 3) ) then
