@@ -217,40 +217,7 @@
         <UnitName Value="CastleRectangles"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castletimeutils.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleTimeUtils"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/base/castletimeutils_frameprofiler.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/base/castletimeutils_framespersecond.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/base/castletimeutils_gettickcount64.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castletimeutils_miscellaneous.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/base/castletimeutils_now.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/base/castletimeutils_processtimer.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/base/castletimeutils_profiler.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/base/castletimeutils_timer.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
