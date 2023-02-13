@@ -217,10 +217,6 @@
         <UnitName Value="CastleRectangles"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castletimeutils_miscellaneous.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castleutils_basic_algorithms.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
