@@ -138,10 +138,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dnodes_names.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dnodes_nodesmanager.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -159,10 +155,6 @@
       </Unit>
       <Unit>
         <Filename Value="src/x3d/x3dnodes_standard_interpolation.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dnodes_standard_interpolation_cubic_bezier.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
