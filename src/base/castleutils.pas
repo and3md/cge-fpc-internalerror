@@ -126,8 +126,6 @@ uses {$ifdef MSWINDOWS} Windows, {$ifndef FPC} ShlObj, {$endif} {$endif}
 
 { include everything }
 
-{$I castleutils_struct_list.inc}
-
 {$undef read_interface}
 
 var
@@ -137,8 +135,6 @@ var
 implementation
 
 {$define read_implementation}
-
-{$I castleutils_struct_list.inc}
 
 {$undef read_implementation}
 
