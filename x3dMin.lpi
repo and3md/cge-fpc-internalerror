@@ -154,10 +154,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dnodes_standard_interpolation.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dnodes_standard_time.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>

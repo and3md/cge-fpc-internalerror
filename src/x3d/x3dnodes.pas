@@ -185,7 +185,6 @@ type
 
   { Nodes from standard X3D components }
   {$I x3dnodes_standard_core.inc}
-  {$I x3dnodes_standard_time.inc}
   {$I x3dnodes_standard_grouping.inc}
 
   { More X3D nodes, not from X3D standard }
@@ -225,7 +224,6 @@ uses
 
 { Nodes from standard X3D components }
 {$I x3dnodes_standard_core.inc}
-{$I x3dnodes_standard_time.inc}
 {$I x3dnodes_standard_grouping.inc}
 
 { unit init/fini ------------------------------------------------------------ }
@@ -249,7 +247,6 @@ initialization
   { X3D components registration : }
 
   RegisterCoreNodes;
-  RegisterTimeNodes;
   RegisterGroupingNodes;
 
   //X3DCache := TX3DFontTexturesCache.Create;

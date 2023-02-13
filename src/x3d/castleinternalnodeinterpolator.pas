@@ -833,7 +833,6 @@ var
     const SwitchChooseAnimation: TSwitchNode): TAbstractChildNode;
   var
     AnimationX3DName: string;
-    TimeSensor: TTimeSensorNode;
     Switch: TSwitchNode;
     I, NodesCount: Integer;
     Group: TGroupNode;
@@ -857,19 +856,6 @@ var
     Assert(Switch.FdChildren.Count = NodesCount);
 
     Group.AddChildren(Switch);
-
-    { Name of the TimeSensor is important, this is the animation name,
-      so don't append there anything ugly like '_TimeSensor'.
-      Also, place it in the active graph part (outside SwitchChooseAnimation)
-      to be always listed in Scene.AnimationsList. }
-    TimeSensor := TTimeSensorNode.Create(AnimationX3DName, BaseUrl);
-    if BakedAnimation.Backwards then
-      TimeSensor.CycleInterval := 2 * BakedAnimation.Duration
-    else
-      TimeSensor.CycleInterval := BakedAnimation.Duration;
-    RootNode.AddChildren(TimeSensor);
-
-    RootNode.ManuallyExportNode(TimeSensor);
 
     { We use WrapInCollisionNode, to make the object
       collide always as a bounding box.
