@@ -303,7 +303,7 @@ begin
   case Encoding of
     xeClassic: Result := StringToX3DClassic(Items[ItemNum]);
     xeXML    : Result := StringToX3DXmlMulti(Items[ItemNum]);
-    else raise EInternalError.Create('TMFString.RawItemToString Encoding?');
+    else raise Exception.Create('TMFString.RawItemToString Encoding?');
   end;
 end;
 

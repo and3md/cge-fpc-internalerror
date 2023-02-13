@@ -848,7 +848,7 @@ begin
         if SaveToXml = sxAttribute then
           Writer.Write('"');
       end;
-    else raise EInternalError.Create('TX3DField.FieldSaveToStream Encoding?');
+    else raise Exception.Create('TX3DField.FieldSaveToStream Encoding?');
   end;
 end;
 

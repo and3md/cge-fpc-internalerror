@@ -299,7 +299,7 @@ begin
     xeXML:
       for I := 0 to Count - 1 do
         FItems[I].NodeSaveToStream(Writer, N);
-    else raise EInternalError.Create('TMFNode.SaveToStreamValue Encoding?');
+    else raise Exception.Create('TMFNode.SaveToStreamValue Encoding?');
   end;
 end;
 
@@ -438,7 +438,7 @@ begin
     acAll      : Result := true;
     acClasses  : Result := (Child = nil) or (AllowedChildrenClasses.IndexOfAnyAncestor(Child) <> -1);
     acInterface: Result := (Child = nil) or Supports(Child, AllowedChildrenInterface);
-    else raise EInternalError.Create('AllowedChildren?');
+    else raise Exception.Create('AllowedChildren?');
   end;
 end;
 

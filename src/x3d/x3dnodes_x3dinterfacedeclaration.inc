@@ -89,23 +89,6 @@
     { @groupEnd }
 
     { Save this interface declaration to stream.
-      This assumes that it starts at the beginning of the line,
-      and at the end always writes NL, so at the end it's also
-      at the beginning of some line.
-
-      For XML encoding, IS clauses are not saved here.
-      They must be saved by containing node.
-
-      @param(FieldValue If @true then we will always save
-        Field value or (if classic encoding) IS clauses to stream,
-        along with this interface
-        declaration (if this interface declaration has the Field set).
-        Otherwise, field's value will not be saved, only IS clauses
-        if present.)
-    }
-    procedure IDeclSaveToStream(Writer: TX3DWriter; FieldValue: boolean);
-
-    { Save this interface declaration to stream.
       @seealso IDeclSaveToStream }
     procedure SaveToStream(Writer: TX3DWriter); override;
 
@@ -224,7 +207,7 @@ begin
       Assign call below takes care of them. }
     E.Assign(Event);
   end else
-    raise EInternalError.Create('interface declaration but no Field or Event');
+    raise Exception.Create('interface declaration but no Field or Event');
 
   Result.ParentInterfaceDeclaration := nil;
 end;
@@ -254,132 +237,9 @@ begin
   end;
 end;
 
-procedure TX3DInterfaceDeclaration.IDeclSaveToStream(
-  Writer: TX3DWriter; FieldValue: boolean);
-
-  function ATName(const AccessType: TX3DAccessType): string;
-  const
-    Names: array
-      [ boolean { is it X3D or XML encoding ? },
-        TX3DAccessType] of string =
-      ( ('eventIn', 'eventOut', 'field', 'exposedField'),
-        ('inputOnly', 'outputOnly', 'initializeOnly', 'inputOutput') );
-  begin
-    Result := Names[(Writer.Encoding = xeXML) or (Writer.Version.Major >= 3),
-      AccessType];
-  end;
-
-var
-  N: string;
-begin
-  N := FieldOrEvent.NameForVersion(Writer.Version);
-
-  case Writer.Encoding of
-    xeClassic:
-      if Event <> nil then
-      begin
-        if Event.InEvent then
-          Writer.WriteIndent(ATName(atInputOnly) + ' ') else
-          Writer.WriteIndent(ATName(atOutputOnly) + ' ');
-        Writer.Write(Event.FieldClass.X3DType + ' ');
-        if Event.IsClauseNamesCount <> 0 then
-        begin
-          Writer.DiscardNextIndent;
-          { Note that there may be many IS clauses. This will still work Ok:
-            first IS clause will "belong" to this interface declaration,
-            the rest will look like normal IS clauses. }
-          Event.SaveToStreamClassicIsClauses(Writer);
-        end else
-          Writer.Writeln(N);
-      end else
-      begin
-        if Field.Exposed then
-          Writer.WriteIndent(ATName(atInputOutput) + ' ') else
-          Writer.WriteIndent(ATName(atInitializeOnly) + ' ');
-        Writer.Write(Field.X3DType + ' ');
-
-        { When saving from interface declaration, you can only
-          1. write sole field name
-          2. write field name + value (if FieldValue = @true)
-          3. write field name + IS clause (only one allowed) }
-
-        if ( FieldValue and
-             (not Field.ValueFromIsClause) and
-             (Field.IsClauseNamesCount = 0) ) then
-        begin
-          { Field.SaveToStream normally starts from new line with an indent...
-            In this case, we want it to start on the same line, so indent must
-            be discarded. }
-          Writer.DiscardNextIndent;
-          Field.FieldSaveToStream(Writer, true);
-          { In this case, Writer.Writeln will be done by Field.SaveToStream.
-            (we pass SaveWhenDefault anyway, so we can be sure that
-            this newline will be done). }
-        end else
-
-        if Field.IsClauseNamesCount <> 0 then
-        begin
-          Writer.DiscardNextIndent;
-          { Note that there may be many IS clauses. This will still work Ok:
-            first IS clause will "belong" to this interface declaration,
-            the rest will look like normal IS clauses. }
-          Field.SaveToStreamClassicIsClauses(Writer);
-        end else
-
-        begin
-          Writer.Writeln(N);
-        end;
-      end;
-    xeXML:
-      { We don't save IS clauses here for XML encoding. They must be saved
-        inside containing TX3DNode. }
-      if Event <> nil then
-      begin
-        Writer.WritelnIndent(Format('<field accessType=%s type=%s name=%s />',
-          [ Iff(Event.InEvent,
-              StringToX3DXml(ATName(atInputOnly)),
-              StringToX3DXml(ATName(atOutputOnly))),
-            StringToX3DXml(Event.FieldClass.X3DType),
-            StringToX3DXml(N) ]));
-      end else
-      begin
-        Writer.WriteIndent(Format('<field accessType=%s type=%s name=%s',
-          [ Iff(Field.Exposed,
-              StringToX3DXml(ATName(atInputOutput)),
-              StringToX3DXml(ATName(atInitializeOnly))),
-            StringToX3DXml(Field.X3DType),
-            StringToX3DXml(N) ]));
-
-        if ( FieldValue and
-             (not Field.ValueFromIsClause) and
-             (Field.IsClauseNamesCount = 0) ) then
-        begin
-          if Field.SaveToXml in [sxAttribute, sxAttributeCustomQuotes] then
-          begin
-            Writer.Write(' value=');
-            Field.FieldSaveToStream(Writer, true, true);
-            Writer.Writeln(' />');
-          end else
-          begin
-            Writer.Writeln('>');
-            { Parameter XmlAvoidSavingNameBeforeValue doesn't matter here }
-            Field.FieldSaveToStream(Writer, true);
-            Writer.WritelnIndent('</field>');
-          end;
-        end else
-          { no field value, no IS clauses.
-            This can happen for field/event declaration inside <ExternProto>.
-            Just close <field> element. }
-          Writer.Writeln(' />');
-      end;
-
-    else raise EInternalError.Create('TX3DInterfaceDeclaration.IDeclSaveToStream Encoding?');
-  end;
-end;
-
 procedure TX3DInterfaceDeclaration.SaveToStream(Writer: TX3DWriter);
 begin
-  IDeclSaveToStream(Writer, true);
+  //IDeclSaveToStream(Writer, true);
 end;
 
 function TX3DInterfaceDeclaration.AccessType: TX3DAccessType;

@@ -921,7 +921,7 @@ end;
 procedure WritelnStr(Stream: TStream; const S: AnsiString);
 begin
   WriteStr(Stream, S);
-  WriteStr(Stream, nl);
+  WriteStr(Stream, sLineBreak);
 end;
 
 procedure WriteStr(const S: AnsiString);

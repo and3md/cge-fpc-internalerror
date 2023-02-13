@@ -473,104 +473,6 @@ function SAppendPart(const s, PartSeparator, NextPart: string): string;
 type
   EDeformatError = class(Exception);
 
-{ Parse a string according to the given format, returning the
-  values corresponding to placeholders %x in format string.
-
-  Format parameter is a sequence of white spaces, placeholders like %d or %f,
-  and other characters. More precisely:
-
-  @unorderedList(
-    @item(If RelaxedWhitespaceChecking = @true (that's the default value)
-      then 1 or more white spaces in Format must correspond to 1 or more
-      any whitespace characters in Data. I.e., the actual number and kind
-      of whitespace in Format and Data doesn't have to match --- it's
-      only important that @italic(some whitespace in Format) correspond
-      to @italic(some whitespace in Data).)
-
-    @item(@code(%d) in Format means an Integer value in Data.
-      Args should have a pointer to Integer variable on the appropriate
-      position.
-
-      Warning: DeFormat cannot detect the type of your arguments,
-      or check their validity. Make sure in Args you use a pointer to an Integer
-      variable (32-bit, like in FPC ObjFpc or Delphi mode),
-      not e.g. ShortInt or Byte.
-    )
-
-    @item(@code(%f) in Format means a float value (possibly signed, possibly
-      with a dot) in Data. Args should have a pointer to Float variable
-      on the appropriate position.
-
-      Warning: DeFormat cannot detect the type of your arguments,
-      or check their validity. Make sure in Args you use a pointer to an Float
-      variable (as defined in Math unit),
-      not e.g. Single or Double or Extended.
-    )
-
-    @item(@code(%.single.), @code(%.double.), @code(%.extended.) are like
-      @code(%f), but they specify appropriate variable type in Args.)
-
-    @item(@code(%.integer.), @code(%.cardinal.), are like
-      @code(%d), but they specify appropriate variable type in Args.)
-
-    @item(@code(%s) in Format means a string (will end on the first whitespace)
-      in Data. Args should contain a pointer to an AnsiString
-      on the appropriate position. Note that I mean it --- a pointer
-      to an AnsiString, not just a string typecasted into a pointer.
-      I.e., if S is AnsiString, Args should contain @@S, not Pointer(S).
-
-      Note that a string may be empty in some cases, e.g. Format = '%d %s'
-      and Data = '123 ' will result in the empty string as second Args.)
-
-    @item(@code(%%) in Format means a one % sign in Data.)
-
-    @item(All the other characters (non-white, not %x sequences above)
-      should be present in Data exactly like they are specified in Format.
-      IgnoreCase controls is the letter case checked. When
-      RelaxedWhitespaceChecking = @false then white-space characters
-      are treated just like non-white chars: they must match exactly
-      between Format and Data.)
-  )
-
-  Format must always match the whole Data --- in other words, when
-  we finished reading the Format, Data should be finished too.
-  The exception is at the beginning and end of Data, if
-  RelaxedWhitespaceChecking = @true : then at the beginning and end of Data
-  any number of white-space is allowed.
-
-  For DeFormat, the opposite must also be true: when we finished reading
-  Data, Format should be finished too. However, for TryDeFormat, it's
-  allowed for Data to end prematurely. TryDeFormat returns how many Args
-  were initialized.
-
-  Note that while usually you will want RelaxedWhitespaceChecking = @true,
-  sometimes it can be needed to set this to @false not only to get
-  strickter checking, but also to get some things matching that otherwise
-  wouldn't match. For example, consider Data = 'first  second apple'
-  and Format = 'first %s second %s'. With RelaxedWhitespaceChecking
-  these things @italic(do not match) --- because the 1st space character
-  in the Format string "consumes" the 1st and 2nd space characters
-  in the Data. Then '%s' is matched to the word 'second', and the
-  word 'second' is compared with 'apple' and they do not match.
-  If you want such Data and Format to match, you must pass
-  RelaxedWhitespaceChecking = @true. Then the first '%s' will be matched
-  to '' (empty string).
-
-  This was written because both JclSscanf and scanf units were buggy.
-  (see openGL.testy/nehe10).
-
-  @raises(EDeformatError In case of any error --- mismatch between Format
-    and Data. Note that in case of error, some of Args may be initialized,
-    and some not --- no guarantees here, sorry.) }
-procedure DeFormat(Data: string; const Format: string;
-  const args: array of pointer;
-  const IgnoreCase: boolean = true;
-  const RelaxedWhitespaceChecking: boolean = true); overload;
-function TryDeFormat(Data: string; const Format: string;
-  const args: array of pointer;
-  const IgnoreCase: boolean = true;
-  const RelaxedWhitespaceChecking: boolean = true): integer; overload;
-
 {$ifdef FPC}
 { Extract file extensions from a file filter usually specified
   a TOpenDialog.Filter value.
@@ -944,8 +846,6 @@ procedure SCheckChars(const S: string; const ValidChars: TSetOfChars;
 { Remove one newline from the end of the string, if any. }
 function TrimEndingNewline(const S: String): String;
 
-function SizeToStr(const Value: QWord): String;
-
 const
   { }
   CtrlA = Chr(Ord('a') - Ord('a') + 1); { = #1 } { }
@@ -1198,7 +1098,7 @@ end;
 function BreakLine(const S: string; const MaxCol: integer;
   const AllowedBreakChars: TSetOfChars): string;
 begin
-  Result := BreakLine(S, MaxCol, AllowedBreakChars, NL, '');
+  Result := BreakLine(S, MaxCol, AllowedBreakChars, sLineBreak, '');
 end;
 
 function BreakLine(const S: string; const MaxCol: integer;
@@ -1631,203 +1531,6 @@ begin
  if s = '' then
   result := NextPart else
   result := s+PartSeparator+NextPart;
-end;
-
-procedure DeFormat(Data: string; const Format: string;
-  const args: array of pointer;
-  const IgnoreCase: boolean;
-  const RelaxedWhitespaceChecking: boolean);
-begin
- if TryDeFormat(Data, Format, args, IgnoreCase,
-   RelaxedWhitespaceChecking) < High(args)+1 then
-  raise EDeformatError.CreateFmt(
-    'Unexpected end of Data (%s) - format (%s) not fully evaluated',
-    [Data, Format]);
-end;
-
-function TryDeFormat(Data: string; const Format: string;
-  const args: array of pointer;
-  const IgnoreCase: boolean;
-  const RelaxedWhitespaceChecking: boolean): integer;
-var datapos, formpos: integer;
-
-  function ReadExtendedData: Extended;
-  var dataposstart: integer;
-  begin
-   {pierwszy znak liczby moze byc + lub -. Potem musza byc same cyfry.}
-   if not (data[datapos] in ['0'..'9', '+', '-']) then
-    raise EDeformatError.CreateFmt('float not found in data ''%s'' on position %d', [data, datapos]);
-   dataposstart := datapos;
-   Inc(datapos);
-   while (datapos <= Length(data)) and (data[datapos] in ['0'..'9','.', 'e','E', '-', '+']) do
-    Inc(datapos);
-   {ponizsze StrToFloat tez moze spowodowac blad jesli np.
-    wyszedl nam string '-' lub '+' lub string z dwoma kropkami}
-   result := StrToFloat(CopyPos(data, dataposstart, datapos-1));
-  end;
-
-  function ReadInt64Data: Int64;
-  var dataposstart: integer;
-  begin
-   {pierwszy znak integera moze byc + lub -. Potem musza byc same cyfry.}
-   if not (data[datapos] in ['0'..'9', '+', '-']) then
-    raise EDeformatError.CreateFmt('integer not found in data ''%s'' on position %d', [data, datapos]);
-   dataposstart := datapos;
-   Inc(datapos);
-   while (datapos <= Length(data)) and (data[datapos] in ['0'..'9']) do
-    Inc(datapos);
-   {ponizszy StrToInt tez moze spowodowac blad jesli np.
-    wyszedl nam string '-' lub '+'}
-   result := StrToInt(CopyPos(data, dataposstart, datapos-1));
-  end;
-
-  function ReadStringData: string;
-  var dataposstart: integer;
-  begin
-   dataposstart := datapos;
-   while (datapos <= Length(data)) and
-         (not (data[datapos] in WhiteSpaces)) do Inc(datapos);
-   result := CopyPos(data, dataposstart, datapos-1);
-  end;
-
-  function ReadTypeSpecifier: string;
-  {odczytaj type specifier z kropka z format. Przesun formpos}
-  var formposstart: integer;
-  begin
-   formposstart := formpos;
-   repeat
-    if formpos > Length(format) then
-     raise EDeformatError.Create('type specifier incorrect in  format '''+format+'''');
-    if format[formpos] = '.' then
-     break else
-     Inc(formpos);
-   until false;
-   result := CopyPos(format, formposstart, formpos-1);
-   Inc(formpos); { omin kropke '.' w format }
-  end;
-
-  procedure CheckBlackChar(formatchar: char);
-  var BlackCharsCheck: boolean;
-  begin
-   if IgnoreCase then
-    BlackCharsCheck := SameText(Data[datapos], format[formpos]) else
-    BlackCharsCheck := Data[datapos] = format[formpos];
-   if not BlackCharsCheck then
-    raise EDeformatError.CreateFmt('data (%s) and format (%s) don''t match', [data, format]);
-  end;
-
-  procedure CheckFormatNotEnd;
-  begin
-    if formpos > Length(format) then
-      raise EDeformatError.Create('Unexpected end of format : "'+format+'"');
-  end;
-
-var
-  TypeSpecifier: String;
-begin
- datapos := 1;
- formpos := 1;
- result := 0; { no args done yet }
-
- { Skip whitespace and the beginning of data }
- if RelaxedWhitespaceChecking then
-   while SCharIs(Data, DataPos, WhiteSpaces) do Inc(DataPos);
-
- while formpos <= Length(Format) do
- begin
-  {datapos > Length(data) -> means Data has ended but Format not.
-   OK, so we can exit, because we are doing only TryDeFormat.
-   Real DeFormat should check our result if it wishes to check that we parsed
-   whole Format.}
-  if datapos > Length(data) then
-  begin
-    { Actually, if next thing in format is %s, we can parse it too
-      (string will just be '') }
-    if Format[FormPos] = '%' then
-    begin
-      Inc(formpos);
-      CheckFormatNotEnd;
-      if Format[FormPos] = 's' then
-      begin
-        PString(args[result])^ := ReadStringData;
-        Inc(formpos);
-        Inc(result);
-      end;
-    end;
-    Exit;
-  end;
-
-  {1 or more whitespace in format means 1 or more whitespaces in data}
-  if RelaxedWhitespaceChecking and (format[formpos] in WhiteSpaces) then
-  begin
-   if not SCharIs(Data, datapos, WhiteSpaces) then
-    raise EDeformatError.Create('Whitespace not found in data "' + data +
-      '" as requested by format "' + format + '"');
-   repeat Inc(formpos) until not SCharIs(format, formpos, WhiteSpaces);
-   repeat Inc(datapos) until not SCharIs(data, datapos, WhiteSpaces);
-  end else
-
-  {%+something means "read this from data", %% means "read %"}
-  if format[formpos] = '%' then
-  begin
-   Inc(formpos);
-   CheckFormatNotEnd;
-   try
-    case format[formpos] of
-     '%':begin
-          CheckBlackChar('%');
-          Inc(formpos);
-          Inc(datapos);
-         end;
-     's':begin
-          PString(args[result])^:=ReadStringData;
-          Inc(formpos);
-          Inc(result);
-         end;
-     'd':begin
-          PInteger(args[result])^:=ReadInt64Data;
-          Inc(formpos);
-          Inc(result);
-         end;
-     'f':begin
-          PFloat(args[result])^:=ReadExtendedData;
-          Inc(formpos);
-          Inc(result);
-         end;
-     '.':begin
-          Inc(formpos);
-          TypeSpecifier := ReadTypeSpecifier;
-          case ArrayPosStr(TypeSpecifier,
-            ['single', 'double', 'extended', 'integer', 'cardinal']) of
-           0: PSingle(args[result])^:=ReadExtendedData;
-           1: PDouble(args[result])^:=ReadExtendedData;
-           2: PExtended(args[result])^:=ReadExtendedData;
-           3: PInteger(args[result])^:=ReadInt64Data;
-           4: PCardinal(args[result])^:=ReadInt64Data;
-           else raise EDeformatError.CreateFmt('Incorrect type specifier "%s"', [TypeSpecifier]);
-          end;
-          Inc(result);
-         end;
-     else raise EDeformatError.Create('incorrect format specifier after "%" sign : '''+format+'''');
-    end;
-   except
-    on E: EConvertError do raise EDeformatError.Create('convert error - '+E.Message)
-   end;
-  end else
-
-  begin
-   CheckBlackChar(format[formpos]);
-   Inc(datapos);
-   Inc(formpos);
-  end;
- end;
-
- if RelaxedWhitespaceChecking then
-   while SCharIs(Data, DataPos, WhiteSpaces) do Inc(DataPos);
-
- if datapos <= Length(data) then
-  raise EDeformatError.CreateFmt(
-    'data ''%s'' too long - unexpected end of format ''%s''', [Data, Format]);
 end;
 
 {$ifdef FPC}
@@ -2516,23 +2219,6 @@ begin
     Result := Copy(S, 1, Length(S) - 1)
   else
     Result := S;
-end;
-
-function SizeToStr(const Value: QWord): String;
-begin
-  if Value >= 1024 * 1024 * 1024 then
-    Result := FormatDot('%.2f', [Value / (1024 * 1024 * 1024)]) + ' GB'
-  else
-  if Value >= 1024 * 1024 then
-    Result := FormatDot('%.2f', [Value / (1024 * 1024)]) + ' MB'
-  else
-  if Value >= 1024 then
-    Result := FormatDot('%.2f', [Value / 1024]) + ' KB'
-  else
-    Result := FormatDot('%d', [Value]) + ' bytes';
-
-  // too verbose
-  //Result += Format(' (%d bytes)', [Value]);
 end;
 
 end.

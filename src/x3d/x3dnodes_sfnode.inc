@@ -272,7 +272,7 @@ begin
     acAll      : Result := true;
     acClasses  : Result := (Child = nil) or (AllowedChildrenClasses.IndexOfAnyAncestor(Child) <> -1);
     acInterface: Result := (Child = nil) or Supports(Child, AllowedChildrenInterface);
-    else raise EInternalError.Create('AllowedChildren?');
+    else raise Exception.Create('AllowedChildren?');
   end;
 end;
 
@@ -538,7 +538,7 @@ begin
   if FWeakLink <> AValue then
   begin
     if Value <> nil then
-      raise EInternalError.Create('TSFNode.WeakLink cannot change when some node is already assigned');
+      raise Exception.Create('TSFNode.WeakLink cannot change when some node is already assigned');
     FWeakLink := AValue;
   end;
 end;

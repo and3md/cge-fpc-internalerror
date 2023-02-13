@@ -97,12 +97,12 @@ end;
 procedure TX3DWriter.Writeln(const S: string);
 begin
   WriteStr(FStream, S);
-  WriteStr(FStream, NL);
+  WriteStr(FStream, sLineBreak);
 end;
 
 procedure TX3DWriter.Writeln;
 begin
-  WriteStr(FStream, NL);
+  WriteStr(FStream, sLineBreak);
 end;
 
 procedure TX3DWriter.WriteIndent(const S: string);
@@ -116,7 +116,7 @@ end;
 procedure TX3DWriter.WritelnIndent(const S: string);
 begin
   WriteIndent(S);
-  WriteStr(FStream, NL);
+  WriteStr(FStream, sLineBreak);
 end;
 
 procedure TX3DWriter.DiscardNextIndent;

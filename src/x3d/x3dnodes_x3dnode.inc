@@ -1175,7 +1175,6 @@ end;
 
 procedure TX3DNode.VRML1ChildAdd(Index: Integer; child: TX3DNode);
 begin
- Check(VRML1ChildrenAllowed, 'Node "' + X3DType + '" is not allowed to have child node of type ' + Child.X3DType);
  child.FVRML1Parents.Add(Self);
  FVRML1Children.Insert(Index, child);
 end;
@@ -1214,10 +1213,6 @@ begin
 
   if Value <> FVRML1Children[I] then
   begin
-    Check(VRML1ChildrenAllowed,
-      'Node '+X3DType+' is not allowed to have child node of type '+
-      Value.X3DType);
-
     OldChild := FVRML1Children[i];
     FVRML1Children[I] := Value;
 
@@ -1291,8 +1286,7 @@ begin
       J := MF.FItems.IndexOf(Self);
       Assert(J <> -1, 'Node must be present on Items list of parent MFNode');
       MF.FItems.Delete(J);
-    end else
-      raise EInternalError.Create('TX3DNode.ParentFields not SF or MF Node class');
+    end;
   end;
 
   Self.Destroy;
@@ -2040,7 +2034,6 @@ end;
 
 procedure TX3DNode.RemoveParentField(Field: TX3DField);
 begin
-  Check(FParentFields.Remove(Field) <> -1, 'RemoveParentField: parent not found');
   FreeIfUnused;
 end;
 

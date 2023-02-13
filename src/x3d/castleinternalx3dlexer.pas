@@ -874,7 +874,7 @@ function TX3DLexer.NextToken: TX3DToken;
     begin
      Dig1 := FirstChar + Stream.ReadUpto(NoDigits);
      AfterDig1 := Stream.PeekChar;
-     if (AfterDig1 = Ord('x')) and (ArrayPosStr(Dig1, ['0', '-0', '+0']) >= 0) then
+     if (AfterDig1 = Ord('x')) then
      begin
       Stream.ReadChar; { consume AfterDig1 }
       HexDig := Stream.ReadUpto(NoHexDigits);

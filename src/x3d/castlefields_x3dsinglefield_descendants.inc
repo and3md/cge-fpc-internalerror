@@ -1076,7 +1076,7 @@ begin
   case Writer.Encoding of
     xeClassic: Writer.Write(StringToX3DClassic(Value));
     xeXML    : Writer.Write(StringToX3DXml(Value));
-    else raise EInternalError.Create('TSFString.SaveToStreamValue Encoding?');
+    else raise Exception.Create('TSFString.SaveToStreamValue Encoding?');
   end;
 end;
 

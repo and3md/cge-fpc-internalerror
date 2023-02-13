@@ -262,7 +262,7 @@ begin
         if I <> Count - 1 then
           Writer.Write(' ');
       end;
-    else raise EInternalError.Create('TX3DSimpleMultField.SaveToStreamValue Encoding?');
+    else raise Exception.Create('TX3DSimpleMultField.SaveToStreamValue Encoding?');
   end;
 end;
 

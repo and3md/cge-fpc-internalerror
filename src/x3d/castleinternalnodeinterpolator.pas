@@ -756,8 +756,6 @@ class function TNodeInterpolator.LoadAnimFramesToKeyNodes(const URL: string): TA
     try
       AbsoluteBaseUrl := URL;
 
-      Check(Element.TagName = 'animation', 'Expected an <animation> XML node');
-
       { Assign default values for optional attributes }
       Result.Name := DefaultAnimationName;
       Result.ScenesPerTime := DefaultScenesPerTime;
