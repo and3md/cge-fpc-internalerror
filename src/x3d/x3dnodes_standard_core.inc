@@ -76,10 +76,6 @@
     public property EventSet_bind: TSFBoolEvent read FEventSet_bind;
 
     { Event out } { }
-    strict private FEventBindTime: TSFTimeEvent;
-    public property EventBindTime: TSFTimeEvent read FEventBindTime;
-
-    { Event out } { }
     strict private FEventIsBound: TSFBoolEvent;
     public property EventIsBound: TSFBoolEvent read FEventIsBound;
 
@@ -321,9 +317,6 @@ begin
 
   FEventSet_bind := TSFBoolEvent.Create(Self, 'set_bind', true);
   AddEvent(FEventSet_bind);
-
-  FEventBindTime := TSFTimeEvent.Create(Self, 'bindTime', false);
-  AddEvent(FEventBindTime);
 
   FEventIsBound := TSFBoolEvent.Create(Self, 'isBound', false);
    EventIsBound.AddNotification({$ifdef CASTLE_OBJFPC}@{$endif} EventIsBoundReceive);

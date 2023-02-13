@@ -21,7 +21,7 @@ unit X3DTime;
 interface
 
 uses Generics.Collections,
-  CastleUtils, CastleTimeUtils;
+  CastleUtils, Math;
 
 type
   { Complete timestamp for X3D events.
@@ -71,7 +71,7 @@ type
         always be considered later, and things will work Ok.)
     ) }
   TX3DTime = record
-    Seconds: TFloatTime;
+    Seconds: Double;
     PlusTicks: Cardinal;
 
     class function Oldest: TX3DTime; static;
@@ -83,10 +83,8 @@ type
   end;
   PX3DTime = ^TX3DTime;
 
-  TFloatTime = CastleTimeUtils.TFloatTime;
-
 const
-  OldestX3DTime: TX3DTime = (Seconds: OldestTime; PlusTicks: 0)
+  OldestX3DTime: TX3DTime = (Seconds: -MaxDouble; PlusTicks: 0)
     deprecated 'use TX3DTime.Oldest';
 
 type
@@ -96,7 +94,7 @@ implementation
 
 class function TX3DTime.Oldest: TX3DTime; static;
 const
-  R: TX3DTime = (Seconds: OldestTime; PlusTicks: 0);
+  R: TX3DTime = (Seconds: -MaxDouble; PlusTicks: 0);
 begin
   Result := R;
 end;

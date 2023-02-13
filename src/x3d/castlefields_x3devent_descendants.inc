@@ -41,13 +41,6 @@
     procedure Send(const Value: Double); overload;
   end;
 
-  TSFTimeEvent = class(TX3DEvent)
-  public
-    constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-    procedure Send(const Value: TFloatTime; const Time: TX3DTime; const PartialSend: TPartialSend = nil); overload;
-    procedure Send(const Value: TFloatTime); overload;
-  end;
-
   TSFFloatEvent = class(TX3DEvent)
   public
     constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
@@ -337,32 +330,6 @@ var
 begin
   if (ParentNode <> nil)
      then
-    Send(Value, a);
-end;
-
-{ TSFTimeEvent --------------------------------------------------------------- }
-
-constructor TSFTimeEvent.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-begin
-  inherited Create(AParentNode, AName, TSFTime, AInEvent);
-end;
-
-procedure TSFTimeEvent.Send(const Value: TFloatTime; const Time: TX3DTime; const PartialSend: TPartialSend);
-var
-  Field: TX3DField;
-begin
-  Field := CreateTemp(PartialSend);
-  (Field as TSFTime).Value := Value;
-  try
-    Send(Field, Time);
-  finally FreeTemp(Field) end;
-end;
-
-procedure TSFTimeEvent.Send(const Value: TFloatTime);
-var
-  a: TX3dTime;
-begin
-  if (ParentNode <> nil) then
     Send(Value, a);
 end;
 

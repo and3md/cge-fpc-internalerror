@@ -953,7 +953,7 @@ end;
 
 class function TSFTime.CreateEvent(const AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean): TX3DEvent;
 begin
-  Result := TSFTimeEvent.Create(AParentNode, AName, AInEvent);
+  Result := TSFDoubleEvent.Create(AParentNode, AName, AInEvent);
 end;
 
 procedure TSFTime.Send(const AValue: Double);
