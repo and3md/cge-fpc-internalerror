@@ -30,7 +30,7 @@
     because we want operation "read from VRML file + write to VRML file"
     to be as non-destructible as possible. So if user wrote
     invalid class hierarchy, we will output this invalid class hierarchy. }
-  TSFNode = class(TX3DSingleField)
+  TSFNode = class(TX3DField)
   private
     FValue: TX3DNode;
     FParentNode: TX3DNode;

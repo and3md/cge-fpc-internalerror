@@ -21,7 +21,7 @@
   {$ifdef CASTLE_OBJFPC}generic{$endif}
   TSFGenericVector<
     TItem,
-    TEvent> = class(TX3DSingleField)
+    TEvent> = class(TX3DField)
   strict protected
     procedure SaveToStreamValue; override;
   public

@@ -33,7 +33,6 @@ type
   {$I castlefields_x3dfield.inc}
   {$I castlefields_x3devent.inc}
   {$I castlefields_x3devent_descendants.inc}
-  {$I castlefields_x3dsinglefield.inc}
   {$I castlefields_x3dsinglefield_descendants.inc}
 
 {$undef read_interface}
@@ -51,7 +50,6 @@ uses Generics.Defaults,
 {$I castlefields_x3dfield.inc}
 {$I castlefields_x3devent.inc}
 {$I castlefields_x3devent_descendants.inc}
-{$I castlefields_x3dsinglefield.inc}
 {$I castlefields_x3dsinglefield_descendants.inc}
 
 finalization
