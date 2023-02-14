@@ -135,7 +135,7 @@
     This also allows us to record in one place some information that
     is returned by the parser. Like parsed VRML/X3D version, X3D profile,
     some namespace information (exported names and such). }
-  TX3DRootNode = class(TGroupNode)
+  TX3DRootNode = class(TX3DNode)
   strict private
     FHasForceVersion: boolean;
     FSaveAsRootNode: boolean;
@@ -147,12 +147,6 @@
   protected
     function DeepCopyCore(CopyState: TX3DNodeDeepCopyState): TX3DNode; override;
 
-    { Root node never saves/restores the traversing state.
-      This means that all state changes "leak out" from a root node.
-      This is a good thing: if root node isn't used as a final TCastleSceneCore.RootNode,
-      then it is placed inside Inline node, which will do save/restore anyway.
-      And this way VRML 1.0 WWWInline with separate=FALSE may also work too. }
-    function SeparateGroup: boolean; override;
   public
     ForceVersion: TX3DVersion;
 
@@ -444,11 +438,6 @@ begin
     ForceVersion.Minor := AMinor;
     Profile := AProfile;
   end;
-end;
-
-function TX3DRootNode.SeparateGroup: boolean;
-begin
-  Result := false;
 end;
 
 procedure TX3DRootNode.TopLevelCheckChild(const Child: TX3DNode);
