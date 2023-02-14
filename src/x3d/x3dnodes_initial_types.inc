@@ -20,7 +20,6 @@
   TX3DNode = class;
   TX3DRootNode = class;
   TSFNode = class;
-  TTransformNode = class;
 
   TX3DNodeClass = class of TX3DNode;
 

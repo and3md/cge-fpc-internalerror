@@ -177,7 +177,6 @@ type
   {$I x3dnodes_sfnode.inc}
 
   { Nodes from standard X3D components }
-  {$I x3dnodes_standard_core.inc}
   {$I x3dnodes_standard_grouping.inc}
 
 {$undef read_interface}
@@ -202,7 +201,6 @@ uses
 {$I x3dnodes_sfnode.inc}
 
 { Nodes from standard X3D components }
-{$I x3dnodes_standard_core.inc}
 {$I x3dnodes_standard_grouping.inc}
 
 { unit init/fini ------------------------------------------------------------ }
