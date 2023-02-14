@@ -27,12 +27,6 @@
 
 {$ifdef read_interface}
   { }
-  TSFBoolEvent = class(TX3DEvent)
-  public
-    constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-    procedure Send(const Value: boolean); overload;
-  end;
-
   TSFNodeEvent = class(TX3DEvent)
   public
     constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
@@ -51,18 +45,6 @@
 {$ifdef read_implementation}
 
 { TSFBoolEvent --------------------------------------------------------------- }
-
-constructor TSFBoolEvent.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-begin
-  inherited Create(AParentNode, AName, TSFBool, AInEvent);
-end;
-
-procedure TSFBoolEvent.Send(const Value: boolean);
-begin
-  if (ParentNode <> nil)
-      then
-    Send(Value);
-end;
 
 { TSFDoubleEvent ------------------------------------------------------------- }
 
