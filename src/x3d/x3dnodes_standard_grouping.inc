@@ -40,24 +40,8 @@
   strict private
     type
       TChildrenArray = array of TAbstractChildNode;
-    function ToChildrenArray(const Nodes: TMFNode): TChildrenArray;
-    procedure EventAddChildrenReceive(
-      Event: TX3DEvent; Value: TX3DField);
-    procedure EventRemoveChildrenReceive(
-      Event: TX3DEvent; Value: TX3DField);
   public
     procedure CreateNode; override;
-
-    { Event in } { }
-    strict private FEventAddChildren: TMFNodeEvent;
-    public property EventAddChildren: TMFNodeEvent read FEventAddChildren;
-
-    { Event in } { }
-    strict private FEventRemoveChildren: TMFNodeEvent;
-    public property EventRemoveChildren: TMFNodeEvent read FEventRemoveChildren;
-
-    strict private FFdChildren: TMFNode;
-    public property FdChildren: TMFNode read FFdChildren;
 
     strict private FFdRender: TSFBool;
     { This is an extension from InstantReality, see
@@ -261,9 +245,6 @@
     procedure CreateNode; override;
     class function ClassX3DType: string; override;
     class function URNMatching(const URN: string): boolean; override;
-
-    strict private FFdChildren: TMFNode;
-    public property FdChildren: TMFNode read FFdChildren;
   end;
 
   { Interface for all VRML 2.0 / X3D transformation nodes.
@@ -307,58 +288,15 @@ procedure TAbstractX3DGroupingNode.CreateNode;
 begin
   inherited;
 
-  FEventAddChildren := TMFNodeEvent.Create(Self, 'addChildren', true);
-  AddEvent(FEventAddChildren);
-  EventaddChildren.AddNotification({$ifdef CASTLE_OBJFPC}@{$endif} EventAddChildrenReceive);
-
-  FEventRemoveChildren := TMFNodeEvent.Create(Self, 'removeChildren', true);
-  AddEvent(FEventRemoveChildren);
-  EventRemoveChildren.AddNotification({$ifdef CASTLE_OBJFPC}@{$endif} EventRemoveChildrenReceive);
-
-  FFdChildren := TMFNode.Create(Self, true, 'children', IAbstractChildNode);
-   FdChildren.ChangesAlways := [chChildren];
-  AddField(FFdChildren);
-
   FFdRender := TSFBool.Create(Self, true, 'render', true);
   AddField(FFdRender);
 
   DefaultContainerField := 'children';
 end;
 
-function TAbstractX3DGroupingNode.ToChildrenArray(
-  const Nodes: TMFNode): TChildrenArray;
-var
-  I: Integer;
-begin
-  SetLength(Result, Nodes.Count);
-  for I := 0 to Nodes.Count - 1 do
-  begin
-    if not (Nodes[I] is TAbstractChildNode) then
-    begin
-      SetLength(Result, 0);
-      Exit;
-    end;
-    Result[I] := TAbstractChildNode(Nodes[I]);
-  end;
-end;
-
-procedure TAbstractX3DGroupingNode.EventAddChildrenReceive(
-  Event: TX3DEvent; Value: TX3DField);
-begin
-  AddChildren(ToChildrenArray(Value as TMFNode), false);
-end;
-
-procedure TAbstractX3DGroupingNode.EventRemoveChildrenReceive(
-  Event: TX3DEvent; Value: TX3DField);
-begin
-  RemoveChildren(ToChildrenArray(Value as TMFNode));
-end;
-
 procedure TAbstractX3DGroupingNode.AddChildren(
   const Children: array of TAbstractChildNode;
   const AllowDuplicates: Boolean);
-var
-  N: TAbstractChildNode;
 begin
   { ignore empty list, in particular from ToChildrenArray failure }
   if High(Children) = -1 then Exit;
@@ -372,10 +310,6 @@ begin
     and it would be a little wasteful (creating a temporary TMFNode to send
     for each AddChildren call). So we don't do it now. }
 
-  for N in Children do
-    if AllowDuplicates or (FdChildren.IndexOf(N) = -1) then
-      FdChildren.Add(N);
-
 //  if Scene <> nil then
 //    Scene.ChangedAll;
 end;
@@ -387,25 +321,6 @@ var
 begin
   { ignore empty list, in particular from ToChildrenArray failure }
   if High(Children) = -1 then Exit;
-
-  { Note that X3D specification directly says
-    "A children field is not allowed to directly contain
-    multiple instances of the same node."
-    Note that I didn't find such notice in VRML 97 specification.
-    This seems to be undefined case in VRML 97?
-
-    But our engine allows it, it makes AddChildren / RemoveChildren
-    faster by default, and it's consistent with normal list operations in Pascal.
-  }
-
-//  if Scene <> nil then
-//    Scene.BeforeNodesFree;
-
-  for N in Children do
-    FdChildren.Remove(N);
-
-//  if Scene <> nil then
-//    Scene.ChangedAll;
 end;
 
 procedure TAbstractX3DGroupingNode.AddChildren(
@@ -423,14 +338,6 @@ end;
 
 procedure TAbstractX3DGroupingNode.ClearChildren;
 begin
-  if FdChildren.Count <> 0 then
-  begin
-//    if Scene <> nil then
-//      Scene.BeforeNodesFree;
-    FdChildren.Clear;
-//    if Scene <> nil then
-//      Scene.ChangedAll;
-  end;
 end;
 
 procedure TGroupNode.CreateNode;
@@ -460,9 +367,6 @@ end;
 function TGroupNode.DirectEnumerateActive(Func: TEnumerateChildrenFunction): Pointer;
 begin
   Result := inherited;
-  if Result <> nil then Exit;
-
-  Result := FdChildren.Enumerate(Func);
   if Result <> nil then Exit;
 end;
 
@@ -522,9 +426,6 @@ begin
     FileItems := TX3DFileItemList.Create(false);
     try
       Assert(VRML1ChildrenCount = 0);
-
-      for i := 0 to FdChildren.Count - 1 do
-        FileItems.Add(FdChildren[I]);
 
       FileItems.SaveToStream(Writer);
     finally FreeAndNil(FileItems) end;
@@ -595,10 +496,6 @@ procedure TStaticGroupNode.CreateNode;
 begin
   inherited;
 
-  FFdChildren := TMFNode.Create(Self, false, 'children', IAbstractChildNode);
-   FdChildren.ChangesAlways := [chChildren];
-  AddField(FFdChildren);
-
   DefaultContainerField := 'children';
 end;
 
@@ -615,8 +512,6 @@ end;
 
 function TStaticGroupNode.DirectEnumerateActive(Func: TEnumerateChildrenFunction): Pointer;
 begin
-  Result := FdChildren.Enumerate(Func);
-  if Result <> nil then Exit;
 end;
 
 procedure TTransformNode.CreateNode;
@@ -645,8 +540,6 @@ end;
 
 function TTransformNode.DirectEnumerateActive(Func: TEnumerateChildrenFunction): Pointer;
 begin
-  Result := FdChildren.Enumerate(Func);
-  if Result <> nil then Exit;
 end;
 
 function TTransformNode.TransformationChange: TNodeTransformationChange;

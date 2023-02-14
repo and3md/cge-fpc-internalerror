@@ -177,7 +177,6 @@ type
   {$I x3dnodes_initial_types.inc}
   {$I x3dnodes_x3dnode.inc}
   {$I x3dnodes_sfnode.inc}
-  {$I x3dnodes_mfnode.inc}
 
   { Nodes from standard X3D components }
   {$I x3dnodes_standard_core.inc}
@@ -208,7 +207,6 @@ uses
 // These must be includes after x3dnodes_encoding_{classic,xml}.inc
 {$I x3dnodes_x3dnode.inc}
 {$I x3dnodes_sfnode.inc}
-{$I x3dnodes_mfnode.inc}
 
 { Nodes from standard X3D components }
 {$I x3dnodes_standard_core.inc}

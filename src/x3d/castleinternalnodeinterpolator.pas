@@ -207,19 +207,6 @@ procedure CheckNodesStructurallyEqual(Model1, Model2: TX3DNode;
         'is once NULL and once not-NULL', [Field1.X3DName]);
   end;
 
-  procedure CheckMFNodesStructurallyEqual(Field1, Field2: TMFNode);
-  var
-    I: Integer;
-  begin
-    if Field1.Count <> Field2.Count then
-      raise EModelsStructureDifferent.CreateFmt(
-        'Different number of children in MFNode field "%s": %d vs %d',
-        [Field1.NiceName, Field1.Count, Field2.Count]);
-
-    for I := 0 to Field1.Count - 1 do
-      CheckNodesStructurallyEqual(Field1[I], Field2[I], Epsilon);
-  end;
-
 var
   I: Integer;
   MF1, MF2: TX3DMultField;
@@ -274,9 +261,6 @@ begin
     if Model1.Fields[I] is TSFNode then
       CheckSFNodesStructurallyEqual(
         TSFNode(Model1.Fields[I]), TSFNode(Model2.Fields[I])) else
-    if Model1.Fields[I] is TMFNode then
-      CheckMFNodesStructurallyEqual(
-        TMFNode(Model1.Fields[I]), TMFNode(Model2.Fields[I])) else
     if Model1.Fields[I].CanAssignLerp then
     begin
       if Model1.Fields[I] is TX3DMultField then
@@ -381,29 +365,6 @@ function NodesMerge(Model1, Model2: TX3DNode;
     end;
   end;
 
-  function MFNodesMerge(Field1, Field2: TMFNode): boolean;
-  var
-    I: Integer;
-  begin
-    Result := true;
-
-    { Note that we already know that Counts are equals,
-      checked already by CheckNodesStructurallyEqual. }
-    Assert(Field1.Count = Field2.Count);
-    for I := 0 to Field1.Count - 1 do
-    begin
-      if NodesMerge(Field1[I], Field2[I], Epsilon) then
-      begin
-        { Think of this as
-            Field1[I] := Field2[I]
-          but I can't call this directly, I must use Field1.Replace
-          to not mess reference counts. }
-        Field1.Replace(I, Field2[I]);
-      end else
-        Result := false;
-    end;
-  end;
-
 var
   I: Integer;
 begin
@@ -434,12 +395,6 @@ begin
                           TSFNode(Model2.Fields[I])) then
         Result := false;
     end else
-    if Model1.Fields[I] is TMFNode then
-    begin
-      if not MFNodesMerge(TMFNode(Model1.Fields[I]),
-                          TMFNode(Model2.Fields[I])) then
-        Result := false;
-    end else
     if Model1.Fields[I].CanAssignLerp then
     begin
       if not Model1.Fields[I].Equals(Model2.Fields[I]
@@ -468,14 +423,6 @@ function NodesLerp(const A: Single; Model1, Model2: TX3DNode): TX3DNode;
       Target.Value := NodesLerp(A, Field1.Value, Field2.Value)
     else
       Target.Value := Field1.Value;
-  end;
-
-  procedure MFNodeLerp(Target, Field1, Field2: TMFNode);
-  var
-    I: Integer;
-  begin
-    for I := 0 to Field1.Count - 1 do
-      Target.Add(NodesLerp(A, Field1[I], Field2[I]));
   end;
 
 var
@@ -518,13 +465,6 @@ begin
           (Result.Fields[I] as TSFNode),
           (Model1.Fields[I] as TSFNode),
           (Model2.Fields[I] as TSFNode));
-      end else
-      if Model1.Fields[I] is TMFNode then
-      begin
-        MFNodeLerp(
-          (Result.Fields[I] as TMFNode),
-          (Model1.Fields[I] as TMFNode),
-          (Model2.Fields[I] as TMFNode));
       end else
       if Model1.Fields[I].CanAssignLerp then
       begin

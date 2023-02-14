@@ -20,7 +20,6 @@
   TX3DNode = class;
   TX3DRootNode = class;
   TSFNode = class;
-  TMFNode = class;
   TX3DInterfaceDeclaration = class;
   TX3DInterfaceDeclarationList = class;
   TTransformNode = class;

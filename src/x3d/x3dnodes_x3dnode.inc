@@ -1070,7 +1070,6 @@ procedure TX3DNode.FreeRemovingFromAllParents;
 var
   i, j: integer;
   SF: TSFNode;
-  MF: TMFNode;
 begin
   if Self = nil then exit;
 
@@ -1094,17 +1093,6 @@ begin
         our destructor) by this setter. }
       SF.FValue := nil;
     end else
-    if FParentFields[I] is TMFNode then
-    begin
-      MF := TMFNode(FParentFields[I]);
-      { Again we remove using internal methods, that shouldn't be used
-        by normal usage from outside: we call directly FItems methods
-        (instead of calling MFNode.RemoveItem method that would call our
-        RemoveParentField that possibly calls our destructor). }
-      J := MF.FItems.IndexOf(Self);
-      Assert(J <> -1, 'Node must be present on Items list of parent MFNode');
-      MF.FItems.Delete(J);
-    end;
   end;
 
   Self.Destroy;
@@ -1121,8 +1109,10 @@ var
 begin
   F := ParentFields[Index];
   if F is TSFNode then
-    Result := TSFNode(F).ParentNode else
-    Result := (F as TMFNode).ParentNode;
+    Result := TSFNode(F).ParentNode
+  else
+    Result := nil;
+
 end;
 
 function TX3DNode.ParentFieldsCount: Integer;
@@ -1147,7 +1137,6 @@ function TX3DNode.DirectEnumerateAll(
 var
   I, J: Integer;
   SF: TSFNode;
-  MF: TMFNode;
 begin
   Result := nil;
 
@@ -1169,17 +1158,6 @@ begin
     end;
 
   { Use InternalItems for an extra epsilon of speed. }
-
-  if FFieldsMFNode <> nil then
-    for I := 0 to FFieldsMFNode.Count - 1 do
-    begin
-      MF := TMFNode(FFieldsMFNode[I]);
-      for J := 0 to MF.InternalItems.Count - 1 do
-      begin
-        Result := Func(Self, MF.InternalItems[J]);
-        if Result <> nil then Exit;
-      end;
-    end;
 
   if PrototypeInstance then
   begin
@@ -1691,7 +1669,6 @@ function TX3DNode.EnumerateReplaceChildren(
 var
   I, J: Integer;
   SF: TSFNode;
-  MF: TMFNode;
   NewNode: TX3DNode;
 begin
   { I don't use EnumerateNodes since I have to enumerate them myself,
@@ -1737,32 +1714,6 @@ begin
         end else
         begin
           Result := Result + SF.Value.EnumerateReplaceChildren(Func);
-        end;
-      end;
-    end;
-
-  if FFieldsMFNode <> nil then
-    for I := 0 to FFieldsMFNode.Count - 1 do
-    begin
-      MF := TMFNode(FFieldsMFNode[I]);
-      J := 0;
-      while J < MF.InternalItems.Count do
-      begin
-        NewNode := MF.InternalItems[J];
-        Func(Self, NewNode);
-        if NewNode <> MF.InternalItems[J] then
-        begin
-          MF.Delete(J);
-          Inc(Result);
-          if NewNode <> nil then
-          begin
-            MF.Add(J, NewNode);
-            Inc(J);
-          end;
-        end else
-        begin
-          Result := Result + MF.InternalItems[J].EnumerateReplaceChildren(Func);
-          Inc(J);
         end;
       end;
     end;
@@ -1878,7 +1829,6 @@ procedure FieldDeepCopyContents(Destination, Source: TX3DField;
 var
   J: Integer;
   SF: TSFNode;
-  MF: TMFNode;
 begin
   { First make "shallow copy" of the field by simple Assign }
   Destination.Assign(Source);
@@ -1888,12 +1838,6 @@ begin
     SF := TSFNode(Destination);
     if SF.Value <> nil then
       SF.Value := CopyState.DeepCopy(SF.Value);
-  end else
-  if Destination is TMFNode then
-  begin
-    MF := TMFNode(Destination);
-    for J := 0 to MF.Count - 1 do
-      MF.Replace(J, CopyState.DeepCopy(MF.InternalItems[J]));
   end;
 end;
 
@@ -2059,12 +2003,6 @@ begin
       FFieldsSFNode := TX3DFieldList.Create(false);
     FFieldsSFNode.Add(Value);
   end else
-  if Value is TMFNode then
-  begin
-    if FFieldsMFNode = nil then
-      FFieldsMFNode := TX3DFieldList.Create(false);
-    FFieldsMFNode.Add(Value);
-  end;
 end;
 
 function TX3DNode.IndexOfField(const AName: string): Integer;

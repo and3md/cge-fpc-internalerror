@@ -235,9 +235,6 @@
 
     strict private FFdReference: TSFString;
     public property FdReference: TSFString read FFdReference;
-
-    strict private FFdValue: TMFNode;
-    public property FdValue: TMFNode read FFdValue;
   end;
 
   { A metadata (extra, custom information at a node) with a string type. }
@@ -432,9 +429,6 @@ begin
 
   FFdReference := TSFString.Create(Self, true, 'reference', '');
   AddField(FFdReference);
-
-  FFdValue := TMFNode.Create(Self, true, 'value', IAbstractMetadataNode);
-  AddField(FFdValue);
 
   DefaultContainerField := 'metadata';
 end;
