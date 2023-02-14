@@ -28,7 +28,6 @@ uses Classes, SysUtils, DOM, Generics.Collections,
 
 type
   {$I castlefields_misctypes.inc}
-  {$I castlefields_x3dreader.inc}
   {$I castlefields_x3dfileitem.inc}
   {$I castlefields_x3dfieldorevent.inc}
   {$I castlefields_x3dfield.inc}
@@ -47,7 +46,6 @@ uses Generics.Defaults,
 {$define read_implementation}
 
 {$I castlefields_misctypes.inc}
-{$I castlefields_x3dreader.inc}
 {$I castlefields_x3dfileitem.inc}
 {$I castlefields_x3dfieldorevent.inc}
 {$I castlefields_x3dfield.inc}

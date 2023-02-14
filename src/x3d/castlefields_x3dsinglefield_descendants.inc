@@ -33,7 +33,7 @@
     constructor Create(const AParentNode: TX3DFileItem;
       const AExposed: boolean; const AName: string; const AValue: TItem);
 
-    procedure ParseValue(Lexer: TX3DLexer; Reader: TX3DReader); override;
+    procedure ParseValue(Lexer: TX3DLexer); override;
 
     function EqualsDefaultValue: boolean; override;
     function Equals(SecondValue: TX3DField): boolean; override;
@@ -95,7 +95,7 @@ begin
   AssignDefaultValueFromValue;
 end;
 
-procedure TSFGenericVector.ParseValue(Lexer: TX3DLexer; Reader: TX3DReader);
+procedure TSFGenericVector.ParseValue(Lexer: TX3DLexer);
 var
   I: Integer;
 begin

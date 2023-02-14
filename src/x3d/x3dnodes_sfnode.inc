@@ -90,9 +90,9 @@
       read FDefaultValueExists write SetDefaultValueExists default false;
 
     property Value: TX3DNode read FValue write SetValue;
-    procedure ParseValue(Lexer: TX3DLexer; Reader: TX3DReader); override;
-    procedure ParseXMLAttribute(const AttributeValue: string; Reader: TX3DReader); override;
-    procedure ParseXMLElement(Element: TDOMElement; Reader: TX3DReader); override;
+    procedure ParseValue(Lexer: TX3DLexer); override;
+    procedure ParseXMLAttribute(const AttributeValue: string); override;
+    procedure ParseXMLElement(Element: TDOMElement); override;
 
     function EqualsDefaultValue: boolean; override;
     function Equals(SecondValue: TX3DField): boolean; override;
@@ -285,7 +285,7 @@ begin
   end;
 end;
 
-procedure TSFNode.ParseValue(Lexer: TX3DLexer; Reader: TX3DReader);
+procedure TSFNode.ParseValue(Lexer: TX3DLexer);
 begin
   if (Lexer.Token = vtKeyword) and (Lexer.TokenKeyword = vkNULL) then
   begin
@@ -303,7 +303,7 @@ begin
   end;
 end;
 
-procedure TSFNode.ParseXMLAttribute(const AttributeValue: string; Reader: TX3DReader);
+procedure TSFNode.ParseXMLAttribute(const AttributeValue: string);
 const
   SNull = 'NULL';
 var
@@ -332,7 +332,7 @@ begin
   end;
 end;
 
-procedure TSFNode.ParseXMLElement(Element: TDOMElement; Reader: TX3DReader);
+procedure TSFNode.ParseXMLElement(Element: TDOMElement);
 begin
 end;
 
