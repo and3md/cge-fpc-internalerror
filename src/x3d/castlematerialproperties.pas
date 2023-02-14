@@ -26,125 +26,10 @@ uses Classes, DOM, Generics.Collections,
 
 type
 
-        TSoundInfo = class;
-
-        { Unique sound type identifier for sounds used within TRepoSoundEngine. }
-        TSoundType = record
-        private
-          { Just an index to TRepoSoundEngine.SoundNames array. }
-          Index: Cardinal;
-        public
-          function InternalInfo: TSoundInfo;
-          class operator {$ifdef FPC}={$else}Equals{$endif} (const SoundType1, SoundType2: TSoundType): boolean;
-        end;
-
-        { List of TSoundInfo.
-
-          @exclude
-          @bold(This is an internal class, and in the future will not be publicly available). }
-        TSoundInfoList = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TObjectList<TSoundInfo>)
-          { Index of sound with given TSoundInfo.Name, or -1 if not found. }
-          function IndexOfName(const SoundName: String): Integer;
-        end;
-
-        { Sound information.
-          Most fields of this classs correspond to appropriate attributes in
-          the XML file loaded by setting @link(TRepoSoundEngine.RepositoryURL).
-
-          @exclude
-          @bold(This is an internal class, and in the future will not be publicly available). }
-        TSoundInfo = class
-        private
-          { OpenAL buffer of this sound. @nil if buffer is not yet loaded,
-            which may happen only if TRepoSoundEngine.ALContextOpen was not yet
-            called or when sound has URL = ''. }
-        public
-          { Unique sound name (including parent group names). Empty for the special sound stNone. }
-          Name: string;
-
-          { URL from which to load sound data.
-            Absolute (including parent group URL parts).
-
-            Empty means that the sound data is not defined,
-            so the OpenAL buffer will not be initialized and trying to play
-            this sound (with methods like TSoundEngine.Sound or TSoundEngine.Sound3D)
-            will do nothing. This is useful if you want to use a sound name
-            in code, but you do not have the actual sound file for this yet. }
-          URL: string;
-
-          { Gain (how loud the sound is).
-            They are mapped directly to respective OpenAL source properties,
-            so see OpenAL specification for exact details what they mean.
-            In short:
-
-            @unorderedList(
-              @item(Gain scales the sound loudness. Use this to indicate that
-                e.g. a plane engine is louder than a mouse squeak (when heard
-                from the same distance).
-
-                Do @italic(not) make the actual sound data (in wav, ogg and such files)
-                louder/more silent for this purpose.
-                This is usually bad for sound quality. Instead, keep your sound data
-                at max loudness (normalized), and use this @link(Gain) property
-                to scale sound.
-
-                It can be antything from 0 to +infinity. The default is 1.)
-
-              @item(MinGain and MaxGain force a minimum/maximum sound loudness.
-                These can be used to "cheat" around default distance attenuation
-                calculation.
-
-                These must be in [0, 1] range. By default MinGain is 0 and MaxGain is 1.)
-            )
-
-            Note that Gain value > 1 is allowed.
-            Although OpenAL may clip the resulting sound (after all
-            calculations taking into account 3D position will be done).
-            The resulting sound is also clamped by MaxGain
-            (that generally must be in [0, 1], although some OpenAL implementations
-            allow values > 1).
-
-            When this sound is used for @link(TLoopingChannel.Sound):
-            @orderedList(
-              @item(MinGain, MaxGain are ignored.)
-              @item(Effective Gain (passed to OpenAL sound source) is the
-                @link(TLoopingChannel.Volume) multiplied by our @link(Gain).)
-            ) }
-          Gain, MinGain, MaxGain: Single;
-
-          { How important the sound is. Influences what happens when we have a lot
-            of sounds playing at once. See TSound.Importance.
-
-            Ignored when this sound is used for @link(TLoopingChannel.Sound). }
-          DefaultImportance: Cardinal;
-
-          { A group (one among FSoundGroups, or @nil if not in any group). }
-          ParentGroup: TSoundInfoList;
-        end;
-
-
-        TSoundBuffer = class
-        private
-          ALBuffer: UIntPtr;
-          { Absolute URL.
-            Never empty (do not create TSoundBuffer instances for invalid / empty URL,
-            like the ones that can be created by TRepoSoundEngine for not defined sounds.) }
-          URL: string;
-          FDuration: single;
-          References: Cardinal;
-        public
-
-          { Duration of the sound, in seconds. Zero if not loaded yet. }
-          property Duration: single read FDuration;
-        end;
-
-
-
   { Information for a particular material. }
   TMaterialProperty = class
   strict private
     FTextureBaseName: string;
-    FFootstepsSound: TSoundType;
     FToxic: boolean;
     FToxicDamageConst, FToxicDamageRandom, FToxicDamageTime: Single;
     FNormalMap: string;
@@ -156,10 +41,6 @@ type
       using given texture. For now, this is the only way to associate
       property, but more are possible in the future (like MaterialNodeName). }
     property TextureBaseName: string read FTextureBaseName write FTextureBaseName;
-
-    { Footsteps sound to make when player is walking on this material.
-      stNone is no information is available. }
-    property FootstepsSound: TSoundType read FFootstepsSound write FFootstepsSound;
 
     { Is the floor toxic when walking on it.
       Taken into account only if you assign @link(TCastleSceneManager.Player).
@@ -375,28 +256,8 @@ var
 
 implementation
 
-uses SysUtils, XMLRead, StrUtils, Math,
+uses SysUtils, StrUtils, Math,
   X3DNodes;
-
-{ TSoundInfoList }
-
-function TSoundInfoList.IndexOfName(const SoundName: String): Integer;
-begin
-
-end;
-
-{ TSoundType }
-
-function TSoundType.InternalInfo: TSoundInfo;
-begin
-
-end;
-
-class operator TSoundType. = (const SoundType1, SoundType2: TSoundType
-  ): boolean;
-begin
-
-end;
 
 { TMaterialProperty --------------------------------------------------------- }
 
