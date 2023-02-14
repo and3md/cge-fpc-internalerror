@@ -247,37 +247,6 @@
     procedure Send(const AValue: string); overload;
   end;
 
-  { X3D field that contains a value from a specified set.
-    This represents a commonly used VRML/X3D construct where SFString field
-    is used to hold values from some limited set, thus emulating
-    an "enumerated" field.
-
-    Access the EnumValue to get / set the field value as an integer,
-    which is an index to ValueNames array. }
-  TSFStringEnum = class(TSFString)
-  strict private
-    FEnumNames: TStringList;
-    FEnumValue: Integer;
-    FDefaultEnumValue: Integer;
-    procedure SetEnumValue(const NewEnumValue: Integer);
-    procedure SetDefaultEnumValue(const NewDefaultEnumValue: Integer);
-  strict protected
-    function StringToEnumValue(const NewValue: string): Integer;
-    procedure SetValue(const NewValue: string); override;
-    procedure SetDefaultValue(const NewDefaultValue: string); override;
-    class function ExposedEventsFieldClass: TX3DFieldClass; override;
-  public
-    constructor Create(const AParentNode: TX3DFileItem;
-      const AExposed: boolean; const AName: string;
-      const AEnumNames: array of string; const AValue: Integer);
-    destructor Destroy; override;
-    property EnumValue: Integer
-      read FEnumValue write SetEnumValue;
-    property DefaultEnumValue: Integer
-      read FDefaultEnumValue write SetDefaultEnumValue;
-    procedure SendEnumValue(const NewValue: Integer);
-  end;
-
   { X3D field containing a vector. }
   {$ifdef CASTLE_OBJFPC}generic{$endif}
   TSFGenericVector<
@@ -975,69 +944,6 @@ begin
 end;
 
 { TSFStringEnum -------------------------------------------------------------- }
-
-constructor TSFStringEnum.Create(const AParentNode: TX3DFileItem;
-  const AExposed: boolean; const AName: string; const AEnumNames: array of string; const AValue: integer);
-begin
-  inherited Create(AParentNode, AExposed, AName, FEnumNames[AValue]);
-  { inherited Create will assign Value, and in SetValue should cause setting
-    our FEnumValue }
-  Assert(AValue = FEnumValue);
-end;
-
-destructor TSFStringEnum.Destroy;
-begin
-  FreeAndNil(FEnumNames);
-  inherited;
-end;
-
-class function TSFStringEnum.ExposedEventsFieldClass: TX3DFieldClass;
-begin
-  Result := TSFString;
-end;
-
-function TSFStringEnum.StringToEnumValue(const NewValue: string): Integer;
-var
-  UpperValue: string;
-begin
-  UpperValue := UpperCase(NewValue);
-  if UpperValue <> NewValue then
-  Result := FEnumNames.IndexOf(UpperValue);
-  if Result = -1 then
-  begin
-    Result := DefaultEnumValue;
-  end;
-end;
-
-procedure TSFStringEnum.SetValue(const NewValue: string);
-begin
-  inherited SetValue(NewValue);
-  { calculate new FEnumValue, IOW convert string NewValue to integer }
-  FEnumValue := StringToEnumValue(NewValue);
-end;
-
-procedure TSFStringEnum.SetEnumValue(const NewEnumValue: Integer);
-begin
-  inherited SetValue(FEnumNames[NewEnumValue]);
-  FEnumValue := NewEnumValue;
-end;
-
-procedure TSFStringEnum.SendEnumValue(const NewValue: Integer);
-begin
-  inherited Send(FEnumNames[NewValue]);
-end;
-
-procedure TSFStringEnum.SetDefaultValue(const NewDefaultValue: string);
-begin
-  inherited SetDefaultValue(NewDefaultValue);
-  FDefaultEnumValue := StringToEnumValue(NewDefaultValue);
-end;
-
-procedure TSFStringEnum.SetDefaultEnumValue(const NewDefaultEnumValue: Integer);
-begin
-  inherited SetDefaultValue(FEnumNames[NewDefaultEnumValue]);
-  FDefaultEnumValue := NewDefaultEnumValue;
-end;
 
 { TSFGenericVector ----------------------------------------------------------- }
 
