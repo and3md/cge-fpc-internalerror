@@ -124,14 +124,6 @@
     procedure Send(const AValue: Double); overload;
   end;
 
-  { X3D field containing a time, expressed as seconds that passed since some moment. }
-  TSFTime = class(TSFDouble)
-  public
-    class function X3DType: string; override;
-    class function CreateEvent(const AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean): TX3DEvent; override;
-    procedure Send(const AValue: Double); overload;
-  end;
-
   { X3D field containing an single integer 32-bit value. }
   TSFLong = class(TX3DSingleField)
   strict private
@@ -536,26 +528,6 @@ begin
 end;
 
 { TSFTime -------------------------------------------------------------------- }
-
-class function TSFTime.X3DType: string;
-begin
-  Result := 'SFTime';
-end;
-
-class function TSFTime.CreateEvent(const AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean): TX3DEvent;
-begin
-  Result := TSFDoubleEvent.Create(AParentNode, AName, AInEvent);
-end;
-
-procedure TSFTime.Send(const AValue: Double);
-var
-  FieldValue: TX3DField;
-begin
-  FieldValue := TSFTime.Create(ParentNode, false, X3DName, AValue);
-  try
-    Send(FieldValue);
-  finally FreeAndNil(FieldValue) end;
-end;
 
 { TSFLong -------------------------------------------------------------------- }
 
