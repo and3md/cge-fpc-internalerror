@@ -33,18 +33,6 @@
     procedure Send(const Value: boolean); overload;
   end;
 
-  TSFDoubleEvent = class(TX3DEvent)
-  public
-    constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-    procedure Send(const Value: Double); overload;
-  end;
-
-  TSFFloatEvent = class(TX3DEvent)
-  public
-    constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-    procedure Send(const Value: Single); overload;
-  end;
-
   TSFNodeEvent = class(TX3DEvent)
   public
     constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
@@ -84,30 +72,7 @@ end;
 
 { TSFDoubleEvent ------------------------------------------------------------- }
 
-constructor TSFDoubleEvent.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-begin
-  inherited Create(AParentNode, AName, TSFDouble, AInEvent);
-end;
-
-procedure TSFDoubleEvent.Send(const Value: Double);
-begin
-  if (ParentNode <> nil)
-     then
-    Send(Value);
-end;
-
 { TSFFloatEvent -------------------------------------------------------------- }
-
-constructor TSFFloatEvent.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-begin
-  inherited Create(AParentNode, AName, TSFFloat, AInEvent);
-end;
-
-procedure TSFFloatEvent.Send(const Value: Single);
-begin
-  if (ParentNode <> nil)  then
-    Send(Value);
-end;
 
 { TSFLongEvent --------------------------------------------------------------- }
 
