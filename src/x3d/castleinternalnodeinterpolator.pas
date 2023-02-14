@@ -458,7 +458,6 @@ begin
       begin
         { These fields cannot be interpolated.
           So just copy to Result.Fields[I]. }
-        Result.Fields[I].Assign(Model1.Fields[I]);
       end;
     end;
   except

@@ -30,13 +30,8 @@
     function SeparateGroup: boolean; virtual;
   end;
 
-  { Basis for all node types that have bounds specified as part of the definition. }
-  IAbstractBoundedObject = interface(IX3DNode)
-  ['{0EF47711-754B-4BA8-97E5-0A9601E9C542}']
-  end;
-
   { Base node that contains children nodes, in X3D and VRML 2.0. }
-  TAbstractX3DGroupingNode = class(TAbstractGroupingNode, IAbstractBoundedObject)
+  TAbstractX3DGroupingNode = class(TAbstractGroupingNode)
   strict private
     type
       TChildrenArray = array of TAbstractChildNode;
@@ -233,7 +228,7 @@
     send events, receive events or contain any USE
     references outside the StaticGroup.
     This allows to optimize this content for faster rendering and less memory usage. }
-  TStaticGroupNode = class(TAbstractGroupingNode, IAbstractBoundedObject)
+  TStaticGroupNode = class(TAbstractGroupingNode)
   protected
     function DirectEnumerateActive(Func: TEnumerateChildrenFunction): Pointer; override;
   public
@@ -249,12 +244,8 @@
     The transformation change may be signalled by TX3DField.Changes
     including chTransform flag. For some special nodes, like Billboard,
     the transformation changes are automatically managed. }
-  ITransformNode = interface(IX3DNode)
-  ['{6991EC7D-0821-4393-B5B3-08DD967CFE05}']
-  end;
-
   { Grouping node that transforms (moves, rotates, scales) it's children. }
-  TTransformNode = class(TAbstractX3DGroupingNode, ITransformNode)
+  TTransformNode = class(TAbstractX3DGroupingNode)
   strict private
     //WarningNegativeScaleDone: boolean;
   protected

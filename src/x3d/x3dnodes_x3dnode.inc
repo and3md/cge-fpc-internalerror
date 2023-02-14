@@ -36,14 +36,8 @@
     function DeepCopy(OriginalNode: TX3DNode): TX3DNode;
   end;
 
-  { X3D node interface.
-    All other interfaces for X3D nodes descend from this. }
-  IX3DNode = interface
-  ['{5BD33327-430F-47EC-9241-AD899F072BF8}']
-  end;
-
   { X3D node. Every VRML/X3D node class descends from this. }
-  TX3DNode = class(TX3DFileItem, IX3DNode)
+  TX3DNode = class(TX3DFileItem)
   private
     FX3DName: string;
     FBaseUrl: string;
@@ -1665,32 +1659,6 @@ begin
   end;
 end;
 
-{ I couldn't implement this as TX3DField method, as X3DFields
-  cannot declare TX3DNode in the interface, so also
-  cannot declare TX3DNodeDeepCopyState. }
-procedure FieldDeepCopyContents(Destination, Source: TX3DField;
-  CopyState: TX3DNodeDeepCopyState);
-var
-  J: Integer;
-  SF: TSFNode;
-begin
-  { First make "shallow copy" of the field by simple Assign }
-  Destination.Assign(Source);
-
-  if Destination is TSFNode then
-  begin
-    SF := TSFNode(Destination);
-    if SF.Value <> nil then
-      SF.Value := CopyState.DeepCopy(SF.Value);
-  end;
-end;
-
-procedure EventDeepCopyContents(Destination, Source: TX3DEvent);
-begin
-  { For events, simple Assign does all copy we need --- at least for now. }
-  Destination.Assign(Source);
-end;
-
 function TX3DNode.DeepCopyCreate(CopyState: TX3DNodeDeepCopyState): TX3DNode;
 begin
   Result := TX3DNodeClass(ClassType).Create(X3DName, BaseUrl);
@@ -1744,19 +1712,10 @@ begin
       { Copying InterfaceDeclarations field/event already handled. }
       if Fields[I].ParentInterfaceDeclaration = nil then
       begin
-        FieldDeepCopyContents(Result.Fields[I], Fields[I], CopyState);
-
-        if Result.Fields[I].Exposed then
-        begin
-          EventDeepCopyContents(Result.Fields[I].EventIn , Fields[I].EventIn );
-          EventDeepCopyContents(Result.Fields[I].EventOut, Fields[I].EventOut);
-        end;
       end;
 
     for I := 0 to EventsCount - 1 do
       { Copying InterfaceDeclarations field/event already handled. }
-      if Events[I].ParentInterfaceDeclaration = nil then
-        EventDeepCopyContents(Result.Events[I], Events[I]);
 
     if PrototypeInstance then
     begin

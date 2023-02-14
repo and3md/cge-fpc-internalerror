@@ -97,7 +97,6 @@
     function EqualsDefaultValue: boolean; override;
     function Equals(SecondValue: TX3DField): boolean; override;
 
-    procedure Assign(Source: TPersistent); override;
     procedure AssignValue(Source: TX3DField); override;
     procedure AssignDefaultValueFromValue; override;
 
@@ -375,20 +374,6 @@ begin
  Result := (inherited Equals(SecondValue)) and
    (SecondValue is TSFNode) and
    (TSFNode(SecondValue).Value = Value);
-end;
-
-procedure TSFNode.Assign(Source: TPersistent);
-begin
-  if Source is TSFNode then
-  begin
-    { Assign using Value property, so that FParentFields will get
-      correctly updated. }
-    Value              := TSFNode(Source).Value;
-    DefaultValue       := TSFNode(Source).DefaultValue;
-    DefaultValueExists := TSFNode(Source).DefaultValueExists;
-    VRMLFieldAssignCommon(TX3DField(Source));
-  end else
-    inherited;
 end;
 
 procedure TSFNode.AssignValue(Source: TX3DField);

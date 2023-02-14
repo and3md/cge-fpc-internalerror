@@ -12,8 +12,7 @@ uses
   CastleInternalNodeInterpolator,
   CastleInternalX3DLexer,
   CastleMaterialProperties, X3DFields,
-  X3DNodes,
-  CastleInterfaces;
+  X3DNodes;
 
 {$R *.res}
 

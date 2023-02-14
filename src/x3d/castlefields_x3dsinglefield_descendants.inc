@@ -78,7 +78,6 @@
 
     function Equals(SecondValue: TX3DField): boolean; override;
 
-    procedure Assign(Source: TPersistent); override;
     procedure AssignValue(Source: TX3DField); override;
 
     class function X3DType: string; override;
@@ -101,7 +100,6 @@
     function Equals(SecondValue: TX3DField): boolean; override;
     function FastEqualsValue(SecondValue: TX3DField): boolean; override;
 
-    procedure Assign(Source: TPersistent); override;
     procedure AssignValue(Source: TX3DField); override;
     procedure AssignDefaultValueFromValue; override;
 
@@ -143,7 +141,6 @@
     function EqualsDefaultValue: boolean; override;
     function Equals(SecondValue: TX3DField): boolean; override;
 
-    procedure Assign(Source: TPersistent); override;
     procedure AssignValue(Source: TX3DField); override;
     procedure AssignDefaultValueFromValue; override;
 
@@ -188,7 +185,6 @@
 
     procedure AssignLerp(const A: Double; Value1, Value2: TX3DField); override;
     function CanAssignLerp: boolean; override;
-    procedure Assign(Source: TPersistent); override;
     procedure AssignValue(Source: TX3DField); override;
     procedure AssignDefaultValueFromValue; override;
 
@@ -226,7 +222,6 @@
 
     procedure AssignLerp(const A: Double; Value1, Value2: TX3DField); override;
     function CanAssignLerp: boolean; override;
-    procedure Assign(Source: TPersistent); override;
     procedure AssignValue(Source: TX3DField); override;
     procedure AssignDefaultValueFromValue; override;
 
@@ -270,7 +265,6 @@
     function Equals(SecondValue: TX3DField): boolean; override;
     function FastEqualsValue(SecondValue: TX3DField): boolean; override;
 
-    procedure Assign(Source: TPersistent); override;
     procedure AssignValue(Source: TX3DField); override;
     procedure AssignDefaultValueFromValue; override;
 
@@ -316,7 +310,6 @@
 
     procedure AssignLerp(const A: Double; Value1, Value2: TX3DField); override;
     function CanAssignLerp: boolean; override;
-    procedure Assign(Source: TPersistent); override;
     procedure AssignValue(Source: TX3DField); override;
     procedure AssignDefaultValueFromValue; override;
     procedure Send(const AValue: TItem); overload;
@@ -349,7 +342,6 @@
     function Equals(SecondValue: TX3DField): boolean; override;
     function FastEqualsValue(SecondValue: TX3DField): boolean; override;
 
-    procedure Assign(Source: TPersistent); override;
     procedure AssignValue(Source: TX3DField); override;
     procedure AssignDefaultValueFromValue; override;
 
@@ -417,7 +409,6 @@
 
     procedure AssignLerp(const A: Double; Value1, Value2: TX3DField); override;
     function CanAssignLerp: boolean; override;
-    procedure Assign(Source: TPersistent); override;
     procedure AssignValue(Source: TX3DField); override;
     procedure AssignDefaultValueFromValue; override;
     procedure Send(const AValue: TItem); overload;
@@ -500,18 +491,6 @@ function TSFBool.FastEqualsValue(SecondValue: TX3DField): boolean;
 begin
   Result := (SecondValue is TSFBool) and
     (TSFBool(SecondValue).Value = Value);
-end;
-
-procedure TSFBool.Assign(Source: TPersistent);
-begin
-  if Source is TSFBool then
-  begin
-    DefaultValue       := TSFBool(Source).DefaultValue;
-    DefaultValueExists := TSFBool(Source).DefaultValueExists;
-    Value              := TSFBool(Source).Value;
-    VRMLFieldAssignCommon(TX3DField(Source));
-  end else
-    inherited;
 end;
 
 procedure TSFBool.AssignValue(Source: TX3DField);
@@ -606,19 +585,6 @@ begin
   Result := true;
 end;
 
-procedure TSFFloat.Assign(Source: TPersistent);
-begin
-  if Source is TSFFloat then
-  begin
-    DefaultValue       := TSFFloat(Source).DefaultValue;
-    DefaultValueExists := TSFFloat(Source).DefaultValueExists;
-    FValue             := TSFFloat(Source).Value;
-    FMustBeNonnegative := TSFFloat(Source).MustBeNonnegative;
-    VRMLFieldAssignCommon(TX3DField(Source));
-  end else
-    inherited;
-end;
-
 procedure TSFFloat.AssignValue(Source: TX3DField);
 begin
   if Source is TSFFloat then
@@ -703,18 +669,6 @@ end;
 function TSFDouble.CanAssignLerp: boolean;
 begin
   Result := true;
-end;
-
-procedure TSFDouble.Assign(Source: TPersistent);
-begin
-  if Source is TSFDouble then
-  begin
-    DefaultValue       := TSFDouble(Source).DefaultValue;
-    DefaultValueExists := TSFDouble(Source).DefaultValueExists;
-    FValue             := TSFDouble(Source).Value;
-    VRMLFieldAssignCommon(TX3DField(Source));
-  end else
-    inherited;
 end;
 
 procedure TSFDouble.AssignValue(Source: TX3DField);
@@ -837,19 +791,6 @@ function TSFLong.FastEqualsValue(SecondValue: TX3DField): boolean;
 begin
   Result := (SecondValue is TSFLong) and
     (TSFLong(SecondValue).Value = Value);
-end;
-
-procedure TSFLong.Assign(Source: TPersistent);
-begin
-  if Source is TSFLong then
-  begin
-    DefaultValue       := TSFLong(Source).DefaultValue;
-    DefaultValueExists := TSFLong(Source).DefaultValueExists;
-    FValue             := TSFLong(Source).Value;
-    FMustBeNonnegative := TSFLong(Source).MustBeNonnegative;
-    VRMLFieldAssignCommon(TX3DField(Source));
-  end else
-    inherited;
 end;
 
 procedure TSFLong.AssignValue(Source: TX3DField);
@@ -981,16 +922,6 @@ begin
   Result := true;
 end;
 
-procedure TSFGenericMatrix.Assign(Source: TPersistent);
-begin
-  if Source is TSFGenericMatrix then
-  begin
-    FValue := TSFGenericMatrix(Source).FValue;
-    VRMLFieldAssignCommon(TX3DField(Source));
-  end else
-    inherited;
-end;
-
 procedure TSFGenericMatrix.AssignValue(Source: TX3DField);
 begin
   if Source is TSFGenericMatrix then
@@ -1096,18 +1027,6 @@ function TSFString.FastEqualsValue(SecondValue: TX3DField): boolean;
 begin
   Result := (SecondValue is TSFString) and
     (TSFString(SecondValue).Value = Value);
-end;
-
-procedure TSFString.Assign(Source: TPersistent);
-begin
-  if Source is TSFString then
-  begin
-    DefaultValue       := TSFString(Source).DefaultValue;
-    DefaultValueExists := TSFString(Source).DefaultValueExists;
-    Value              := TSFString(Source).Value;
-    VRMLFieldAssignCommon(TX3DField(Source));
-  end else
-    inherited;
 end;
 
 procedure TSFString.AssignValue(Source: TX3DField);
@@ -1309,18 +1228,6 @@ begin
   Result := true;
 end;
 
-procedure TSFGenericVector.Assign(Source: TPersistent);
-begin
-  if Source is TSFGenericVector then
-  begin
-    DefaultValue       := TSFGenericVector(Source).DefaultValue;
-    DefaultValueExists := TSFGenericVector(Source).DefaultValueExists;
-    Value              := TSFGenericVector(Source).Value;
-    VRMLFieldAssignCommon(TX3DField(Source));
-  end else
-    inherited;
-end;
-
 procedure TSFGenericVector.AssignValue(Source: TX3DField);
 begin
   if Source is TSFGenericVector then
@@ -1504,19 +1411,6 @@ begin
     (TSFBitMask(SecondValue).NoneString = NoneString);
 end;
 
-procedure TSFBitMask.Assign(Source: TPersistent);
-begin
-  if Source is TSFBitMask then
-  begin
-    FAllString  := TSFBitMask(Source).AllString;
-    FNoneString := TSFBitMask(Source).NoneString;
-    FFlags      := TSFBitMask(Source).FFlags;
-    FFlagNames.Assign(TSFBitMask(Source).FFlagNames);
-    VRMLFieldAssignCommon(TX3DField(Source));
-  end else
-    inherited;
-end;
-
 procedure TSFBitMask.AssignValue(Source: TX3DField);
 begin
   if Source is TSFBitMask then
@@ -1588,19 +1482,6 @@ begin
     (SecondValue is TSFEnum) and
     (TSFEnum(SecondValue).FEnumNames.Equals(FEnumNames)) and
     (TSFEnum(SecondValue).Value = Value);
-end;
-
-procedure TSFEnum.Assign(Source: TPersistent);
-begin
-  if Source is TSFEnum then
-  begin
-    DefaultValue       := TSFEnum(Source).DefaultValue;
-    DefaultValueExists := TSFEnum(Source).DefaultValueExists;
-    Value              := TSFEnum(Source).Value;
-    FEnumNames.Assign(TSFEnum(Source).FEnumNames);
-    VRMLFieldAssignCommon(TX3DField(Source));
-  end else
-    inherited;
 end;
 
 procedure TSFEnum.AssignValue(Source: TX3DField);

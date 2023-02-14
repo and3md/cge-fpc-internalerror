@@ -15,26 +15,13 @@
 
 {$ifdef read_interface}
 
-  { Interface for a base X3D node that can have some metadata. }
-  IAbstractNode = interface(IX3DNode)
-  ['{399AC6B2-C2B3-4EEA-AB74-D52C4836B3B9}']
-    property FdMetadata: TSFNode;
-  end;
-
-  { Basis for all metadata nodes. }
-  IAbstractMetadataNode = interface(IX3DNode)
-  ['{2D631FBF-683B-4259-A98D-74589893447C}']
-    property FdName: TSFString { read GetFdname }; { }
-    property FdReference: TSFString { read GetFdreference }; { }
-  end;
-
   { Base X3D node that can have some metadata.
 
     Almost all X3D nodes inherit from this, with the only exception being
     the X3DMetadataObject (expressed only as an interface in Pascal,
     @link(IAbstractMetadataNode)).
     This means that you cannot have metadata inside a metadata. }
-  TAbstractNode = class(TX3DNode, IAbstractNode)
+  TAbstractNode = class(TX3DNode)
   public
     procedure CreateNode; override;
 
@@ -42,17 +29,10 @@
     public property FdMetadata: TSFNode read FFdMetadata;
   end;
 
-  { Interface for an abstract node type that indicates that the node may be used as
-    a child of a grouping node,
-    e.g. inside @link(TAbstractX3DGroupingNode.FdChildren). }
-  IAbstractChildNode = interface(IAbstractNode)
-  ['{ECE6F71D-CA90-4B6C-8835-EAA68EEDAEED}']
-  end;
-
   { Abstract node type that indicates that the node may be used as
     a child of a grouping node,
     e.g. inside @link(TAbstractX3DGroupingNode.FdChildren). }
-  TAbstractChildNode = class(TAbstractNode, IAbstractChildNode)
+  TAbstractChildNode = class(TAbstractNode)
   public
     procedure CreateNode; override;
   end;
@@ -138,19 +118,8 @@
   TAbstractInfoNode = class(TAbstractChildNode)
   end;
 
-  { Base interface type for all sensors.
-    All sensors implement this
-    (and most, but not all, sensors descend also from @link(TAbstractSensorNode).) }
-  IAbstractSensorNode = interface(IAbstractChildNode)
-  ['{7434C62F-8084-40C3-AA57-08F9B574655A}']
-    property FdEnabled: TSFBool;
-
-    { Event: out } { }
-    property EventIsActive: TSFBoolEvent;
-  end;
-
   { Base abstract class for all sensors. }
-  TAbstractSensorNode = class(TAbstractChildNode, IAbstractSensorNode)
+  TAbstractSensorNode = class(TAbstractChildNode)
   public
     procedure CreateNode; override;
 
@@ -163,7 +132,7 @@
   end;
 
   { A metadata (extra, custom information at a node) with a boolean type. }
-  TMetadataBooleanNode = class(TAbstractNode, IAbstractMetadataNode)
+  TMetadataBooleanNode = class(TAbstractNode)
   public
     procedure CreateNode; override;
     class function ClassX3DType: string; override;
@@ -178,7 +147,7 @@
 
   { A metadata (extra, custom information at a node) with
     a double-precision floating point number type. }
-  TMetadataDoubleNode = class(TAbstractNode, IAbstractMetadataNode)
+  TMetadataDoubleNode = class(TAbstractNode)
   public
     procedure CreateNode; override;
     class function ClassX3DType: string; override;
@@ -194,7 +163,7 @@
 
   { A metadata (extra, custom information at a node) with
     a single-precision floating point number type. }
-  TMetadataFloatNode = class(TAbstractNode, IAbstractMetadataNode)
+  TMetadataFloatNode = class(TAbstractNode)
   public
     procedure CreateNode; override;
     class function ClassX3DType: string; override;
@@ -209,7 +178,7 @@
   end;
 
   { A metadata (extra, custom information at a node) with an integer type. }
-  TMetadataIntegerNode = class(TAbstractNode, IAbstractMetadataNode)
+  TMetadataIntegerNode = class(TAbstractNode)
   public
     procedure CreateNode; override;
     class function ClassX3DType: string; override;
@@ -224,7 +193,7 @@
 
   { A metadata (extra, custom information at a node) set,
     to reference of collection of other metadata nodes. }
-  TMetadataSetNode = class(TAbstractNode, IAbstractMetadataNode)
+  TMetadataSetNode = class(TAbstractNode)
   public
     procedure CreateNode; override;
     class function ClassX3DType: string; override;
@@ -238,7 +207,7 @@
   end;
 
   { A metadata (extra, custom information at a node) with a string type. }
-  TMetadataStringNode = class(TAbstractNode, IAbstractMetadataNode)
+  TMetadataStringNode = class(TAbstractNode)
   public
     procedure CreateNode; override;
     class function ClassX3DType: string; override;
@@ -273,7 +242,7 @@ procedure TAbstractNode.CreateNode;
 begin
   inherited;
 
-  FFdMetadata := TSFNode.Create(Self, true, 'metadata', IAbstractMetadataNode);
+  FFdMetadata := TSFNode.Create(Self, true, 'metadata');
   AddField(FFdMetadata);
 end;
 

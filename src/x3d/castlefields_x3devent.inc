@@ -145,14 +145,6 @@
       by AddNotification. }
     function SendNeeded: boolean;
 
-    { Assign from another event. The FieldClass and InEvent is copied.
-
-      The notifications (from @link(AddNotification))
-      and ParentExposedField are not copied, since they shouldn't
-      be copied so easily (ParentExposedField is related to hierarchy
-      of containers, copying notification would be surprising to the
-      notification listener). }
-    procedure Assign(Source: TPersistent); override;
   end;
 
   TX3DEventList = class(specialize TObjectList<TX3DEvent>)
@@ -252,17 +244,6 @@ begin
   Result :=
     Assigned(FFirstNotification) or
     ((FNotifications <> nil) and (FNotifications.Count <> 0));
-end;
-
-procedure TX3DEvent.Assign(Source: TPersistent);
-begin
-  if Source is TX3DEvent then
-  begin
-    FieldOrEventAssignCommon(TX3DEvent(Source));
-
-    FFieldClass := TX3DEvent(Source).FieldClass;
-    FInEvent := TX3DEvent(Source).InEvent;
-  end;
 end;
 
 function TX3DEvent.CreateTemp(const PartialSend: TPartialSend): TX3DField;

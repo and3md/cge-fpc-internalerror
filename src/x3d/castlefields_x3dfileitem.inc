@@ -24,7 +24,7 @@
     of interfaces and so must descend from something like
     TNonRefCountedInterfacedXxx. These are the only reasons, for now,
     why this descends from TNonRefCountedInterfacedPersistent. }
-  TX3DFileItem = class(TNonRefCountedInterfacedPersistent)
+  TX3DFileItem = class
   private
     FPositionInParent: Integer;
 

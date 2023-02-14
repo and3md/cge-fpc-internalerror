@@ -110,21 +110,12 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dnodes_x3dinterfacedeclaration.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dnodes_x3dnode.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="src/base/castleconf.inc"/>
         <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/base/castleinterfaces.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleInterfaces"/>
       </Unit>
     </Units>
   </ProjectOptions>
@@ -135,7 +126,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir);src/base;src/files;src/castlescript;src/fonts;src/x3d"/>
-      <OtherUnitFiles Value="src/base;src/castlescript;src/x3d"/>
+      <OtherUnitFiles Value="src/castlescript;src/x3d"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>

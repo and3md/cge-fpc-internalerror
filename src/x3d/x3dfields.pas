@@ -22,7 +22,6 @@ interface
 
 uses Classes, SysUtils, DOM, Generics.Collections,
   CastleInternalX3DLexer,
-  CastleInterfaces,
   Math;
 
 {$define read_interface}
