@@ -132,21 +132,6 @@
   end;
 
 
-  { A metadata (extra, custom information at a node) set,
-    to reference of collection of other metadata nodes. }
-  TMetadataSetNode = class(TAbstractNode)
-  public
-    procedure CreateNode; override;
-    class function ClassX3DType: string; override;
-    class function URNMatching(const URN: string): boolean; override;
-
-    strict private FFdName: TSFString;
-    public property FdName: TSFString read FFdName;
-
-    strict private FFdReference: TSFString;
-    public property FdReference: TSFString read FFdReference;
-  end;
-
   { A metadata (extra, custom information at a node) with a string type. }
   TMetadataStringNode = class(TAbstractNode)
   public
@@ -232,30 +217,6 @@ begin
 
   FEventIsActive := TSFBoolEvent.Create(Self, 'isActive', false);
   AddEvent(FEventIsActive);
-end;
-
-procedure TMetadataSetNode.CreateNode;
-begin
-  inherited;
-
-  FFdName := TSFString.Create(Self, true, 'name', '');
-  AddField(FFdName);
-
-  FFdReference := TSFString.Create(Self, true, 'reference', '');
-  AddField(FFdReference);
-
-  DefaultContainerField := 'metadata';
-end;
-
-class function TMetadataSetNode.ClassX3DType: string;
-begin
-  Result := 'MetadataSet';
-end;
-
-class function TMetadataSetNode.URNMatching(const URN: string): boolean;
-begin
-  Result := (inherited URNMatching(URN)) or
-    (URN = ClassX3DType);
 end;
 
 procedure TMetadataStringNode.CreateNode;
