@@ -64,8 +64,6 @@
     FTransformScale: Single;
     procedure EventIsBoundReceive(Event: TX3DEvent; AValue: TX3DField);
     procedure SetBound(const Value: Boolean);
-  protected
-    procedure BeforeTraverse(StateStack: TX3DGraphTraverseStateStack); override;
   public
     procedure CreateNode; override;
 
@@ -305,14 +303,6 @@ begin
   AddEvent(FEventIsBound);
 
   FTransformScale := 1;
-end;
-
-procedure TAbstractBindableNode.BeforeTraverse(
-  StateStack: TX3DGraphTraverseStateStack);
-begin
-  inherited;
-
-  FTransformScale := StateStack.Top.TransformScale;
 end;
 
 procedure TAbstractBindableNode.EventIsBoundReceive(

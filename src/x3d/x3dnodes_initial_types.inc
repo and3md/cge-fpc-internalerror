@@ -19,12 +19,10 @@
   TX3DNodeList = class;
   TX3DNode = class;
   TX3DRootNode = class;
-  TX3DGraphTraverseState = class;
   TSFNode = class;
   TMFNode = class;
   TX3DInterfaceDeclaration = class;
   TX3DInterfaceDeclarationList = class;
-  TX3DGraphTraverseStateStack = class;
   TTransformNode = class;
 
   TX3DNodeClass = class of TX3DNode;
@@ -37,16 +35,6 @@
     Node: TX3DNode;
     ParentInfo: PTraversingInfo;
   end;
-
-  { Used as a callback by TX3DNode.Traverse. }
-  TTraversingFunc = function (Node: TX3DNode;
-    StateStack: TX3DGraphTraverseStateStack;
-    ParentInfo: PTraversingInfo;
-    var TraverseIntoChildren: boolean): Pointer of object;
-
-  TTraversingAfterFunc = procedure (Node: TX3DNode;
-    StateStack: TX3DGraphTraverseStateStack;
-    ParentInfo: PTraversingInfo) of object;
 
   TEnumerateChildrenFunction =
     function (Node, Child: TX3DNode): Pointer of object;

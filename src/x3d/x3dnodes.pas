@@ -175,7 +175,6 @@ uses SysUtils, Generics.Collections, Classes, DOM,
 
 type
   {$I x3dnodes_initial_types.inc}
-  {$I x3dnodes_x3dgraphtraversestate.inc}
   {$I x3dnodes_destructionnotification.inc}
   {$I x3dnodes_x3dnode.inc}
   {$I x3dnodes_sfnode.inc}
@@ -206,7 +205,6 @@ uses
 {$define read_implementation}
 
 {$I x3dnodes_initial_types.inc}
-{$I x3dnodes_x3dgraphtraversestate.inc}
 {$I x3dnodes_destructionnotification.inc}
 
 {$I x3dnodes_x3dinterfacedeclaration.inc}
@@ -225,7 +223,6 @@ uses
 
 procedure X3DNodesFinalization;
 begin
-  FreeAndNil(TraverseSingleStack);
   FreeAndNil(X3DCache);
 
   FreeAndNil(AnyNodeDestructionNotifications);
@@ -235,10 +232,6 @@ initialization
   AnyNodeDestructionNotifications := TNodeDestructionNotificationList.Create;
 
   X3DFieldsManager.RegisterClasses([TSFNode, TMFNode]);
-
-  //X3DCache := TX3DFontTexturesCache.Create;
-  //TextureCache := X3DCache;
-  TraverseSingleStack := TX3DGraphTraverseStateStack.Create;
 finalization
   { Because of various finalization order (some stuff may be owned
     e.g. by CastleWindow.Application, and freed at CastleWindow finalization,

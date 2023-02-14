@@ -28,19 +28,6 @@
       Possibility useful for VRML 1.0 extension
       https://castle-engine.io/x3d_extensions.php#section_ext_wwwinline_separate }
     function SeparateGroup: boolean; virtual;
-
-    procedure BeforeTraverse(StateStack: TX3DGraphTraverseStateStack); override;
-    procedure AfterTraverse(StateStack: TX3DGraphTraverseStateStack); override;
-
-    { Change State.Transform for children nodes.
-
-      This should be done here, not in overriden BeforeTraverse.
-      Reason: for storing ClipPlanes transformations, we need to know
-      transformed matrix inside TAbstractGroupingNode.BeforeTraverse implementation.
-      And we also do StateStack.Push inside TAbstractGroupingNode.BeforeTraverse
-      implementation... So ApplyTransform must happen in the middle of
-      TAbstractGroupingNode.BeforeTraverse call. }
-    procedure ApplyTransform(State: TX3DGraphTraverseState); virtual;
   end;
 
   { Basis for all node types that have bounds specified as part of the definition. }
@@ -188,8 +175,6 @@
       then it is placed inside Inline node, which will do save/restore anyway.
       And this way VRML 1.0 WWWInline with separate=FALSE may also work too. }
     function SeparateGroup: boolean; override;
-
-    procedure ApplyTransform(State: TX3DGraphTraverseState); override;
   public
     ForceVersion: TX3DVersion;
 
@@ -299,7 +284,6 @@
   protected
     { }
     function DirectEnumerateActive(Func: TEnumerateChildrenFunction): Pointer; override;
-    procedure ApplyTransform(State: TX3DGraphTraverseState); override;
   public
     procedure CreateNode; override;
     class function ClassX3DType: string; override;
@@ -313,128 +297,10 @@
 {$endif read_interface}
 
 {$ifdef read_implementation}
-type
-  TGeneralGroupingEnumerator = class
-    State: TX3DGraphTraverseState;
-    WasPointingDeviceSensor: boolean;
-    { Add pointing device sensor (including Anchor) node. }
-    procedure AddPointingDeviceSensor(Child:TX3DNode);
-    function EnumerateChildrenFunction(Node, Child: TX3DNode): Pointer;
-  end;
-
-  procedure TGeneralGroupingEnumerator.AddPointingDeviceSensor(Child:TX3DNode);
-  begin
-    { Testing for WasPointingDeviceSensor guarantees that multiple
-      pointing devices within the same grouping node will all work. }
-  end;
-
-  function TGeneralGroupingEnumerator.EnumerateChildrenFunction(
-    Node, Child: TX3DNode): Pointer;
-  begin
-    Result := nil;
-  end;
 
 function TAbstractGroupingNode.SeparateGroup: boolean;
 begin
   Result := true;
-end;
-
-procedure TAbstractGroupingNode.BeforeTraverse(
-  StateStack: TX3DGraphTraverseStateStack);
-var
-  Enumerator: TGeneralGroupingEnumerator;
-begin
-  inherited;
-
-  BeforeTraversePushedState := SeparateGroup;
-  if BeforeTraversePushedState then
-    StateStack.Push;
-
-  ApplyTransform(StateStack.Top);
-
-  (*We append lights with lsLocal scope (global=FALSE and VRML/X3D >= 2.0)
-    to the current State.
-
-    It may seem wasteful to enumerate children twice
-    (first we enumerate here, then actual Traverse enumerates,
-    this time recursively, for the second time). But it turned out to
-    be the fastest and simplest method of propagating lsLocal lights
-    correctly...
-
-    Other (rejected) approach was to add ParentGroup to TLightInstance
-    and do it as post-processing step, i.e. in TCastleSceneCore in
-    AddGlobalLights take this ParentGroup and add light everywhere.
-    But that was 1. even slower, since it must traverse ParentGroup once again
-    for each directional light, and for each shape within this ParentGroup,
-    it must find all it's occurrences inside Shapes, and add light there
-    2. it fails ugly in case of DEF / USE of shapes.
-
-    See demo_models/lights_materials/directional_light_scope.wrl test. Imagine
-    (simplified VRML below) :
-
-      Group {
-        DEF S Shape { .... some sphere .... }
-        Group {
-          USE S
-          DirectionalLight { }
-          USE S
-        }
-        USE S
-      }
-
-    What would happen here? ParentGroup.Enumerate would find S *two* times.
-    For each of these occurrences, it would find *four* shapes with
-    matching node value. So 1. all four spheres would be lighted (incorrect,
-    only two spheres in the middle should be lighted) 2. all of them would
-    be lighted two times by the same light... Fix for 1st problem would
-    require us to record some list of parents within State (which would
-    awfully slow down Traverse work, that already is too crowded). Fix for 2nd
-    problem would require some intelligent avoiding of duplicates
-    (set light only for first node, that is both matching and has the light
-    not set yet).
-
-    So fixing the above solution would be quite more convoluted and slower
-    than simple, correct solution below. *)
-
-  { We also use it to collect State.PointingDeviceSensors,
-    as it turns our that the same approach is possible, for the same reasons.
-    And the same goes for State.ClipPlanes.
-    Moreover, we do it all in a single DirectEnumerateActive call,
-    so this doesn't slow down the code.
-  }
-
-  Enumerator := TGeneralGroupingEnumerator.Create;
-  try
-    Enumerator.State := StateStack.Top;
-    Enumerator.WasPointingDeviceSensor := false;
-
-    { It's a little unclean to test "Self is ...", usually virtual
-      methods should replace such constructs. But in this case, this is
-      just the simplest solution. Anchor node serves as a pointing device
-      for all it's children, so it just places itself in
-      State.PointingDeviceSensors.
-
-      Note that if Anchor node itself has other pointing device sensors
-      directly inside, they can be siblings of Anchor.
-      Tested with InstantReality and g3l_stapes_dbg.wrl from Robert Funnell.
-      So it's correct to just call AddPointingDeviceSensor that wil set
-      WasPointingDeviceSensor := true. }
-
-    DirectEnumerateActive({$ifdef CASTLE_OBJFPC}@{$endif} Enumerator.EnumerateChildrenFunction);
-  finally FreeAndNil(Enumerator) end;
-end;
-
-procedure TAbstractGroupingNode.ApplyTransform(State: TX3DGraphTraverseState);
-begin
-end;
-
-procedure TAbstractGroupingNode.AfterTraverse(
-  StateStack: TX3DGraphTraverseStateStack);
-begin
-  if BeforeTraversePushedState then
-    StateStack.Pop;
-
-  inherited;
 end;
 
 procedure TAbstractX3DGroupingNode.CreateNode;
@@ -714,11 +580,6 @@ begin
   }
 end;
 
-procedure TX3DRootNode.ApplyTransform(State: TX3DGraphTraverseState);
-begin
-  inherited;
-end;
-
 procedure TX3DRootNode.ManuallyExportNode(const Node: TX3DNode; const ExportedAlias: string);
 begin
   if Node.X3DName = '' then
@@ -791,20 +652,6 @@ end;
 function TTransformNode.TransformationChange: TNodeTransformationChange;
 begin
   Result := ntcTransform;
-end;
-
-procedure TTransformNode.ApplyTransform(State: TX3DGraphTraverseState);
-begin
-  inherited;
-  {
-  if ((Fdscale.Value[0] < 0) or
-      (Fdscale.Value[1] < 0) or
-      (Fdscale.Value[2] < 0)) and not WarningNegativeScaleDone then
-  begin
-    WarningNegativeScaleDone := true;
-    WritelnLog('VRML/X3D', 'Note: Transform.scale has negative component. It allows some tricks (especially sensible for unlit 2D stuff), but it makes lighting act weird. Make sure you use it only for unlit objects.');
-  end;
-  }
 end;
 
 {$endif read_implementation}

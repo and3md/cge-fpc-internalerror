@@ -83,12 +83,6 @@
       When CurrentContainerField is not empty, it means we know our containing field
       (and should adjust containerField= for XML encoding output). }
     procedure NodeSaveToStream(Writer: TX3DWriter; const CurrentContainerField: string = '');
-    function TryFindNodeStateTraverse(
-      ANode: TX3DNode; StateStack: TX3DGraphTraverseStateStack;
-      ParentInfo: PTraversingInfo; var TraverseIntoChildren: boolean): Pointer;
-    function TryFindNodeTransformTraverse(
-      ANode: TX3DNode; StateStack: TX3DGraphTraverseStateStack;
-      ParentInfo: PTraversingInfo; var TraverseIntoChildren: boolean): Pointer;
     function GetFields(const Index: Integer): TX3DField;
     function GetEvents(const Index: Integer): TX3DEvent;
     procedure UnregisterSceneCallback(Node: TX3DNode);
@@ -161,20 +155,6 @@
     function DirectEnumerateActive(
       Func: TEnumerateChildrenFunction): Pointer; virtual;
 
-    { Enumerate all active child nodes of given node,
-      and may additionally modify StateStack. It's used by Traverse.
-
-      Default implementation in this class simply calls
-      DirectEnumerateActive, ignoring StateStack, and this is suitable
-      for 99% of nodes. However, for some special nodes (only Collision
-      node for now), they have to modify state during traversing into
-      various children, and then they can override this.
-
-      Stops and returns immediately in Func returns non-nil for some child. }
-    function DirectEnumerateActiveForTraverse(
-      Func: TEnumerateChildrenFunction;
-      StateStack: TX3DGraphTraverseStateStack): Pointer; virtual;
-
     { Simply enumerate all direct descendant nodes.
       That is, all children in VRML 1.0 style and
       all nodes in SFNode and MFNode fields.
@@ -189,24 +169,6 @@
     function DirectEnumerate(
       Func: TEnumerateChildrenFunction;
       OnlyActive: boolean): Pointer;
-
-    { Override these methods to determine what happens when
-      given node is traversed during Traverse call.
-      The main use of this is to operate on TX3DGraphTraverseStateStack.
-
-      Remember to always call inherited when overriding.
-      In BeforeTraverse and MiddleTraverse you should call inherited
-      at the beginning, in AfterTraverse inherited should be called at the end.
-
-      Besides changing StateStack.Top fields, you can do push/pop
-      on the stack. Remember that if you do StateStack.Push in BeforeTraverse,
-      and then you @italic(must call StateStack.Pop in AfterTraverse).
-
-      @groupBegin }
-    procedure BeforeTraverse(StateStack: TX3DGraphTraverseStateStack); virtual;
-    procedure MiddleTraverse(StateStack: TX3DGraphTraverseStateStack); virtual;
-    procedure AfterTraverse(StateStack: TX3DGraphTraverseStateStack); virtual;
-    { @groupEnd }
 
     procedure CreateNode; virtual;
   public
@@ -469,92 +431,6 @@
       at actual instance. }
     class function ClassX3DType: string; virtual;
 
-    { Traverse all the nodes of VRML graph that are active.
-
-      An "active" part of the VRML graph are the nodes that actually
-      change what the VRML file represents, in terms of geometry,
-      collision detection etc. For example, the Switch node has only
-      one child usually active. Nodes that merely influence
-      the active graph by some events and routes do not have to be
-      active (these nodes may change what the VRML file actually represents,
-      but only by changing other nodes).
-
-      For all nodes of NodeClass TraversingFunc
-      will be called. If if returns non-nil for some node, the processing
-      of following nodes (children and siblings) will be aborted and result
-      will be returned.
-
-      Traverse not only enumerates these
-      nodes, it also collects all state (transformation, etc ---
-      see TX3DGraphTraverseState) that affects how given node should
-      be presented.
-
-      Also, TraversingInfo is passed to each TraversingFunc call.
-      This allows you to investigate, during TraversingFunc call, the parents
-      hierarchy (you can't use VRML1Parents / ParentFields of the current node,
-      since a node may have many parents). Traverse calls are
-      naturally recursive, and so the stack of TraversingInfo
-      structures is naturally build and destroyed by recursive calls.
-      For the root node (the one where you called Traverse without
-      specifying initial TraversingInfo), ParentInfo is simply @nil.
-
-      The scheme of how Traverse works:
-
-      @preformatted(
-        BeforeTraverse;
-
-        TraverseIntoChildren := true;
-        if Self is NodeClass then TraversingFunc (Self, State, TraverseIntoChildren);
-
-        MiddleTraverse;
-
-        if TraverseIntoChildren is still true then
-          for all children returned by DirectEnumerateActive
-            call their Traverse(State);
-
-        AfterTraverse;
-
-        Add Self to State.VRML1State (for VRML 1.0 state nodes);
-      )
-
-      Note: setting TraverseIntoChildren to false means that some
-      part of the tree is explicitly omitted from traversing.
-      Use this only if you know what you're doing, as for some
-      nodes they actually affect their parents too (for example,
-      chilren within VRML 1.0 Group affect other nodes too;
-      global lights within VRML >= 2.0 affect all nodes; and so on...).
-      Usually, you will use this only for separator-like nodes
-      (for VRML >= 2.0, all Group, Transform, Switch etc. act like separators),
-      and only when you will somehow traverse into these nodes anyway.
-
-      We guarantee that AfterTraverse will be called if BeforeTraverse
-      was called and finished (that is, AfterTraverse is called in the
-      @code(finally..end)).
-
-      During traversing, you can only modify the children (direct or not)
-      nodes of the current node. }
-    function Traverse(
-      NodeClass: TX3DNodeClass;
-      TraversingFunc: TTraversingFunc): Pointer;
-
-    { Like @link(Traverse), but it takes explicit starting state stack
-      and starting ParentInfo. Not generally useful, use only for special
-      purposes. }
-    function TraverseInternal(StateStack: TX3DGraphTraverseStateStack;
-      NodeClass: TX3DNodeClass;
-      TraversingFunc: TTraversingFunc;
-      ParentInfo: PTraversingInfo): Pointer;
-
-    { Like @link(Traverse), but only enters children.
-      This does the job of Traverse normally omitted if your @link(Traverse)
-      callback returns TraverseIntoChildren = @false.
-      Using this method, you can traverse into children explicitly
-      from your callback. }
-    function TraverseIntoChildren(StateStack: TX3DGraphTraverseStateStack;
-      NodeClass: TX3DNodeClass;
-      TraversingFunc: TTraversingFunc;
-      ParentInfo: PTraversingInfo): Pointer;
-
     { Enumerate all our children of some class. Recursively.
       Enumerates also this instance (Self), if it satisfies the
       NodeClass and SeekNodeName conditions.
@@ -627,17 +503,6 @@
       OnlyActive: boolean): TX3DNode;
     { @groupEnd }
 
-    { Find the first node with given class (NodeClass),
-      return it's state or just transformation.
-      Similar to @link(Traverse), but stops as soon as the given node is found.
-
-      Returns @false when not found ("out" parametrs
-      Node, State and Transform are undefined then).
-      @groupBegin }
-    function TryFindNodeState(
-      NodeClass: TX3DNodeClass;
-      out Node: TX3DNode;
-      out State: TX3DGraphTraverseState): boolean;
     { @groupEnd }
 
     { Seeks Self and parent nodes (from VRML1Parents and ParentFields,
@@ -1309,13 +1174,6 @@ begin
   end;
 end;
 
-function TX3DNode.DirectEnumerateActiveForTraverse(
-  Func: TEnumerateChildrenFunction;
-  StateStack: TX3DGraphTraverseStateStack): Pointer;
-begin
-  Result := DirectEnumerateActive(Func);
-end;
-
 function TX3DNode.DirectEnumerateAll(
   Func: TEnumerateChildrenFunction): Pointer;
 var
@@ -1372,128 +1230,6 @@ begin
   if OnlyActive then
     Result := DirectEnumerateActive(Func) else
     Result := DirectEnumerateAll(Func);
-end;
-
-procedure TX3DNode.BeforeTraverse(StateStack: TX3DGraphTraverseStateStack);
-begin
-  if PrototypeInstance then
-    Inc(StateStack.Top.InsidePrototype);
-end;
-
-procedure TX3DNode.MiddleTraverse(StateStack: TX3DGraphTraverseStateStack);
-begin
-end;
-
-procedure TX3DNode.AfterTraverse(StateStack: TX3DGraphTraverseStateStack);
-begin
-  if PrototypeInstance then
-    Dec(StateStack.Top.InsidePrototype);
-end;
-
-type
-  TTraverseEnumerator = class
-    StateStack: TX3DGraphTraverseStateStack;
-    NodeClass: TX3DNodeClass;
-    TraversingFunc: TTraversingFunc;
-    ParentInfo: PTraversingInfo;
-    function DoTraverseIntoChildren(Child: TX3DNode): Pointer;
-    function EnumerateChildrenFunction(Node, Child: TX3DNode): Pointer;
-  end;
-
-  function TTraverseEnumerator.DoTraverseIntoChildren(Child: TX3DNode): Pointer;
-  var
-    ParentInfoForChildren: TTraversingInfo;
-  begin
-    ParentInfoForChildren.Node := Child;
-    ParentInfoForChildren.ParentInfo := ParentInfo;
-    ParentInfo := @ParentInfoForChildren;
-    try
-      Result := Child.DirectEnumerateActiveForTraverse(
-        {$ifdef CASTLE_OBJFPC}@{$endif} EnumerateChildrenFunction, StateStack);
-    finally
-      ParentInfo := ParentInfoForChildren.ParentInfo;
-    end;
-  end;
-
-  function TTraverseEnumerator.EnumerateChildrenFunction(
-    Node, Child: TX3DNode): Pointer;
-  var
-    IsTraverseIntoChildren: boolean;
-  begin
-    Result := nil;
-
-    Child.BeforeTraverse(StateStack);
-    try
-      IsTraverseIntoChildren := true;
-      if Child is NodeClass then
-      begin
-        Result := TraversingFunc(Child, StateStack, ParentInfo, IsTraverseIntoChildren);
-        if Result <> nil then Exit;
-      end;
-
-      Child.MiddleTraverse(StateStack);
-
-      if IsTraverseIntoChildren then
-      begin
-        Result := DoTraverseIntoChildren(Child);
-        if Result <> nil then Exit;
-      end;
-    finally Child.AfterTraverse(StateStack) end;
-
-  end;
-
-function TX3DNode.TraverseInternal(StateStack: TX3DGraphTraverseStateStack;
-  NodeClass: TX3DNodeClass;
-  TraversingFunc: TTraversingFunc;
-  ParentInfo: PTraversingInfo): Pointer;
-var
-  Enumerator: TTraverseEnumerator;
-begin
-  Enumerator := TTraverseEnumerator.Create;
-  try
-    Enumerator.StateStack := StateStack;
-    Enumerator.NodeClass := NodeClass;
-    Enumerator.TraversingFunc := TraversingFunc;
-    Enumerator.ParentInfo := ParentInfo;
-    Result := Enumerator.EnumerateChildrenFunction(nil, Self);
-
-    { Check that, if all went without exception, Enumerator.ParentInfo
-      returned to original state. }
-    Assert(Enumerator.ParentInfo = ParentInfo);
-  finally FreeAndNil(Enumerator) end;
-end;
-
-function TX3DNode.TraverseIntoChildren(StateStack: TX3DGraphTraverseStateStack;
-  NodeClass: TX3DNodeClass;
-  TraversingFunc: TTraversingFunc;
-  ParentInfo: PTraversingInfo): Pointer;
-var
-  Enumerator: TTraverseEnumerator;
-begin
-  Enumerator := TTraverseEnumerator.Create;
-  try
-    Enumerator.StateStack := StateStack;
-    Enumerator.NodeClass := NodeClass;
-    Enumerator.TraversingFunc := TraversingFunc;
-    Enumerator.ParentInfo := ParentInfo;
-    Result := Enumerator.DoTraverseIntoChildren(Self);
-
-    { Check that, if all went without exception, Enumerator.ParentInfo
-      returned to original state. }
-    Assert(Enumerator.ParentInfo = ParentInfo);
-  finally FreeAndNil(Enumerator) end;
-end;
-
-var
-  TraverseSingleStack: TX3DGraphTraverseStateStack;
-
-function TX3DNode.Traverse(NodeClass: TX3DNodeClass;
-  TraversingFunc: TTraversingFunc): Pointer;
-begin
-  TraverseSingleStack.PushClear;
-  try
-    Result := TraverseInternal(TraverseSingleStack, NodeClass, TraversingFunc, nil);
-  finally TraverseSingleStack.Pop end;
 end;
 
 function TX3DNode.X3DType: string;
@@ -1720,56 +1456,6 @@ end;
 
 { TX3DNode.TryFindNodeState/Transform ----------------------------------------- }
 
-type
-  TTryFindNodeStateResult = class
-    Node: TX3DNode;
-    State: TX3DGraphTraverseState;
-  end;
-
-function TX3DNode.TryFindNodeStateTraverse(
-  ANode: TX3DNode; StateStack: TX3DGraphTraverseStateStack;
-  ParentInfo: PTraversingInfo; var TraverseIntoChildren: boolean): Pointer;
-var
-  Res: TTryFindNodeStateResult;
-begin
-  Res := TTryFindNodeStateResult.Create;
-  Res.Node := ANode;
-  Res.State := TX3DGraphTraverseState.CreateCopy(StateStack.Top);
-  Result := Res;
-end;
-
-function TX3DNode.TryFindNodeState(
-  NodeClass: TX3DNodeClass;
-  out Node: TX3DNode; out State: TX3DGraphTraverseState): boolean;
-var
-  Res: TTryFindNodeStateResult;
-begin
-  Res := TTryFindNodeStateResult(Traverse(NodeClass, {$ifdef CASTLE_OBJFPC}@{$endif} TryFindNodeStateTraverse));
-  Result := Res <> nil;
-  if Result then
-  begin
-    Node := Res.Node;
-    State := Res.State;
-  end;
-end;
-
-type
-  TTryFindNodeTransformResult = class
-    Node: TX3DNode;
-    TransformScale: Single;
-  end;
-
-function TX3DNode.TryFindNodeTransformTraverse(
-  ANode: TX3DNode; StateStack: TX3DGraphTraverseStateStack;
-  ParentInfo: PTraversingInfo; var TraverseIntoChildren: boolean): Pointer;
-var
-  Res: TTryFindNodeTransformResult;
-begin
-  Res := TTryFindNodeTransformResult.Create;
-  Res.Node := ANode;
-  Res.TransformScale := StateStack.Top.TransformScale;
-  Result := Res;
-end;
 
 function TX3DNode.TryFindParentByName(const FindName: string): TX3DNode;
 var
