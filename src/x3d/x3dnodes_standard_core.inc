@@ -504,17 +504,4 @@ begin
     (URN = URNX3DNodes + ClassX3DType);
 end;
 
-procedure RegisterCoreNodes;
-begin
-  NodesManager.RegisterNodeClasses([
-    TMetadataBooleanNode,
-    TMetadataDoubleNode,
-    TMetadataFloatNode,
-    TMetadataIntegerNode,
-    TMetadataSetNode,
-    TMetadataStringNode,
-    TWorldInfoNode
-  ]);
-end;
-
 {$endif read_implementation}

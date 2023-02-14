@@ -188,7 +188,6 @@ type
   { More X3D nodes, not from X3D standard }
   {$I x3dnodes_x3dinterfacedeclaration.inc}
 
-{$I x3dnodes_nodesmanager.inc}
 {$I x3dnodes_miscellaneous_globals.inc}
 
 {$undef read_interface}
@@ -211,7 +210,6 @@ uses
 {$I x3dnodes_destructionnotification.inc}
 
 {$I x3dnodes_x3dinterfacedeclaration.inc}
-{$I x3dnodes_nodesmanager.inc}
 {$I x3dnodes_miscellaneous_globals.inc}
 
 // These must be includes after x3dnodes_encoding_{classic,xml}.inc
@@ -230,7 +228,6 @@ begin
   FreeAndNil(TraverseSingleStack);
   FreeAndNil(X3DCache);
 
-  FreeAndNil(NodesManager);
   FreeAndNil(AnyNodeDestructionNotifications);
 end;
 
@@ -238,13 +235,6 @@ initialization
   AnyNodeDestructionNotifications := TNodeDestructionNotificationList.Create;
 
   X3DFieldsManager.RegisterClasses([TSFNode, TMFNode]);
-
-  NodesManager := TNodesManager.Create;
-
-  { X3D components registration : }
-
-  RegisterCoreNodes;
-  RegisterGroupingNodes;
 
   //X3DCache := TX3DFontTexturesCache.Create;
   //TextureCache := X3DCache;

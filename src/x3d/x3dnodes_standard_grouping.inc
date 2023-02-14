@@ -807,12 +807,4 @@ begin
   }
 end;
 
-procedure RegisterGroupingNodes;
-begin
-  NodesManager.RegisterNodeClasses([
-    TGroupNode,
-    TStaticGroupNode,
-    TTransformNode
-  ]);
-end;
 {$endif read_implementation}
