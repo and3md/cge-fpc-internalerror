@@ -171,7 +171,7 @@ var
   FieldValue: TSFGenericVector;
 begin
   FieldValue := TSFGenericVector(
-    TX3DFieldClass(ClassType).CreateUndefined(ParentNode, false, X3DName));
+    TX3DFieldClass(ClassType).CreateUndefined(nil, false, 'X3DName'));
   try
     FieldValue.Value := AValue;
     Send(FieldValue);

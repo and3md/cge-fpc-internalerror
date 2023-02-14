@@ -167,7 +167,7 @@
 
     { Search by name for given field or event (exposed by some field or not).
       @nil if not found. }
-    function FieldOrEvent(const AName: string): TX3DFieldOrEvent;
+    function FieldOrEvent(const AName: string): TX3DFileItem;
 
     { Search by name for given event (exposed by some field or not).
       @nil if not found. }
@@ -723,7 +723,7 @@
     { Add to node InterfaceDeclarations given field or event.
       This should only be used with nodes having
       HasInterfaceDeclarations = @true, like Script or ComposedShader. }
-    procedure AddCustomFieldOrEvent(AFieldOrEvent: TX3DFieldOrEvent);
+    procedure AddCustomFieldOrEvent(AFieldOrEvent: TX3DFileItem);
 
     { What happens when transformation of the node changes.
       This is internally used by TCastleSceneCore when Transform (or similar)
@@ -849,22 +849,20 @@ begin
   if FEvents <> nil then
   begin
     for I := 0 to FEvents.Count - 1 do
-      if FEvents[I].ParentInterfaceDeclaration = nil then
-      begin
+    begin
         FEvents[I].Free;
         FEvents[I] := nil;
-      end;
+    end;
     FreeAndNil(FEvents);
   end;
 
   if FFields <> nil then
   begin
     for I := 0 to FFields.Count - 1 do
-      if FFields[I].ParentInterfaceDeclaration = nil then
-      begin
-        FFields[I].Free;
-        FFields[I] := nil;
-      end;
+    begin
+      FFields[I].Free;
+      FFields[I] := nil;
+    end;
     FreeAndNil(FFields);
   end;
 
@@ -1548,7 +1546,7 @@ begin
     Result := nil; { not found }
 end;
 
-function TX3DNode.FieldOrEvent(const AName: string): TX3DFieldOrEvent;
+function TX3DNode.FieldOrEvent(const AName: string): TX3DFileItem;
 var
   I: Integer;
   ResultEvent: TX3DEvent;
@@ -1603,7 +1601,7 @@ begin
   Result := nil;
 end;
 
-procedure TX3DNode.AddCustomFieldOrEvent(AFieldOrEvent: TX3DFieldOrEvent);
+procedure TX3DNode.AddCustomFieldOrEvent(AFieldOrEvent: TX3DFileItem);
 begin
 end;
 

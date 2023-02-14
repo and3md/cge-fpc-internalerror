@@ -16,7 +16,7 @@
 {$ifdef read_interface}
 
   { X3D event. }
-  TX3DEvent = class(TX3DFieldOrEvent)
+  TX3DEvent = class(TX3DFileItem)
   strict private
     type
       TX3DEventReceiveList = class(specialize TList<TX3DEventReceive>)
@@ -180,7 +180,7 @@ constructor TX3DEvent.Create(AParentNode: TX3DFileItem;
   const AName: string; const AFieldClass: TX3DFieldClass;
   const AInEvent: boolean);
 begin
-  inherited Create(AParentNode, AName);
+  inherited Create;
   FFieldClass := AFieldClass;
   FInEvent := AInEvent;
 end;
@@ -195,7 +195,6 @@ end;
 
 procedure TX3DEvent.Parse(Lexer: TX3DLexer);
 begin
-  ParseIsClause(Lexer);
 end;
 
 procedure TX3DEvent.SaveToStream;
@@ -251,11 +250,11 @@ begin
   if not TempUsed then
   begin
     if Temp = nil then
-      Temp := FieldClass.CreateUndefined(ParentNode, false, X3DName);
+      Temp := FieldClass.CreateUndefined(nil, false, 'X3DName');
     Result := Temp;
     TempUsed := true;
   end else
-    Result := FieldClass.CreateUndefined(ParentNode, false, X3DName);
+    Result := FieldClass.CreateUndefined(nil, false, 'X3DName');
   Result.InternalPartialSend := PartialSend;
 end;
 
@@ -307,8 +306,6 @@ end;
 
 function TX3DEventList.IndexOfName(const Name: string): Integer;
 begin
-  for Result := 0 to Count - 1 do
-    if Items[Result].IsName(Name) then Exit;
   Result := -1;
 end;
 

@@ -261,7 +261,7 @@ procedure TSFNode.WarningIfChildNotAllowed(Child: TX3DNode);
     S: string;
   begin
     S := Format('Node "%s" is not allowed in the field "%s"',
-      [Child.X3DType, X3DName]);
+      [Child.X3DType, 'X3DName']);
     if ParentNode <> nil then
       S := S + Format(' of the node "%s"', [ParentNode.X3DType]);
   end;
@@ -457,7 +457,7 @@ var
 begin
   { We construct using CreateUndefined constructor,to have AllowedChildren = acAll }
   { AExposed = false below, because not needed otherwise. }
-  FieldValue := TSFNode.CreateUndefined(ParentNode, false, X3DName);
+  FieldValue := TSFNode.CreateUndefined(ParentNode, false, 'X3DName');
   try
     FieldValue.Value := AValue;
     Send(FieldValue);

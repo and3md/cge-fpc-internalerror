@@ -203,7 +203,7 @@ procedure CheckNodesStructurallyEqual(Model1, Model2: TX3DNode;
     end else
     if not ((Field1.Value = nil) and (Field2.Value = nil)) then
       raise EModelsStructureDifferent.CreateFmt('Field "%s" of type SFNode ' +
-        'is once NULL and once not-NULL', [Field1.X3DName]);
+        'is once NULL and once not-NULL', ['Field1.X3DName']);
   end;
 
 var
@@ -275,15 +275,6 @@ begin
         then we're happy. And it's handy to allow this --- see e.g.
         examples/models/gus_1_final.wrl and
         examples/models/gus_2_final.wrl trick. }
-
-      if not (
-         ( (Model1.Fields[I].X3DName = 'url') ) or
-         Model1.Fields[I].Equals(Model2.Fields[I]
-           { TODO: ignored for now, and maybe for ever: , Epsilon })
-         ) then
-        raise EModelsStructureDifferent.CreateFmt(
-          'Fields "%s" (class "%s") are not equal',
-          [Model1.Fields[I].X3DName, Model1.Fields[I].ClassName]);
     end;
   end;
 end;

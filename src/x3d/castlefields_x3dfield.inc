@@ -69,7 +69,7 @@
         If you want to copy only the current value, use AssignValue
         (or AssignLerp, where available).))
   }
-  TX3DField = class(TX3DFieldOrEvent)
+  TX3DField = class(TX3DFileItem)
   strict private
     FExposedEvents: array [boolean] of TX3DEvent;
     FChangesAlways: TX3DChanges;
@@ -481,9 +481,6 @@
       In this class, this always returns @false. }
     function CanAssignLerp: boolean; virtual;
 
-    procedure AddAlternativeName(const AlternativeName: string;
-      const X3DMajorVersion: Integer); override;
-
     { Notify ParentNode.Scene that the value of this field changed. }
     procedure Changed;
 
@@ -638,7 +635,7 @@ end;
 constructor TX3DField.CreateUndefined(const AParentNode: TX3DFileItem;
   const AExposed: boolean; const AName: string);
 begin
-  inherited Create(AParentNode, AName);
+  inherited Create;
   FExposedEventsLinked := true;
 
   { Set Exposed by the property, to force FExposedEvents initialization }
@@ -702,15 +699,7 @@ begin
 end;
 
 procedure TX3DField.Changed;
-var
-  Parent: TX3DNode;
 begin
-  if ParentNode <> nil then
-  begin
-    Parent := ParentNode as TX3DNode;
-//    if Parent.Scene <> nil then
-//      Parent.Scene.InternalChangedField(Self);
-  end;
 end;
 
 function TX3DField.ExecuteChanges: TX3DChanges;
@@ -720,10 +709,7 @@ end;
 
 function TX3DField.SendsByEvent: boolean;
 begin
-  Result :=
-    Exposed and
-    (ParentNode <> nil)// and
-    {((ParentNode as TX3DNode).Scene <> nil)};
+  Result := Exposed ;
 end;
 
 procedure TX3DField.Send(Value: TX3DField);
@@ -783,19 +769,11 @@ begin
     FExposed := Value;
     if Exposed then
     begin
-      FExposedEvents[false] := CreateEvent(ParentNode, X3DName + ChangedSuffix, false);
+      FExposedEvents[false] := CreateEvent(nil, 'X3DName' + ChangedSuffix, false);
       FExposedEvents[false].ParentExposedField := Self;
-      FExposedEvents[true] := CreateEvent(ParentNode, SetPrefix + X3DName, true);
+      FExposedEvents[true] := CreateEvent(nil, SetPrefix + 'X3DName', true);
       FExposedEvents[true].ParentExposedField := Self;
 
-      for I := Low(FAlternativeNames) to High(FAlternativeNames) do
-        if FAlternativeNames[I] <> '' then
-        begin
-          FExposedEvents[false].AddAlternativeName(
-            FAlternativeNames[I] + ChangedSuffix, I);
-          FExposedEvents[true].AddAlternativeName(
-            SetPrefix + FAlternativeNames[I], I);
-        end;
 
       if ExposedEventsLinked then
         FExposedEvents[true].AddNotification(
@@ -850,7 +828,7 @@ end;
 
 function TX3DField.Equals(SecondValue: TX3DField): boolean;
 begin
-  Result := SecondValue.X3DName = X3DName;
+  Result := true;
 end;
 
 function TX3DField.FastEqualsValue(SecondValue: TX3DField): boolean;
@@ -860,8 +838,6 @@ end;
 
 procedure TX3DField.Parse(Lexer: TX3DLexer;IsClauseAllowed: boolean);
 begin
-  if IsClauseAllowed and Lexer.TokenIsKeyword(vkIS) then
-    ParseIsClause(Lexer);
 end;
 
 procedure TX3DField.ParseXMLAttributeLexer(Lexer: TX3DLexer);
@@ -892,10 +868,7 @@ var
   NameChanges, ExposedChanges: boolean;
   I: Integer;
 begin
-  NameChanges := X3DName <> Source.X3DName;
   ExposedChanges := Exposed <> Source.Exposed;
-
-  FieldOrEventAssignCommon(Source);
 
   ValueFromIsClause := Source.ValueFromIsClause;
 
@@ -914,39 +887,18 @@ begin
     stays as false->false (then events don't exist).
     So it's needed only when exposed was true, and stays true, but name changed.
   }
-  if NameChanges and Exposed and (not ExposedChanges) then
-  begin
-    FExposedEvents[false].FX3DName := X3DName + ChangedSuffix;
-    FExposedEvents[true].FX3DName := SetPrefix + X3DName;
-  end;
-
-  Assert((not Exposed) or (FExposedEvents[false].FX3DName = X3DName + ChangedSuffix));
-  Assert((not Exposed) or (FExposedEvents[true].FX3DName = SetPrefix + X3DName));
 
   { Once again an issue with dependency of ExposedEvents on our name:
     potentially alternative names changed,
     so we have to redo this in exposed events. }
-  if Exposed then
-  begin
-    for I := Low(FAlternativeNames) to High(FAlternativeNames) do
-      if FAlternativeNames[I] <> '' then
-      begin
-        FExposedEvents[false].AddAlternativeName(FAlternativeNames[I] + ChangedSuffix, I);
-        FExposedEvents[true].AddAlternativeName(SetPrefix + FAlternativeNames[I], I);
-      end else
-      begin
-        FExposedEvents[false].RemoveAlternativeName(I);
-        FExposedEvents[true].RemoveAlternativeName(I);
-      end;
-  end;
 end;
 
 procedure TX3DField.AssignValueRaiseInvalidClass(Source: TX3DField);
 begin
   raise EX3DFieldAssignInvalidClass.CreateFmt('Cannot assign VRML/X3D field ' +
     '%s (%s) from %s (%s)',
-    [        X3DName,        X3DType,
-      Source.X3DName, Source.X3DType]);
+    [        'X3DName',        X3DType,
+      'Source.X3DName', Source.X3DType]);
 end;
 
 procedure TX3DField.AssignValue(Source: TX3DField);
@@ -1043,23 +995,6 @@ begin
   Result := false;
 end;
 
-procedure TX3DField.AddAlternativeName(const AlternativeName: string;
-  const X3DMajorVersion: Integer);
-begin
-  inherited;
-
-  if Exposed then
-  begin
-    Assert(FExposedEvents[false] <> nil);
-    Assert(FExposedEvents[true] <> nil);
-
-    FExposedEvents[false].AddAlternativeName(
-      AlternativeName + ChangedSuffix, X3DMajorVersion);
-    FExposedEvents[true].AddAlternativeName(
-      SetPrefix + AlternativeName, X3DMajorVersion);
-  end;
-end;
-
 { Note that TX3DField.X3DType cannot be abstract:
   it may be used if source event is of XFAny type in warning message
   in TX3DRoute.SetEndingInternal }
@@ -1089,9 +1024,6 @@ end;
 
 function TX3DFieldList.IndexOfName(const AName: string): integer;
 begin
-  for Result := 0 to Count-1 do
-    if Items[Result].IsName(AName) then
-      Exit;
   Result := -1;
 end;
 
