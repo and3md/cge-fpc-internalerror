@@ -37,82 +37,6 @@
     procedure CreateNode; override;
   end;
 
-  { Abstract base type for all bindable children nodes. }
-  TAbstractBindableNode = class(TAbstractChildNode)
-  strict private
-    FBound: Boolean;
-    FTransformScale: Single;
-    procedure EventIsBoundReceive(Event: TX3DEvent; AValue: TX3DField);
-    procedure SetBound(const Value: Boolean);
-  public
-    procedure CreateNode; override;
-
-    { Event in } { }
-    strict private FEventSet_bind: TSFBoolEvent;
-    public property EventSet_bind: TSFBoolEvent read FEventSet_bind;
-
-    { Event out } { }
-    strict private FEventIsBound: TSFBoolEvent;
-    public property EventIsBound: TSFBoolEvent read FEventIsBound;
-
-    { "Bound" node is the node currently used, for example the "bound" background
-      determines the current background look.
-      Setting this to @true means that the node becomes the current node
-      of the given type in the scene.
-
-      In every scene (TCastleScene), there are four "stacks" of bindable nodes:
-
-      @orderedList(
-        @item(Viewpoints determine the camera position/orientation,
-          field of view, orthographic/perspective projection etc.)
-        @item(NavigationInfo determines the current navigation type,
-          avatar size etc.)
-        @item(Background determines the dispayed background (like a skybox
-          or a simple solid color).)
-        @item(Fog determines the current fog.)
-      )
-
-      The top-most node of each stack is called "bound".
-      If the scene is set as TCastleSceneManager.MainScene,
-      then the "bound" node determines the camera, background or fog settings.
-
-      Setting this property to @true sends an X3D event "set_bind := true".
-      This adds the node to the stack, and makes sure it is at the top.
-      Setting this to @false pops the node from the stack.
-      See the X3D specification about the "bindable nodes" foe details:
-      http://www.web3d.org/documents/specifications/19775-1/V3.3/Part01/components/core.html#BindableChildrenNodes
-    }
-    property Bound: Boolean read FBound write SetBound;
-
-    { Transformation of this bindable node.
-
-      Bound nodes cannot be instantiated multiple number of times
-      (this would make simple event like "set_bind" not possible,
-      as it would not be known in what coordinate space the node is bound),
-      so it's perfectly safe and comfortable to just keep their transformation
-      here, a their property.
-
-      It is gathered during traversing. Last BeforeTraverse call for this
-      node sets Transform properties. By default, these represent identity
-      transformation.
-
-      Note that using TransformScale for bindable nodes like fog
-      is a little simplification. Theoretically, the scale can be non-uniform,
-      and around an arbitrary axis. So to apply e.g. fog, we should
-      transform the 3D world back into local fog coordinate system,
-      and calculate the distances there. Instead right now we do
-      the opposite: transform stuff like fog VisibilityRange by
-      TransformScale, and calculate distances in world coordinate
-      system. This is a simplification, but in practice it's perfect
-      (who uses non-uniform fog scale?) and it can be expressed for renderers
-      (OpenGL) without any problems.
-
-      @groupBegin }
-    property TransformScale: Single read FTransformScale;
-    { @groupEnd }
-
-  end;
-
   { Base class for all nodes that contain only information without visual
     semantics. }
   TAbstractInfoNode = class(TAbstractChildNode)
@@ -181,31 +105,6 @@ begin
       DefaultContainerField := 'children'
     lines in our x3d_*.inc include files useless. }
   DefaultContainerField := 'children';
-end;
-
-procedure TAbstractBindableNode.CreateNode;
-begin
-  inherited;
-
-  FEventSet_bind := TSFBoolEvent.Create(Self, 'set_bind', true);
-  AddEvent(FEventSet_bind);
-
-  FEventIsBound := TSFBoolEvent.Create(Self, 'isBound', false);
-   EventIsBound.AddNotification({$ifdef CASTLE_OBJFPC}@{$endif} EventIsBoundReceive);
-  AddEvent(FEventIsBound);
-
-  FTransformScale := 1;
-end;
-
-procedure TAbstractBindableNode.EventIsBoundReceive(
-  Event: TX3DEvent; AValue: TX3DField);
-begin
-  FBound := (AValue as TSFBool).Value;
-end;
-
-procedure TAbstractBindableNode.SetBound(const Value: Boolean);
-begin
-  EventSet_bind.Send(Value);
 end;
 
 procedure TAbstractSensorNode.CreateNode;
