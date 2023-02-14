@@ -348,7 +348,7 @@ end;
 class function TMetadataBooleanNode.URNMatching(const URN: string): boolean;
 begin
   Result := (inherited URNMatching(URN)) or
-    (URN = URNX3DNodes + ClassX3DType);
+    (URN = ClassX3DType);
 end;
 
 procedure TMetadataDoubleNode.CreateNode;
@@ -372,7 +372,7 @@ end;
 class function TMetadataDoubleNode.URNMatching(const URN: string): boolean;
 begin
   Result := (inherited URNMatching(URN)) or
-    (URN = URNX3DNodes + ClassX3DType);
+    (URN = ClassX3DType);
 end;
 
 procedure TMetadataFloatNode.CreateNode;
@@ -396,7 +396,7 @@ end;
 class function TMetadataFloatNode.URNMatching(const URN: string): boolean;
 begin
   Result := (inherited URNMatching(URN)) or
-    (URN = URNX3DNodes + ClassX3DType);
+    (URN = ClassX3DType);
 end;
 
 procedure TMetadataIntegerNode.CreateNode;
@@ -420,7 +420,7 @@ end;
 class function TMetadataIntegerNode.URNMatching(const URN: string): boolean;
 begin
   Result := (inherited URNMatching(URN)) or
-    (URN = URNX3DNodes + ClassX3DType);
+    (URN = ClassX3DType);
 end;
 
 procedure TMetadataSetNode.CreateNode;
@@ -447,7 +447,7 @@ end;
 class function TMetadataSetNode.URNMatching(const URN: string): boolean;
 begin
   Result := (inherited URNMatching(URN)) or
-    (URN = URNX3DNodes + ClassX3DType);
+    (URN = ClassX3DType);
 end;
 
 procedure TMetadataStringNode.CreateNode;
@@ -471,7 +471,7 @@ end;
 class function TMetadataStringNode.URNMatching(const URN: string): boolean;
 begin
   Result := (inherited URNMatching(URN)) or
-    (URN = URNX3DNodes + ClassX3DType);
+    (URN = ClassX3DType);
 end;
 
 procedure TWorldInfoNode.CreateNode;
@@ -490,8 +490,8 @@ end;
 class function TWorldInfoNode.URNMatching(const URN: string): boolean;
 begin
   Result := (inherited URNMatching(URN)) or
-    (URN = URNVRML97Nodes + ClassX3DType) or
-    (URN = URNX3DNodes + ClassX3DType);
+    (URN = ClassX3DType) or
+    (URN = ClassX3DType);
 end;
 
 {$endif read_implementation}

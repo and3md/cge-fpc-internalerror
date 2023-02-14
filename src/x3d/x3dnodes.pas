@@ -187,8 +187,6 @@ type
   { More X3D nodes, not from X3D standard }
   {$I x3dnodes_x3dinterfacedeclaration.inc}
 
-{$I x3dnodes_miscellaneous_globals.inc}
-
 {$undef read_interface}
 
 implementation
@@ -208,7 +206,6 @@ uses
 {$I x3dnodes_destructionnotification.inc}
 
 {$I x3dnodes_x3dinterfacedeclaration.inc}
-{$I x3dnodes_miscellaneous_globals.inc}
 
 // These must be includes after x3dnodes_encoding_{classic,xml}.inc
 {$I x3dnodes_x3dnode.inc}
@@ -221,23 +218,9 @@ uses
 
 { unit init/fini ------------------------------------------------------------ }
 
-procedure X3DNodesFinalization;
-begin
-  FreeAndNil(X3DCache);
-
-  FreeAndNil(AnyNodeDestructionNotifications);
-end;
-
 initialization
-  AnyNodeDestructionNotifications := TNodeDestructionNotificationList.Create;
 
   X3DFieldsManager.RegisterClasses([TSFNode, TMFNode]);
 finalization
-  { Because of various finalization order (some stuff may be owned
-    e.g. by CastleWindow.Application, and freed at CastleWindow finalization,
-    which may be done after X3DNodes finalization) we may defer
-    finalization for later. }
-  if (X3DCache = nil) {or X3DCache.Empty } then
-    X3DNodesFinalization //else
-    //X3DCache.OnEmpty := @X3DNodesFinalization;
+
 end.

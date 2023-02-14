@@ -919,11 +919,6 @@ destructor TX3DNode.Destroy;
 var
   I: Integer;
 begin
-  { This whole unit, including AnyNodeDestructionNotifications,
-    may be already finalized when calling this. }
-  if AnyNodeDestructionNotifications <> nil then
-    AnyNodeDestructionNotifications.ExecuteAll(Self);
-
   if FDestructionNotifications <> nil then
   begin
     FDestructionNotifications.ExecuteAll(Self);

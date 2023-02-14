@@ -448,8 +448,8 @@ end;
 class function TGroupNode.URNMatching(const URN: string): boolean;
 begin
   Result := (inherited URNMatching(URN)) or
-    (URN = URNVRML97Nodes + ClassX3DType) or
-    (URN = URNX3DNodes + ClassX3DType);
+    (URN = ClassX3DType) or
+    (URN = ClassX3DType);
 end;
 
 class function TGroupNode.ForVRMLVersion(const Version: TX3DVersion): boolean;
@@ -610,7 +610,7 @@ end;
 class function TStaticGroupNode.URNMatching(const URN: string): boolean;
 begin
   Result := (inherited URNMatching(URN)) or
-    (URN = URNX3DNodes + ClassX3DType);
+    (URN = ClassX3DType);
 end;
 
 function TStaticGroupNode.DirectEnumerateActive(Func: TEnumerateChildrenFunction): Pointer;
@@ -634,8 +634,8 @@ end;
 class function TTransformNode.URNMatching(const URN: string): boolean;
 begin
   Result := (inherited URNMatching(URN)) or
-    (URN = URNVRML97Nodes + ClassX3DType) or
-    (URN = URNX3DNodes + ClassX3DType);
+    (URN = ClassX3DType) or
+    (URN = ClassX3DType);
 end;
 
 class function TTransformNode.ForVRMLVersion(const Version: TX3DVersion): boolean;
