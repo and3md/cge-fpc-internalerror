@@ -59,7 +59,7 @@
 
 const
   { IndentIncrement is string or char. It's used by SaveToStream }
-  IndentIncrement = CharTab;
+  IndentIncrement = #10;
 
 constructor TX3DWriter.Create(AStream: TStream; const AVersion: TX3DVersion;
   const AEncoding: TX3DEncoding);

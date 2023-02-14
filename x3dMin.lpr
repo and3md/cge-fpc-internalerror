@@ -14,7 +14,7 @@ uses
   CastleMaterialProperties, X3DFields,
   X3DNodes, CastleClassUtils,
   CastleInterfaces,
-  CastleRectangles, CastleStringUtils;
+  CastleRectangles;
 
 {$R *.res}
 

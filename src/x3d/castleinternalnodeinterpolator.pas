@@ -430,7 +430,6 @@ begin
       TX3DRootNode(Result).Scale := (Model1 as TX3DRootNode).Scale;
       TX3DRootNode(Result).Profile := (Model1 as TX3DRootNode).Profile;
       TX3DRootNode(Result).Components.Assign((Model1 as TX3DRootNode).Components);
-      TX3DRootNode(Result).Meta.Assign((Model1 as TX3DRootNode).Meta);
     end;
 
     { TODO: the code below doesn't deal efficiently with the situation when single

@@ -169,7 +169,7 @@ uses SysUtils, Generics.Collections, Classes, DOM,
   CastleRectangles,
   CastleInternalX3DLexer, CastleClassUtils,
   X3DFields,
-  CastleStringUtils, CastleMaterialProperties;
+  CastleMaterialProperties;
 
 {$define read_interface}
 

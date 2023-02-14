@@ -78,10 +78,6 @@
     procedure RemoveParentField(Field: TX3DField);
     procedure AddParentField(Field: TX3DField);
     procedure SetHasInterfaceDeclarations(const Value: TX3DAccessTypes);
-    { Internal save to stream utility.
-      When CurrentContainerField is not empty, it means we know our containing field
-      (and should adjust containerField= for XML encoding output). }
-    procedure NodeSaveToStream(Writer: TX3DWriter; const CurrentContainerField: string = '');
     function GetFields(const Index: Integer): TX3DField;
     function GetEvents(const Index: Integer): TX3DEvent;
     procedure UnregisterSceneCallback(Node: TX3DNode);
@@ -1195,7 +1191,7 @@ end;
 
 function BlenderRelativePath(const RelativePath: string): boolean;
 begin
-  Result := IsPrefix('//', RelativePath, false);
+  Result := false;
 end;
 
 function TX3DNode.PathFromBaseUrl(const RelativePath: string): string;
@@ -1515,132 +1511,6 @@ begin
 end;
 
 procedure TX3DNode.SaveToStream(Writer: TX3DWriter);
-begin
-  NodeSaveToStream(Writer);
-  if Writer.Encoding = xeClassic then Writer.Writeln;
-end;
-
-procedure TX3DNode.NodeSaveToStream(Writer: TX3DWriter; const CurrentContainerField: string);
-
-  { Collect node contents to save.
-    You want to save here exactly what you read in ParseNodeBodyElement. }
-  function ContentsToSave: TX3DFileItemList;
-  var
-    I: integer;
-  begin
-    Result := TX3DFileItemList.Create(false);
-    try
-      if HasInterfaceDeclarations <> [] then
-      begin
-        for I := 0 to InterfaceDeclarations.Count - 1 do
-          Result.Add(InterfaceDeclarations[I]);
-      end;
-
-      for I := 0 to FieldsCount - 1 do
-      begin
-        { Saving InterfaceDeclarations already handled saving fields
-          with ParentInterfaceDeclaration <> nil, so no need to save them again. }
-        if Fields[I].ParentInterfaceDeclaration = nil then
-          Result.Add(Fields[I]);
-
-        if Fields[I].Exposed then
-        begin
-          { exposed events may have their own IS clauses, save them }
-          Result.Add(Fields[I].EventIn);
-          Result.Add(Fields[I].EventOut);
-        end;
-      end;
-
-      if VRML1ChildrenSaveToStream then
-        for I := 0 to VRML1ChildrenCount - 1 do
-          Result.Add(VRML1Children[I]);
-
-      for I := 0 to EventsCount - 1 do
-        if { Saving InterfaceDeclarations already handled saving events
-             with ParentInterfaceDeclaration <> nil, so no need to save them again. }
-           (Events[I].ParentInterfaceDeclaration = nil) then
-          Result.Add(Events[I]);
-
-    except FreeAndNil(Result) end;
-  end;
-
-  { Gather IS clauses of fields/events.
-    For XML encoding, also gather from fields/events inside interface
-    declarations (for classic encoding,
-    they are saved by TX3DInterfaceDeclaration.SaveToStream). }
-  procedure CollectIsClauses(out NodeFields, ProtoFields: TCastleStringList);
-
-    procedure AddIsClauses(Item: TX3DFieldOrEvent);
-    var
-      N: string;
-      I: Integer;
-    begin
-      N := Item.NameForVersion(Writer.Version);
-      if N = '' then Exit; { unnamed fields/events cannot be saved here }
-      for I := 0 to Item.IsClauseNamesCount - 1 do
-      begin
-        NodeFields.Add(N);
-        ProtoFields.Add(Item.IsClauseNames[I]);
-      end;
-    end;
-
-  var
-    I: Integer;
-  begin
-    NodeFields := TCastleStringList.Create;
-    ProtoFields := TCastleStringList.Create;
-
-    for I := 0 to FieldsCount - 1 do
-    begin
-      if (Writer.Encoding <> xeClassic) or
-         (Fields[I].ParentInterfaceDeclaration = nil) then
-        AddIsClauses(Fields[I]);
-
-      if Fields[I].Exposed then
-      begin
-        { exposed events may have their own IS clauses, save them }
-        AddIsClauses(Fields[I].EventIn);
-        AddIsClauses(Fields[I].EventOut);
-      end;
-    end;
-
-    for I := 0 to EventsCount - 1 do
-      if (Writer.Encoding <> xeClassic) or
-         (Events[I].ParentInterfaceDeclaration = nil) then
-        AddIsClauses(Events[I]);
-  end;
-
-  procedure Classic;
-  var
-    FileItems: TX3DFileItemList;
-    NodeFields, ProtoFields: TCastleStringList;
-    I: Integer;
-  begin
-
-  end;
-
-  procedure Xml;
-  var
-    FileItems: TX3DFileItemList;
-    HasContent: boolean;
-    I: Integer;
-    WriteContainerField: string;
-    ElementName: string;
-    ProtoInstance: boolean;
-    NodeFields, ProtoFields: TCastleStringList;
-  begin
-    { Knowing CurrentContainerField and DefaultContainerField,
-      we can always correctly set containerField= ourselves. }
-    if (CurrentContainerField <> '') and
-       (CurrentContainerField <> DefaultContainerField) then
-      WriteContainerField := ' containerField=' + StringToX3DXml(CurrentContainerField) else
-      WriteContainerField := '';
-
-    if ProtoInstance then
-      ElementName := 'ProtoInstance' else
-      ElementName := X3DType;
-  end;
-
 begin
 end;
 

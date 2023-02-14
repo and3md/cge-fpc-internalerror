@@ -353,7 +353,7 @@ begin
     if Writer.Encoding = xeClassic then
       Writer.DiscardNextIndent;
 
-    Value.NodeSaveToStream(Writer, NameForVersion(Writer.Version));
+
   end;
 end;
 

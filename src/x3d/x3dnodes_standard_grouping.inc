@@ -146,7 +146,6 @@
     FSaveAsRootNode: boolean;
     FProfile: string;
     FComponents: TStringLongIntMap;
-    FMeta: TStringStringMap;
     FScale: Single;
   private
     procedure TopLevelCheckChild(const Child: TX3DNode);
@@ -199,10 +198,6 @@
     { Components and levels required for this X3D file.
       Relevant if this node is the root of X3D file. }
     property Components: TStringLongIntMap read FComponents;
-
-    { Meta keys and values of this X3D file.
-      Relevant if this node is the root of X3D file. }
-    property Meta: TStringStringMap read FMeta;
 
     { Set properties to force saving this node graph as X3D.
       If we're already configured to save as X3D (major version >= 3)
@@ -397,7 +392,6 @@ procedure TX3DRootNode.CreateNode;
 begin
   inherited;
   FComponents := TStringLongIntMap.Create;
-  FMeta := TStringStringMap.Create;
   FSaveAsRootNode := true;
   FScale := 1;
 end;
@@ -405,7 +399,6 @@ end;
 destructor TX3DRootNode.Destroy;
 begin
   FreeAndNil(FComponents);
-  FreeAndNil(FMeta);
   inherited;
 end;
 
@@ -446,7 +439,6 @@ begin
   Res.Scale := Scale;
   Res.Profile := Profile;
   Res.Components.Assign(Components);
-  Res.Meta.Assign(Meta);
 end;
 
 procedure TX3DRootNode.ForceSaveAsX3D(const AMajor: Integer = 3;

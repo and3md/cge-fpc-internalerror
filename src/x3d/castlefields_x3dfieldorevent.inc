@@ -22,15 +22,10 @@
       with many nodes, esp. when VRML/X3D uses a lot of prototypes),
       this is only created when needed (when it is not empty).
       Otherwise it is @nil. }
-    FIsClauseNames: TCastleStringList;
-
     FParentNode: TX3DFileItem;
     FParentInterfaceDeclaration: TX3DFileItem;
 
     function GetIsClauseNames(const Index: Integer): string;
-
-    { Return FIsClauseNames, initializing it if necessary to not be nil. }
-    function IsClauseNamesCreate: TCastleStringList;
   private
     FX3DName: string;
 
@@ -99,7 +94,6 @@
       @groupBegin }
     property IsClauseNames[const Index: Integer]: string read GetIsClauseNames;
     function IsClauseNamesCount: Integer;
-    procedure IsClauseNamesAssign(const SourceIsClauseNames: TCastleStringList);
     procedure IsClauseNamesAdd(const S: string);
     { @groupEnd }
 
@@ -180,44 +174,22 @@ end;
 
 destructor TX3DFieldOrEvent.Destroy;
 begin
-  FreeAndNil(FIsClauseNames);
   inherited;
 end;
 
-function TX3DFieldOrEvent.IsClauseNamesCreate: TCastleStringList;
-begin
-  if FIsClauseNames = nil then
-    FIsClauseNames := TCastleStringList.Create;
-  Result := FIsClauseNames;
-end;
 
 function TX3DFieldOrEvent.GetIsClauseNames(const Index: Integer): string;
 begin
-  if FIsClauseNames = nil then
-    raise Exception.CreateFmt('IsClauseNames item index %d does not exist, because IsClauseNames is empty',
-      [Index]);
-  Result := FIsClauseNames[Index];
+  Result := '';
 end;
 
 function TX3DFieldOrEvent.IsClauseNamesCount: Integer;
 begin
-  if FIsClauseNames = nil then
-    Result := 0 else
-    Result := FIsClauseNames.Count;
-end;
-
-procedure TX3DFieldOrEvent.IsClauseNamesAssign(
-  const SourceIsClauseNames: TCastleStringList);
-begin
-  if (SourceIsClauseNames <> nil) and
-     (SourceIsClauseNames.Count <> 0) then
-    IsClauseNamesCreate.Assign(SourceIsClauseNames) else
-    FreeAndNil(FIsClauseNames);
+  Result := 0;
 end;
 
 procedure TX3DFieldOrEvent.IsClauseNamesAdd(const S: string);
 begin
-  IsClauseNamesCreate.Add(S);
 end;
 
 procedure TX3DFieldOrEvent.ParseIsClause(Lexer: TX3DLexer);
@@ -225,7 +197,7 @@ begin
   if Lexer.TokenIsKeyword(vkIS) then
   begin
     Lexer.NextToken;
-    IsClauseNamesCreate.Add(Lexer.TokenName);
+    //IsClauseNamesCreate.Add(Lexer.TokenName);
     Lexer.NextToken;
   end;
 end;
@@ -285,7 +257,6 @@ end;
 procedure TX3DFieldOrEvent.FieldOrEventAssignCommon(Source: TX3DFieldOrEvent);
 begin
   FX3DName := Source.X3DName;
-  IsClauseNamesAssign(Source.FIsClauseNames);
   FPositionInParent := Source.PositionInParent;
   FAlternativeNames := Source.FAlternativeNames;
 end;

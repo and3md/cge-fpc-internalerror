@@ -44,8 +44,7 @@ unit CastleClassUtils;
 
 interface
 
-uses Classes, SysUtils, Contnrs, Generics.Collections,
-  CastleStringUtils;
+uses Classes, SysUtils, Contnrs, Generics.Collections;
 
 { ---------------------------------------------------------------------------- }
 { @section(TStrings utilities) }
@@ -62,15 +61,6 @@ type
     constructor Create;
     property CaseSensitive default true;
   end;
-
-{ Splits S by Splitter, and adds each splitted part to Strings.
-  Splitting is done by Splitter, i.e. if N is the number of occurrences
-  of Splitter inside S, then it always adds N + 1 strings to Strings.
-  Yes, this means that if S starts with Splitter then the first
-  part is equal to ''. And if S ends with Splitter then the last
-  oart is equal to ''. }
-procedure Strings_AddSplittedString(Strings: TStrings;
-  const S, Splitter: string);
 
 { Use this instead of @code(SList.Text := S) to workaround FPC 2.0.2 bug.
   See [http://www.freepascal.org/mantis/view.php?id=6699] }
@@ -106,49 +96,6 @@ procedure WritelnStr(const S: AnsiString); overload;
   @raises EReadError If end of stream. }
 function StreamReadChar(Stream: TStream): AnsiChar;
 
-function StreamReadZeroEndString(Stream: TStream): AnsiString;
-
-{ Read stream, until you find some character in EndingChars.
-  Returns read contents, without final character (the one in EndingChars set).
-
-  If you use a version with BackEndingChar parameter and pass
-  BackEndingChar = @true, then the ending character will be returned back to
-  stream (we will start reading from it next time).
-  Note that "returning the character" is done by Seek(-1, soFromCurrent),
-  which may not be possible on some streams. Wrap a stream
-  in TPeekCharStream instead, and use TPeekCharStream.ReadUpto,
-  to be able to "return back" a character reliably.
-
-  Independently from BackEndingChar, if you use a version with EndingChar
-  parameter, it will be set to the ending character.
-
-  @raises EReadError If the stream will end before encountering one of EndingChars.
-  @groupBegin }
-function StreamReadUpto_NotEOS(Stream: TStream; const endingChars: TSetOfChars;
-  backEndingChar: boolean; out endingChar: AnsiChar): AnsiString; overload;
-function StreamReadUpto_NotEOS(Stream: TStream; const endingChars: TSetOfChars;
-  backEndingChar: boolean): AnsiString; overload;
-function StreamReadUpto_NotEOS(Stream: TStream; const endingChars: TSetOfChars;
-  out endingChar: AnsiChar): AnsiString; overload;
-function StreamReadUpto_NotEOS(Stream: TStream; const endingChars: TSetOfChars): AnsiString; overload;
-{ @groupEnd }
-
-{ Read stream, until you find some character in EndingChars, or end of stream.
-
-  Compared to StreamReadUpto_NotEOS, this treats "end of stream"
-  as a normal situation, and doesn't raise any exception on it.
-  It sets EndingChar to -1 on end of stream. When EndingChar is not -1,
-  you know you can safely cast it to normal 8-bit character.
-
-  Everything else works like with StreamReadUpto_NotEOS.
-  @groupBegin }
-function StreamReadUpto_EOS(Stream: TStream; const endingChars: TSetOfChars;
-  backEndingChar: boolean; out endingChar: integer): AnsiString; overload;
-function StreamReadUpto_EOS(Stream: TStream; const endingChars: TSetOfChars;
-  backEndingChar: boolean): AnsiString; overload;
-function StreamReadUpto_EOS(Stream: TStream; const endingChars: TSetOfChars;
-  out endingChar: integer): AnsiString; overload;
-function StreamReadUpto_EOS(Stream: TStream; const endingChars: TSetOfChars): AnsiString; overload;
 { @groupEnd }
 
 { Read a growing stream, and append it to another destination stream.
@@ -278,10 +225,7 @@ type
       Sometimes it's also more comfortable, and it's a little faster. }
     function ReadChar: Integer; virtual; abstract;
 
-    { Read characters, until one of EndingChars (or end of stream) is found.
-      The ending character is not "consumed" from the stream.
-      The Result is guaranteed to not contain any char from EndingChars. }
-    function ReadUpto(const EndingChars: TSetOfChars): AnsiString; virtual;
+    function ReadUpto: AnsiString;
 
     {$ifndef FPC}
     property Position: Int64 read GetPosition;
@@ -862,22 +806,6 @@ begin
   CaseSensitive := true;
 end;
 
-procedure Strings_AddSplittedString(Strings: TStrings;
-  const S, Splitter: string);
-var
-  SplitterPos, Done: Integer;
-begin
-  Done := 0;
-  SplitterPos := Pos(Splitter, S);
-  while SplitterPos <> 0 do
-  begin
-    Strings.Append(CopyPos(S, Done + 1, SplitterPos - 1));
-    Done := SplitterPos + Length(Splitter) - 1;
-    SplitterPos := PosEx(Splitter, S, Done + 1);
-  end;
-  Strings.Append(SEnding(S, Done + 1));
-end;
-
 procedure Strings_SetText(SList: TStrings; const S: string);
 begin
   if Length(S) = 1 then
@@ -939,108 +867,6 @@ begin
   Stream.ReadBuffer(result, SizeOf(result));
 end;
 
-function StreamReadZeroEndString(Stream: TStream): AnsiString;
-begin
-  result := StreamReadUpto_NotEOS(Stream, [#0], false);
-end;
-
-function StreamReadUpto_NotEOS(Stream: TStream; const endingChars: TSetOfChars;
-  backEndingChar: boolean; out endingChar: AnsiChar): AnsiString; overload;
-var
-  readLen: integer; { ile znakow odczytales }
-  ch: AnsiChar;
-begin
-  readLen := 0;
-  result := '';
-  repeat
-    Stream.ReadBuffer(ch, 1);
-    if ch in endingChars then
-    begin
-      endingChar := ch;
-      break;
-    end;
-
-    {zwiekszamy Length(result) o duze bloki zeby nie marnowac czasu
-     na wiele malych realokacji pamieci}
-    Inc(readLen);
-    if readLen > Length(result) then SetLength(result, readLen + 100);
-    result[readLen] := ch;
-  until false;
-
-  if backEndingChar then Stream.Seek(-1, soFromCurrent);
-
-  SetLength(result, readLen);
-end;
-
-function StreamReadUpto_NotEOS(Stream: TStream; const endingChars: TSetOfChars;
-  backEndingChar: boolean):AnsiString; overload;
-var
-  dummy: AnsiChar;
-begin
-  result := StreamReadUpto_NotEOS(Stream, endingChars, backEndingChar, dummy);
-end;
-
-function StreamReadUpto_NotEOS(Stream: TStream; const endingChars: TSetOfChars;
-  out endingChar: AnsiChar): AnsiString;
-begin
-  result := StreamReadUpto_NotEOS(Stream, endingChars, false, endingChar);
-end;
-
-function StreamReadUpto_NotEOS(Stream: TStream; const endingChars: TSetOfChars): AnsiString;
-begin
-  result := StreamReadUpto_NotEOS(Stream, endingChars, false);
-end;
-
-function StreamReadUpto_EOS(Stream: TStream; const endingChars: TSetOfChars;
-  backEndingChar: boolean; out endingChar: integer): AnsiString; overload;
-var readLen: integer; { ile znakow odczytales }
-    ch: AnsiChar;
-begin
-  readLen := 0;
-  result := '';
-  repeat
-    if Stream.Read(ch, 1) = 0 then
-    begin
-      endingChar := -1;
-      break;
-    end else
-    if ch in endingChars then
-    begin
-      endingChar := Ord(ch);
-      break;
-    end;
-
-    {zwiekszamy Length(result) o duze bloki zeby nie marnowac czasu
-     na wiele malych realokacji pamieci}
-    Inc(readLen);
-    if readLen > Length(result) then SetLength(result, readLen+100);
-    result[readLen] := ch;
-  until false;
-
-  if backEndingChar then
-    if endingChar <> -1 then Stream.Seek(-1, soFromCurrent);
-
-  SetLength(result, readLen);
-end;
-
-function StreamReadUpto_EOS(Stream: TStream; const endingChars: TSetOfChars;
-  backEndingChar: boolean): AnsiString; overload;
-var
-  dummy: integer;
-begin
-  result := StreamReadUpto_EOS(Stream, endingChars, backEndingChar, dummy);
-end;
-
-function StreamReadUpto_EOS(Stream: TStream; const endingChars: TSetOfChars;
-  out endingChar: integer): AnsiString;
-begin
-  result := StreamReadUpto_EOS(Stream, endingChars, false, endingChar);
-end;
-
-function StreamReadUpto_EOS(Stream: TStream; const endingChars: TSetOfChars): AnsiString;
-begin
-  result := StreamReadUpto_EOS(Stream, endingChars, false);
-end;
 
 function ReadGrowingStreamToString(const GrowingStream: TStream): String;
 const
@@ -1166,7 +992,7 @@ begin
     UpdateLineColumn(PAnsiChar(@Buffer)[I]);
 end;
 
-function TPeekCharStream.ReadUpto(const EndingChars: TSetOfChars): AnsiString;
+function TPeekCharStream.ReadUpto: AnsiString;
 var
   Peeked: Integer;
 begin
@@ -1174,7 +1000,7 @@ begin
   while true do
   begin
     Peeked := PeekChar;
-    if (Peeked = -1) or (AnsiChar(Peeked) in EndingChars) then
+    if (Peeked = -1) then
       Exit;
     { ReadChar will return same thing as Peeked now }
     Result := Result + AnsiChar(ReadChar);

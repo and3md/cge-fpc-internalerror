@@ -1150,18 +1150,7 @@ begin
     event. So we utilize the fact that exposed events have consistent
     naming. }
 
-  if IsPrefix(SetPrefix, EventName, false) then
-  begin
-    InEvent := true;
-    Result := IndexOfName(SEnding(EventName, Length(SetPrefix) + 1));
-  end else
-  if IsSuffix(ChangedSuffix, EventName, false) then
-  begin
-    InEvent := false;
-    Result := IndexOfName(Copy(EventName, 1,
-      Length(EventName) - Length(ChangedSuffix)));
-  end else
-    Result := -1;
+  Result := -1;
 
   { check is field really exposed now }
   if (Result <> -1) and (not Items[Result].Exposed) then

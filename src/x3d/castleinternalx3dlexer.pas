@@ -20,7 +20,7 @@ unit CastleInternalX3DLexer;
 
 interface
 
-uses SysUtils, Classes, CastleStringUtils, CastleClassUtils,
+uses SysUtils, Classes, CastleClassUtils,
   Math;
 
 type
@@ -131,9 +131,6 @@ type
     fTokenFloat: Float;
     fTokenInteger: Int64;
     fTokenString: string;
-
-    VRMLWhitespaces, VRMLNoWhitespaces: TSetOfChars;
-    VRMLNameChars, VRMLNameFirstChars: TSetOfChars;
 
     FStream: TPeekCharStream;
     FOwnsStream: boolean;
@@ -460,28 +457,6 @@ end;
 
 procedure TX3DLexer.CreateCommonEnd;
 begin
-  { calculate VRMLWhitespaces, VRMLNoWhitespaces
-    (based on VRMLVerXxx) }
-  VRMLWhitespaces := [' ',#9, #10, #13];
-  if FVersion.Major >= 2 then
-    Include(VRMLWhitespaces, ',');
-  VRMLNoWhitespaces := AllChars - VRMLWhitespaces;
-
-  { calculate VRMLNameChars, VRMLNameFirstChars }
-  { These are defined according to vrml97specification on page 24. }
-  VRMLNameChars := AllChars -
-    [#0..#$1f, ' ', '''', '"', '#', ',', '.', '[', ']', '\', '{', '}'];
-  if FVersion.Major <= 1 then
-    VRMLNameChars := VRMLNameChars - ['(', ')', '|'];
-  if FVersion.Major >= 3 then
-    { X3D standard has a little less characters allowed.
-      In particular, ':' (unicode 0x3a) is not allowed and should not be,
-      because component statements are separated by vtColon.
-      Detailed spec is in "IdFirstChar" and "IdRestChars" on X3D classic VRML
-      spec grammat. }
-    VRMLNameChars := VRMLNameChars - [':'];
-  VRMLNameFirstChars := VRMLNameChars - ['0'..'9', '-','+'];
-
   {read first token}
   NextToken;
 end;
@@ -507,7 +482,7 @@ const
   var
     Encoding: string;
   begin
-    Encoding := NextTokenOnce(Line);
+    Encoding := Line;
     if Encoding <> EncodingUtf8 then
       raise EX3DLexerError.Create(Self,
         'VRML 2.0 / X3D incorrect signature: only utf8 encoding supported');
@@ -520,15 +495,8 @@ const
   const
     Utf8Bom = #$EF + #$BB + #$BF;
   begin
-    Result := IsPrefix(Prefix, S);
-    if Result then
-      Delete(S, 1, Length(Prefix)) else
-    begin
-      Prefix := Utf8Bom + Prefix;
-      Result := IsPrefix(Prefix, S);
-      if Result then
-        Delete(S, 1, Length(Prefix));
-    end;
+    Result := true;
+    S := Prefix[1];
   end;
 
   { Parse and remove Vmajor.minor version number from VRML header line.
@@ -537,55 +505,9 @@ const
     spec says (they require exactly one space before and after version
     number, we allow any number of whitespaces). }
   procedure ParseVersion(var S: string; out Major, Minor: Integer);
-  const
-    SIncorrectSignature = 'Inventor / VRML / X3D Incorrect signature: ';
-    Digits = ['0' .. '9'];
-  var
-    NumStart, I: Integer;
   begin
-    I := 1;
-
-    { whitespace }
-    while SCharIs(S, I, WhiteSpaces) do Inc(I);
-
-    { "V" }
-    if not SCharIs(S, I, 'V') then
-      raise EX3DLexerError.Create(Self,
-        SIncorrectSignature + 'Expected "V" and version number');
-    Inc(I);
-
-    { major number }
-    NumStart := I;
-    while SCharIs(S, I, Digits) do Inc(I);
-    try
-      Major := StrToInt(CopyPos(S, NumStart, I - 1));
-    except
-      on E: EConvertError do
-        raise EX3DLexerError.Create(Self,
-          SIncorrectSignature + 'Incorrect major version number: ' + E.Message);
-    end;
-
-    { dot }
-    if not SCharIs(S, I, '.') then
-      raise EX3DLexerError.Create(Self,
-        SIncorrectSignature + 'Expected "." between major and minor version number');
-    Inc(I);
-
-    { minor number }
-    NumStart := I;
-    while SCharIs(S, I, Digits) do Inc(I);
-    try
-      Minor := StrToInt(CopyPos(S, NumStart, I - 1));
-    except
-      on E: EConvertError do
-        raise EX3DLexerError.Create(Self,
-          SIncorrectSignature + 'Incorrect minor version number: ' + E.Message);
-    end;
-
-    { whitespace }
-    while SCharIs(S, I, WhiteSpaces) do Inc(I);
-
-    Delete(S, 1, I - 1);
+    Major := 0;
+    Minor := 0;
   end;
 
 var
@@ -594,7 +516,7 @@ begin
   CreateCommonBegin(AStream, AOwnsStream);
 
   { Read first line = signature. }
-  Line := Stream.ReadUpto(X3DLineTerm);
+  Line := Stream.ReadUpto;
 
   { Conveniently, GzipHeader doesn't contain X3DLineTerm.
     So if Line starts with GzipHeader, we know 100% it's gzip file,
@@ -621,7 +543,7 @@ begin
     FVersion.Major := 0;
     FVersion.Minor := 0;
 
-    if not IsPrefix('V1.0 ascii', Line) then
+    if 'V1.0 ascii' = Line then
       raise EX3DLexerError.Create(Self, Format(
         'Inventor format detected, version "%s", but only Inventor 1.0 ascii files are supported',
         [TrimRight(Line)]));
@@ -633,7 +555,7 @@ begin
 
     { then must be 'ascii';
       VRML 1.0 'ascii' may be followed immediately by some black char. }
-    if not IsPrefix(EncodingAscii, Line) then
+    if EncodingAscii = Line then
       raise EX3DLexerError.Create(Self, 'Wrong VRML 1.0 signature: '+
         'VRML 1.0 files must have "ascii" encoding');
   end else
@@ -683,14 +605,14 @@ end;
 procedure TX3DLexer.StreamReadUptoFirstBlack(out FirstBlack: Integer);
 begin
  repeat
-  Stream.ReadUpto(VRMLNoWhitespaces);
+  Stream.ReadUpto;
   FirstBlack := Stream.ReadChar;
 
   { TODO: ignore X3D multiline comments also }
 
   { ignore comments }
   if FirstBlack = Ord('#') then
-   Stream.ReadUpto(X3DLineTerm) else
+   Stream.ReadUpto else
    break;
  until false;
 end;
@@ -703,7 +625,7 @@ begin
  fToken := vtString;
  fTokenString := '';
  repeat
-  fTokenString := fTokenString + Stream.ReadUpto(['\', '"']);
+  fTokenString := fTokenString + Stream.ReadUpto;
   endingChar := Stream.ReadChar;
 
   if endingChar = -1 then
@@ -743,7 +665,7 @@ function TX3DLexer.NextToken: TX3DToken;
     LowerCaseVKTrue = 'true' { LowerCase(X3DKeywords[vkTRUE]) };
     LowerCaseVKFalse = 'false' { LowerCase(X3DKeywords[vkFALSE]) };
   begin
-   fTokenName := FirstLetter +Stream.ReadUpto(AllChars - VRMLNameChars);
+   fTokenName := FirstLetter +Stream.ReadUpto;
 
    { teraz zobacz czy fTokenName nie jest przypadkiem keywordem. }
    if ArrayPosX3DKeywords(fTokenName, foundKeyword) and
@@ -800,9 +722,6 @@ function TX3DLexer.NextToken: TX3DToken;
   }
 
   procedure ReadFloatOrInteger(FirstChar: char);
-  const
-    NoDigits = AllChars - ['0'..'9'];
-    NoHexDigits = AllChars - ['0'..'9', 'a'..'f', 'A'..'F'];
   { TODO: octal notation not implemented (i simply forgot about it) }
 
     { StrToFloat a little faster.
@@ -842,7 +761,7 @@ function TX3DLexer.NextToken: TX3DToken;
        raise EX3DLexerError.Create(Self,
          'Unexpected end of file in the middle of real constant');
      CharAfterE := Chr(CharAfterEInt);
-     RestOfToken := Stream.ReadUpto(NoDigits);
+     RestOfToken := Stream.ReadUpto;
      fTokenFloat := StrToFloatFaster(AlreadyRead +'e' +CharAfterE +RestOfToken);
     end;
 
@@ -852,7 +771,7 @@ function TX3DLexer.NextToken: TX3DToken;
     var s: string;
         AfterS: integer;
     begin
-     s := AlreadyRead +'.' +Stream.ReadUpto(NoDigits);
+     s := AlreadyRead +'.' +Stream.ReadUpto;
      AfterS := Stream.PeekChar;
      if (AfterS = Ord('e')) or (AfterS = Ord('E')) then
      begin
@@ -872,14 +791,14 @@ function TX3DLexer.NextToken: TX3DToken;
     if FirstChar = '.' then
      ReadAfterDot('') else
     begin
-     Dig1 := FirstChar + Stream.ReadUpto(NoDigits);
+     Dig1 := FirstChar + Stream.ReadUpto;
      AfterDig1 := Stream.PeekChar;
      if (AfterDig1 = Ord('x')) then
      begin
       Stream.ReadChar; { consume AfterDig1 }
-      HexDig := Stream.ReadUpto(NoHexDigits);
+      HexDig := Stream.ReadUpto;
       fToken := vtInteger;
-      fTokenInteger := StrHexToInt(HexDig);
+      fTokenInteger := StrToInt(HexDig);
       if Dig1[1] = '-' then fTokenInteger := - fTokenInteger;
      end else
      if (AfterDig1 = Ord('.')) then
@@ -936,10 +855,7 @@ function TX3DLexer.NextToken: TX3DToken;
      '-','+','.','0'..'9':ReadFloatOrInteger(FirstBlackChr);
      '"':ReadString;
      else
-      if FirstBlackChr in VRMLNameFirstChars then
-       ReadNameOrKeyword(FirstBlackChr) else
-       raise EX3DLexerError.Create(Self, Format('Illegal character in stream : %s (#%d)',
-         [FirstBlackChr, Ord(FirstBlackChr)]));
+       ReadNameOrKeyword(FirstBlackChr);
     end;
   end;
 
@@ -1006,8 +922,7 @@ begin
       hack (NextTokenForceVTName is really only a hack to try to read
       even incorrect VRML files) we would fail to read correctly valid
       VRML files. *)
-  fTokenName := Chr(FirstBlack) +Stream.ReadUpto(
-    VRMLWhitespaces + ['{', '}', '[', ']']);
+  fTokenName := Chr(FirstBlack) +Stream.ReadUpto;
   fToken := vtName;
  end;
 
@@ -1024,7 +939,7 @@ begin
  if FirstBlack = Ord('"') then
   ReadString else
  begin
-  fTokenString := Chr(FirstBlack) + Stream.ReadUpto(VRMLWhitespaces);
+  fTokenString := Chr(FirstBlack) + Stream.ReadUpto;
   fToken := vtString;
  end;
 
@@ -1098,8 +1013,8 @@ const
 begin
   { use soMatchCase for speed }
   if SurroundWithQuotes then
-    Result := '"' + SReplacePatterns(s, Patterns, PatValues, false) + '"' else
-    Result :=       SReplacePatterns(s, Patterns, PatValues, false);
+    Result := '"' + s + '"' else
+    Result :=       s;
 end;
 
 function StringToX3DXml(const s: string): string;
@@ -1108,7 +1023,7 @@ const
   PatValues: array [0..6] of string = ('&amp;', '&quot;', '&apos;', '&lt;', '&gt;', '&#xA;', '&#xD;');
 begin
   { use soMatchCase for speed }
-  Result := '"' + SReplacePatterns(s, Patterns, PatValues, false) + '"';
+  Result := '"' + s + '"';
 end;
 
 function StringToX3DXmlMulti(const s: string): string;
@@ -1117,7 +1032,7 @@ const
   PatValues: array [0..7] of string = ('&amp;', '\&quot;', '&apos;', '&lt;', '&gt;', '&#xA;', '&#xD;', '\\');
 begin
   { use soMatchCase for speed }
-  Result := '"' + SReplacePatterns(s, Patterns, PatValues, false) + '"';
+  Result := '"' + s + '"';
 end;
 
 end.
