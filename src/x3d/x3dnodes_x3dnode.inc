@@ -58,7 +58,6 @@
     FDefaultContainerField: string;
     FHasInterfaceDeclarations: TX3DAccessTypes;
     FInterfaceDeclarations: TX3DInterfaceDeclarationList;
-    FDestructionNotifications: TNodeDestructionNotificationList;
     ///FScene: TX3DEventsEngine;
     FInternalSceneShape: TObject;
 
@@ -742,12 +741,6 @@
       read FInterfaceDeclarations;
     { @groupEnd }
 
-    { Callbacks registered here will be called when this node is destroyed.
-      @groupBegin }
-    procedure AddDestructionNotification(const Event: TNodeDestructionNotification);
-    procedure RemoveDestructionNotification(const Event: TNodeDestructionNotification);
-    { @groupEnd }
-
     { Scene that will be notified about changes to this node.
       This is necessary to allow the scene to properly process VRML/X3D
       events, and also to react properly to any other changes to the nodes
@@ -919,12 +912,6 @@ destructor TX3DNode.Destroy;
 var
   I: Integer;
 begin
-  if FDestructionNotifications <> nil then
-  begin
-    FDestructionNotifications.ExecuteAll(Self);
-    FreeAndNil(FDestructionNotifications);
-  end;
-
   if FVRML1Children <> nil then VRML1ChildrenClear;
 
   if PrototypeInstance then
@@ -973,20 +960,6 @@ begin
   FreeAndNil(FParentFields);
 
   inherited;
-end;
-
-procedure TX3DNode.AddDestructionNotification(const Event: TNodeDestructionNotification);
-begin
-  { create FDestructionNotifications on demand }
-  if FDestructionNotifications = nil then
-    FDestructionNotifications := TNodeDestructionNotificationList.Create;
-  FDestructionNotifications.Add(Event);
-end;
-
-procedure TX3DNode.RemoveDestructionNotification(const Event: TNodeDestructionNotification);
-begin
-  if FDestructionNotifications <> nil then
-    FDestructionNotifications.Remove(Event);
 end;
 
 procedure TX3DNode.FreeIfUnused;

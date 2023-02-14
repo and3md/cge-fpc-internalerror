@@ -414,9 +414,6 @@ begin
   begin
     if FValue <> nil then
     begin
-      if WeakLink then
-        FValue.RemoveDestructionNotification({$ifdef CASTLE_OBJFPC}@{$endif} DestructionNotification)
-      else
         FValue.RemoveParentField(Self);
     end;
 
@@ -424,9 +421,6 @@ begin
 
     if AValue <> nil then
     begin
-      if WeakLink then
-        FValue.AddDestructionNotification({$ifdef CASTLE_OBJFPC}@{$endif} DestructionNotification)
-      else
         FValue.AddParentField(Self);
     end;
   end;
@@ -438,9 +432,6 @@ begin
   begin
     if FDefaultValue <> nil then
     begin
-      if WeakLink then
-        FDefaultValue.RemoveDestructionNotification({$ifdef CASTLE_OBJFPC}@{$endif} DestructionNotification)
-      else
         FDefaultValue.RemoveParentField(Self);
     end;
 
@@ -448,9 +439,6 @@ begin
 
     if ADefaultValue <> nil then
     begin
-      if WeakLink then
-        FDefaultValue.AddDestructionNotification({$ifdef CASTLE_OBJFPC}@{$endif} DestructionNotification)
-      else
         FDefaultValue.AddParentField(Self);
     end;
   end;
