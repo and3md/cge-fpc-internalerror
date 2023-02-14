@@ -1188,9 +1188,6 @@ end;
 constructor TSFStringEnum.Create(const AParentNode: TX3DFileItem;
   const AExposed: boolean; const AName: string; const AEnumNames: array of string; const AValue: integer);
 begin
-  FEnumNames := TStringListCaseSens.Create;
-  AddStrArrayToStrings(AEnumNames, FEnumNames);
-
   inherited Create(AParentNode, AExposed, AName, FEnumNames[AValue]);
   { inherited Create will assign Value, and in SetValue should cause setting
     our FEnumValue }
@@ -1389,8 +1386,6 @@ var
 begin
   inherited Create(AParentNode, AExposed, AName);
 
-  fFlagNames := TStringListCaseSens.Create;
-  AddStrArrayToStrings(AFlagNames, fFlagNames);
   for i := 0 to FlagsCount-1 do Flags[i] := AFlags[i];
   fNoneString := ANoneString;
   fAllString := AAllString;
@@ -1544,8 +1539,6 @@ constructor TSFEnum.Create(const AParentNode: TX3DFileItem;
 begin
   inherited Create(AParentNode, AExposed, AName);
 
-  FEnumNames := TStringListCaseSens.Create;
-  AddStrArrayToStrings(AEnumNames, FEnumNames);
   Value := AValue;
   AssignDefaultValueFromValue;
 end;

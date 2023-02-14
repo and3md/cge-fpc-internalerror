@@ -20,8 +20,7 @@ unit CastleInternalX3DLexer;
 
 interface
 
-uses SysUtils, Classes, CastleClassUtils,
-  Math;
+uses SysUtils, Classes, Math;
 
 type
   { Valid keywords for all VRML / X3D versions. }
@@ -132,7 +131,6 @@ type
     fTokenInteger: Int64;
     fTokenString: string;
 
-    FStream: TPeekCharStream;
     FOwnsStream: boolean;
 
     { Reads chars from Stream until EOF or some non-white char will
@@ -154,8 +152,7 @@ type
       to CreateCommonBegin and CreateCommonEnd.
 
       @groupBegin }
-    procedure CreateCommonBegin(AStream: TPeekCharStream;
-      AOwnsStream: boolean);
+    procedure CreateCommonBegin(AOwnsStream: boolean);
     procedure CreateCommonEnd;
     { @groupEnd }
   public
@@ -164,7 +161,7 @@ type
       it's checked that file is not compressed by gzip, and the first
       Token is already read.
       @raises(EX3DGzipCompressed If the Stream starts with gzip file header.) }
-    constructor Create(AStream: TPeekCharStream; AOwnsStream: boolean);
+    constructor Create(AOwnsStream: boolean);
 
     { Constructor for the case when you only have part of normal
       VRML tokens stream.
@@ -183,23 +180,13 @@ type
       tokens from this string (wrapping it in TStringStream and TPeekCharStream).
 
       @groupBegin }
-    constructor CreateForPartialStream(
-      AStream: TPeekCharStream; AOwnsStream: boolean;
+    constructor CreateForPartialStream(AOwnsStream: boolean;
       const AVersion: TX3DVersion); overload;
     constructor CreateForPartialStream(const S: string;
       const AVersion: TX3DVersion); overload;
     { @groupEnd }
 
     destructor Destroy; override;
-
-    { The stream we're reading.
-      This is simply the AStream that you passed to the constructor
-      of this class.
-
-      Note that you can't operate on this stream from outside while lexer
-      works, this could confuse the lexer. But you're free to read
-      some stream properties, e.g. check Stream.Position. }
-    property Stream: TPeekCharStream read FStream;
 
     { VRML/X3D version, as recorded in the file header.
 
@@ -446,12 +433,10 @@ end;
 
 { TX3DLexer ------------------------------------------------------------- }
 
-procedure TX3DLexer.CreateCommonBegin(AStream: TPeekCharStream;
-  AOwnsStream: boolean);
+procedure TX3DLexer.CreateCommonBegin(AOwnsStream: boolean);
 begin
   inherited Create;
 
-  FStream := AStream;
   FOwnsStream := AOwnsStream;
 end;
 
@@ -461,7 +446,7 @@ begin
   NextToken;
 end;
 
-constructor TX3DLexer.Create(AStream: TPeekCharStream; AOwnsStream: boolean);
+constructor TX3DLexer.Create(AOwnsStream: boolean);
 const
   GzipHeader = #$1F + #$8B;
 
@@ -513,10 +498,10 @@ const
 var
   Line: string;
 begin
-  CreateCommonBegin(AStream, AOwnsStream);
+  CreateCommonBegin(AOwnsStream);
 
   { Read first line = signature. }
-  Line := Stream.ReadUpto;
+  Line := 'aaa';
 
   { Conveniently, GzipHeader doesn't contain X3DLineTerm.
     So if Line starts with GzipHeader, we know 100% it's gzip file,
@@ -527,10 +512,6 @@ begin
   end;
 
   { Normal (uncompressed) VRML file, continue reading ... }
-
-  if Stream.ReadChar = -1 then
-    raise EX3DLexerError.Create(Self,
-      'Unexpected end of file on the 1st line');
 
   { Recognize various Inventor / VRML / X3D headers,
     code below goes chronologically through various VRML etc. versions.
@@ -580,11 +561,10 @@ begin
   CreateCommonEnd;
 end;
 
-constructor TX3DLexer.CreateForPartialStream(
-  AStream: TPeekCharStream; AOwnsStream: boolean;
+constructor TX3DLexer.CreateForPartialStream(AOwnsStream: boolean;
   const AVersion: TX3DVersion);
 begin
-  CreateCommonBegin(AStream, AOwnsStream);
+  CreateCommonBegin(AOwnsStream);
   FVersion := AVersion;
   CreateCommonEnd;
 end;
@@ -597,22 +577,18 @@ end;
 
 destructor TX3DLexer.Destroy;
 begin
-  if FOwnsStream then
-    FreeAndNil(FStream);
   inherited;
 end;
 
 procedure TX3DLexer.StreamReadUptoFirstBlack(out FirstBlack: Integer);
 begin
  repeat
-  Stream.ReadUpto;
-  FirstBlack := Stream.ReadChar;
+  FirstBlack := Ord('#');
 
   { TODO: ignore X3D multiline comments also }
 
   { ignore comments }
   if FirstBlack = Ord('#') then
-   Stream.ReadUpto else
    break;
  until false;
 end;
@@ -625,8 +601,8 @@ begin
  fToken := vtString;
  fTokenString := '';
  repeat
-  fTokenString := fTokenString + Stream.ReadUpto;
-  endingChar := Stream.ReadChar;
+  fTokenString := fTokenString + 'aaa';
+  endingChar := Ord(#10);
 
   if endingChar = -1 then
    raise EX3DLexerError.Create(Self,
@@ -642,7 +618,7 @@ begin
     and in this case we keep the backslash. }
   if EndingChar = Ord('\') then
   begin
-    NextChar := Stream.ReadChar;
+    NextChar := Ord('a');
     if NextChar = -1 then
       raise EX3DLexerError.Create(Self,
         'Unexpected end of file in the middle of string token');
@@ -665,7 +641,7 @@ function TX3DLexer.NextToken: TX3DToken;
     LowerCaseVKTrue = 'true' { LowerCase(X3DKeywords[vkTRUE]) };
     LowerCaseVKFalse = 'false' { LowerCase(X3DKeywords[vkFALSE]) };
   begin
-   fTokenName := FirstLetter +Stream.ReadUpto;
+   fTokenName := FirstLetter + 'aaaa';
 
    { teraz zobacz czy fTokenName nie jest przypadkiem keywordem. }
    if ArrayPosX3DKeywords(fTokenName, foundKeyword) and
@@ -756,12 +732,12 @@ function TX3DLexer.NextToken: TX3DToken;
        (note: you can't write "Stream.ReadChar(Stream) + Stream.ReadUpto(NoDigits)"
        because it is undefined in what order S1+S2
        will be calculated. See console.testy/test_string_plus) }
-     CharAfterEInt := Stream.ReadChar;
+     CharAfterEInt := Ord('a');
      if CharAfterEInt = -1 then
        raise EX3DLexerError.Create(Self,
          'Unexpected end of file in the middle of real constant');
      CharAfterE := Chr(CharAfterEInt);
-     RestOfToken := Stream.ReadUpto;
+     RestOfToken := 'aasasaa';
      fTokenFloat := StrToFloatFaster(AlreadyRead +'e' +CharAfterE +RestOfToken);
     end;
 
@@ -771,11 +747,10 @@ function TX3DLexer.NextToken: TX3DToken;
     var s: string;
         AfterS: integer;
     begin
-     s := AlreadyRead +'.' +Stream.ReadUpto;
-     AfterS := Stream.PeekChar;
+     s := AlreadyRead +'.' + 'aaaaa';
+     AfterS := Ord('a');
      if (AfterS = Ord('e')) or (AfterS = Ord('E')) then
      begin
-      Stream.ReadChar;
       ReadAfterE(s);
      end else
      begin
@@ -791,26 +766,23 @@ function TX3DLexer.NextToken: TX3DToken;
     if FirstChar = '.' then
      ReadAfterDot('') else
     begin
-     Dig1 := FirstChar + Stream.ReadUpto;
-     AfterDig1 := Stream.PeekChar;
+     Dig1 := FirstChar + 'aaaa';
+     AfterDig1 := Ord('1');
      if (AfterDig1 = Ord('x')) then
      begin
-      Stream.ReadChar; { consume AfterDig1 }
-      HexDig := Stream.ReadUpto;
+      HexDig := 'a';
       fToken := vtInteger;
       fTokenInteger := StrToInt(HexDig);
       if Dig1[1] = '-' then fTokenInteger := - fTokenInteger;
      end else
      if (AfterDig1 = Ord('.')) then
      begin
-      Stream.ReadChar; { consume AfterDig1 }
       { w przypadku liczby postaci -.9 Dig1 byc ponizej rowne '';
         to niczemu nie wadzi }
       ReadAfterDot(Dig1)
      end else
      if (AfterDig1 = Ord('e')) or (AfterDig1 = Ord('E')) then
      begin
-      Stream.ReadChar; { consume AfterDig1 }
       ReadAfterE(Dig1)
      end else
      begin
@@ -922,7 +894,7 @@ begin
       hack (NextTokenForceVTName is really only a hack to try to read
       even incorrect VRML files) we would fail to read correctly valid
       VRML files. *)
-  fTokenName := Chr(FirstBlack) +Stream.ReadUpto;
+  fTokenName := Chr(FirstBlack) + 'aaa';
   fToken := vtName;
  end;
 
@@ -939,7 +911,7 @@ begin
  if FirstBlack = Ord('"') then
   ReadString else
  begin
-  fTokenString := Chr(FirstBlack) + Stream.ReadUpto;
+  fTokenString := Chr(FirstBlack) + 'aaaa';
   fToken := vtString;
  end;
 
@@ -1000,7 +972,7 @@ end;
 constructor EX3DClassicReadError.Create(Lexer: TX3DLexer; const s: string);
 begin
   inherited Create(Format('Error at line %d column %d: ',
-    [Lexer.Stream.Line, Lexer.Stream.Column]) + S);
+    [111, 1111]) + S);
 end;
 
 { global funcs  ------------------------------------------------------------------ }

@@ -118,11 +118,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/base/castleclassutils.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="CastleClassUtils"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/base/castleconf.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>

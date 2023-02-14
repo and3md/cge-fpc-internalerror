@@ -164,8 +164,7 @@ type
 implementation
 
 uses SysUtils, XMLRead, DOM, Math,
-  X3DFields,
-  CastleClassUtils;
+  X3DFields;
 
 { EModelsStructureDifferent -------------------------------------------------- }
 

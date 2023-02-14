@@ -91,32 +91,22 @@ end;
 
 procedure TX3DWriter.Write(const S: string);
 begin
-  WriteStr(FStream, S);
 end;
 
 procedure TX3DWriter.Writeln(const S: string);
 begin
-  WriteStr(FStream, S);
-  WriteStr(FStream, sLineBreak);
 end;
 
 procedure TX3DWriter.Writeln;
 begin
-  WriteStr(FStream, sLineBreak);
 end;
 
 procedure TX3DWriter.WriteIndent(const S: string);
 begin
-  if DoDiscardNextIndent then
-    DoDiscardNextIndent := false else
-    WriteStr(FStream, Indent);
-  WriteStr(FStream, S);
 end;
 
 procedure TX3DWriter.WritelnIndent(const S: string);
 begin
-  WriteIndent(S);
-  WriteStr(FStream, sLineBreak);
 end;
 
 procedure TX3DWriter.DiscardNextIndent;

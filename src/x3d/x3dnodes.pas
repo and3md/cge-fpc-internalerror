@@ -167,8 +167,7 @@ interface
 
 uses SysUtils, Generics.Collections, Classes, DOM,
   CastleRectangles,
-  CastleInternalX3DLexer, CastleClassUtils,
-  X3DFields,
+  CastleInternalX3DLexer, X3DFields,
   CastleMaterialProperties;
 
 {$define read_interface}
