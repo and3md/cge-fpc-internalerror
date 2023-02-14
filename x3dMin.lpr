@@ -13,8 +13,7 @@ uses
   CastleInternalX3DLexer,
   CastleMaterialProperties, X3DFields,
   X3DNodes,
-  CastleInterfaces,
-  CastleRectangles;
+  CastleInterfaces;
 
 {$R *.res}
 
