@@ -81,7 +81,7 @@
       braces (for classic encoding) or XML element (for xml encoding).
       This way, when saving, we hide the fact that everything was wrapped
       in an artificial TX3DRootNode. }
-    procedure SaveToStream(Writer: TX3DWriter); override;
+    procedure SaveToStream; override;
 
     { Set HasForceVersion to @true to force saving this model with
       given ForceVersion. }
@@ -170,7 +170,7 @@ begin
   inherited;
 end;
 
-procedure TX3DRootNode.SaveToStream(Writer: TX3DWriter);
+procedure TX3DRootNode.SaveToStream;
 var
   I: integer;
   FileItems: TX3DFileItemList;
@@ -188,7 +188,6 @@ begin
     try
       Assert(VRML1ChildrenCount = 0);
 
-      FileItems.SaveToStream(Writer);
     finally FreeAndNil(FileItems) end;
   end else
     inherited;

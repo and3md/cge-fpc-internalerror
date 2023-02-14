@@ -46,7 +46,7 @@
     procedure WarningIfUnusedWeakLink;
     procedure DestructionNotification(Node: TX3DNode);
   strict protected
-    procedure SaveToStreamValue(Writer: TX3DWriter); override;
+    procedure SaveToStreamValue; override;
     function SaveToXmlValue: TSaveToXmlMethod; override;
   public
     { Construct a field allowing any children class.
@@ -336,24 +336,8 @@ procedure TSFNode.ParseXMLElement(Element: TDOMElement; Reader: TX3DReader);
 begin
 end;
 
-procedure TSFNode.SaveToStreamValue(Writer: TX3DWriter);
+procedure TSFNode.SaveToStreamValue;
 begin
-  if Value = nil then
-    { For XML encoding, note that the NULL value can only be saved
-      as an XML attribute (not child element).
-      Also, there's no way to specify containerField for NULL value
-      --- and that's Ok, since NULL is the default value of all SFNode fields,
-      so it's never actually written in normal cases. }
-    Writer.Write('NULL') else
-  begin
-    { TX3DNode.SaveToStream normally starts from new line with an indent.
-      In this case, we want it to start on the same line, so indent must
-      be discarded. }
-    if Writer.Encoding = xeClassic then
-      Writer.DiscardNextIndent;
-
-
-  end;
 end;
 
 function TSFNode.SaveToXmlValue: TSaveToXmlMethod;

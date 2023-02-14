@@ -62,7 +62,7 @@
       in VRML nodeBodyStatement. }
     procedure Parse(Lexer: TX3DLexer);
 
-    procedure SaveToStream(Writer: TX3DWriter); override;
+    procedure SaveToStream; override;
     function SaveToXml: TSaveToXmlMethod; override;
 
     { If this event is an exposed event belonging to some field,
@@ -198,7 +198,7 @@ begin
   ParseIsClause(Lexer);
 end;
 
-procedure TX3DEvent.SaveToStream(Writer: TX3DWriter);
+procedure TX3DEvent.SaveToStream;
 begin
   { saves nothing. IS clauses are saved separately by SaveToStreamIsClauses }
 end;

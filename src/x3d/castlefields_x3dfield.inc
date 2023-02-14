@@ -17,6 +17,7 @@
 
   TX3DField = class;
   TX3DFieldList = class;
+  TX3DEvent = class;
 
   TX3DFieldClass = class of TX3DField;
 
@@ -176,7 +177,7 @@
       we will not call SaveToStreamValue. So when overriding
       SaveToStreamValue, you can safely assume that ValueFromIsClause
       is @false. }
-    procedure SaveToStreamValue(Writer: TX3DWriter); virtual; abstract;
+    procedure SaveToStreamValue; virtual; abstract;
 
     { Save method of SaveToStreamValue. May assume things that
       SaveToStreamValue may issume, for example: if this is used at all,
@@ -290,7 +291,7 @@
 
       IS clauses are not saved here (because they often have to be treated
       specially anyway, for XML encoding, for prototype declarations etc.). }
-    procedure FieldSaveToStream(Writer: TX3DWriter;
+    procedure FieldSaveToStream(
       FieldSaveWhenDefault: boolean = false;
       XmlAvoidSavingNameBeforeValue: boolean = false);
 
@@ -302,7 +303,7 @@
 
       It doesn't actually save anything if field value is defined
       and equals default value. }
-    procedure SaveToStream(Writer: TX3DWriter); override;
+    procedure SaveToStream; override;
     function SaveToXml: TSaveToXmlMethod; override;
 
     { Does current field value came from expanding "IS" clause.
@@ -811,46 +812,13 @@ begin
   end;
 end;
 
-procedure TX3DField.FieldSaveToStream(Writer: TX3DWriter;
-  FieldSaveWhenDefault, XmlAvoidSavingNameBeforeValue: boolean);
-var
-  N: string;
+procedure TX3DField.FieldSaveToStream(FieldSaveWhenDefault, XmlAvoidSavingNameBeforeValue: boolean);
 begin
-  N := NameForVersion(Writer);
-
-  if (not ValueFromIsClause) and
-     (FieldSaveWhenDefault or (not EqualsDefaultValue)) then
-  case Writer.Encoding of
-    xeClassic:
-      begin
-        if N <> '' then
-          Writer.WriteIndent(N + ' ');
-        SaveToStreamValue(Writer);
-        Writer.Writeln;
-      end;
-    xeXML:
-      { for xml encoding, field must be named, unless explicitly not wanted by XmlAvoidSavingNameBeforeValue }
-      if (N <> '') or XmlAvoidSavingNameBeforeValue then
-      begin
-        if (SaveToXml in [sxAttribute, sxAttributeCustomQuotes]) and
-           (not XmlAvoidSavingNameBeforeValue) then
-        begin
-          Writer.Writeln;
-          Writer.WriteIndent(N + '=');
-        end;
-        if SaveToXml = sxAttribute then
-          Writer.Write('"');
-        SaveToStreamValue(Writer);
-        if SaveToXml = sxAttribute then
-          Writer.Write('"');
-      end;
-    else raise Exception.Create('TX3DField.FieldSaveToStream Encoding?');
-  end;
 end;
 
-procedure TX3DField.SaveToStream(Writer: TX3DWriter);
+procedure TX3DField.SaveToStream;
 begin
-  FieldSaveToStream(Writer);
+  FieldSaveToStream;
 end;
 
 function TX3DField.SaveToXmlValue: TSaveToXmlMethod;

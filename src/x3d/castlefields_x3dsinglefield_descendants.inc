@@ -19,7 +19,7 @@
   { X3D field containing a single boolean value. }
   TSFBool = class(TX3DSingleField)
   strict protected
-    procedure SaveToStreamValue(Writer: TX3DWriter); override;
+    procedure SaveToStreamValue; override;
   public
     Value: boolean;
     DefaultValue: boolean;
@@ -50,7 +50,7 @@
     FAngle: boolean;
     procedure SetValue(const AValue: Single);
   strict protected
-    procedure SaveToStreamValue(Writer: TX3DWriter); override;
+    procedure SaveToStreamValue; override;
   public
     DefaultValue: Single;
     DefaultValueExists: boolean;
@@ -94,7 +94,7 @@
     FAngle: boolean;
     procedure SetValue(const AValue: Double);
   strict protected
-    procedure SaveToStreamValue(Writer: TX3DWriter); override;
+    procedure SaveToStreamValue; override;
   public
     DefaultValue: Double;
     DefaultValueExists: boolean;
@@ -139,7 +139,7 @@
     FValue: Longint;
     procedure SetValue(const AValue: Longint);
   strict protected
-    procedure SaveToStreamValue(Writer: TX3DWriter); override;
+    procedure SaveToStreamValue; override;
   public
     DefaultValue: Longint;
     DefaultValueExists: boolean;
@@ -188,7 +188,7 @@
     DefaultValueExists: boolean;
     class function MatrixSize: Integer;
   strict protected
-    procedure SaveToStreamValue(Writer: TX3DWriter); override;
+    procedure SaveToStreamValue; override;
   public
     constructor Create(const AParentNode: TX3DFileItem;
       const AExposed: boolean; const AName: string; const AValue: TItem);
@@ -219,7 +219,7 @@
   strict protected
     procedure SetValue(const NewValue: string); virtual;
     procedure SetDefaultValue(const NewDefaultValue: string); virtual;
-    procedure SaveToStreamValue(Writer: TX3DWriter); override;
+    procedure SaveToStreamValue; override;
   public
     property DefaultValue: string read FDefaultValue write SetDefaultValue;
     property DefaultValueExists: boolean
@@ -284,7 +284,7 @@
     TItem,
     TEvent> = class(TX3DSingleField)
   strict protected
-    procedure SaveToStreamValue(Writer: TX3DWriter); override;
+    procedure SaveToStreamValue; override;
   public
     Value: TItem;
 
@@ -363,9 +363,9 @@ const
   BoolKeywords: array [TX3DEncoding, boolean] of string =
   ( ('FALSE', 'TRUE'), ('false', 'true') );
 
-procedure TSFBool.SaveToStreamValue(Writer: TX3DWriter);
+procedure TSFBool.SaveToStreamValue;
 begin
-  Writer.Write(BoolKeywords[Writer.Encoding, Value]);
+
 end;
 
 function TSFBool.EqualsDefaultValue: boolean;
@@ -444,9 +444,8 @@ begin
   AssignDefaultValueFromValue;
 end;
 
-procedure TSFFloat.SaveToStreamValue(Writer: TX3DWriter);
+procedure TSFFloat.SaveToStreamValue;
 begin
-  Writer.Write(Format('%g', [Value]));
 end;
 
 function TSFFloat.EqualsDefaultValue: boolean;
@@ -531,9 +530,8 @@ begin
   FValue := AValue;
 end;
 
-procedure TSFDouble.SaveToStreamValue(Writer: TX3DWriter);
+procedure TSFDouble.SaveToStreamValue;
 begin
-  Writer.Write(Format('%g', [Value]));
 end;
 
 function TSFDouble.EqualsDefaultValue: boolean;
@@ -660,9 +658,8 @@ begin
   Lexer.NextToken;
 end;
 
-procedure TSFLong.SaveToStreamValue(Writer: TX3DWriter);
+procedure TSFLong.SaveToStreamValue;
 begin
-  Writer.Write(IntToStr(Value));
 end;
 
 function TSFLong.EqualsDefaultValue: boolean;
@@ -775,21 +772,8 @@ begin
   end;
 end;
 
-procedure TSFGenericMatrix.SaveToStreamValue(Writer: TX3DWriter);
-var
-  V: TItemColumn;
-  Column: integer;
+procedure TSFGenericMatrix.SaveToStreamValue;
 begin
-  V.Data := FValue.Data[0];
-  Writer.Writeln(V.ToRawString);
-
-  Writer.IncIndent;
-  for Column := 1 to MatrixSize - 1 do
-  begin
-    V.Data := FValue.Data[Column];
-    Writer.WritelnIndent(V.ToRawString);
-  end;
-  Writer.DecIndent;
 end;
 
 function TSFGenericMatrix.Equals(SecondValue: TX3DField): boolean;
@@ -895,13 +879,8 @@ begin
   Lexer.NextToken;
 end;
 
-procedure TSFString.SaveToStreamValue(Writer: TX3DWriter);
+procedure TSFString.SaveToStreamValue;
 begin
-  case Writer.Encoding of
-    xeClassic: Writer.Write(StringToX3DClassic(Value));
-    xeXML    : Writer.Write(StringToX3DXml(Value));
-    else raise Exception.Create('TSFString.SaveToStreamValue Encoding?');
-  end;
 end;
 
 function TSFString.EqualsDefaultValue: boolean;
@@ -1088,9 +1067,8 @@ begin
   // ParseVector(Value.Data, Lexer);
 end;
 
-procedure TSFGenericVector.SaveToStreamValue(Writer: TX3DWriter);
+procedure TSFGenericVector.SaveToStreamValue;
 begin
-  Writer.Write(Value.ToRawString);
 end;
 
 function TSFGenericVector.EqualsDefaultValue: boolean;

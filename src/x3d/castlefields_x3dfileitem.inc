@@ -71,7 +71,7 @@
       read FPositionInParent write FPositionInParent default -1;
 
     { Save to stream. }
-    procedure SaveToStream(Writer: TX3DWriter); virtual; abstract;
+    procedure SaveToStream; virtual; abstract;
 
     { How is this saved to X3D XML encoding. This determines when
       SaveToStream is called. It also cooperates with some SaveToStream
@@ -84,7 +84,7 @@
   public
     procedure SortPositionInParent;
     { Sort all items by PositionInParent and then save them all to stream. }
-    procedure SaveToStream(Writer: TX3DWriter);
+    procedure SaveToStream;
     procedure Add(Item: TX3DFileItem); reintroduce;
   end;
 
@@ -121,13 +121,9 @@ begin
   //Sort(TX3DFileItemComparer.Construct(@IsSmallerPositionInParent));
 end;
 
-procedure TX3DFileItemList.SaveToStream(Writer: TX3DWriter);
-var
-  I: Integer;
+procedure TX3DFileItemList.SaveToStream;
 begin
   SortPositionInParent;
-  for I := 0 to Count - 1 do
-    Items[I].SaveToStream(Writer);
 end;
 
 procedure TX3DFileItemList.Add(Item: TX3DFileItem);

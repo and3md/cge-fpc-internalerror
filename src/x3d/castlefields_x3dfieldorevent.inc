@@ -136,7 +136,7 @@
       In almost all cases, this simply returns current Name.
       But it can also return a name added by AddAlternativeName method. }
     function NameForVersion(Version: TX3DVersion): string; overload;
-    function NameForVersion(Writer: TX3DWriter): string; overload;
+    function NameForVersion: string; overload;
 
     { For fields contained in TX3DInterfaceDeclaration.
 
@@ -153,7 +153,7 @@
 
     { Save IS clauses to stream, only for classic encoding.
       For each IS clause, writeln field/event name followed by "IS" clause. }
-    procedure SaveToStreamClassicIsClauses(Writer: TX3DWriter);
+    procedure SaveToStreamClassicIsClauses;
   end;
 
   TX3DFieldOrEventList = {$ifdef CASTLE_OBJFPC}specialize{$endif} TObjectList<TX3DFieldOrEvent>;
@@ -248,10 +248,9 @@ begin
     Result := X3DName;
 end;
 
-function TX3DFieldOrEvent.NameForVersion(
-  Writer: TX3DWriter): string;
+function TX3DFieldOrEvent.NameForVersion: string;
 begin
-  Result := NameForVersion(Writer.Version);
+  Result := 'aa';
 end;
 
 procedure TX3DFieldOrEvent.FieldOrEventAssignCommon(Source: TX3DFieldOrEvent);
@@ -274,21 +273,8 @@ begin
     Result := Result + '<not named field>';
 end;
 
-procedure TX3DFieldOrEvent.SaveToStreamClassicIsClauses(Writer: TX3DWriter);
-var
-  N: string;
-  I: Integer;
+procedure TX3DFieldOrEvent.SaveToStreamClassicIsClauses;
 begin
-  N := NameForVersion(Writer);
-
-  { When N = '', we assume that field/event has only one "IS" clause.
-    Otherwise results don't make any sense. }
-  for I := 0 to IsClauseNamesCount - 1 do
-  begin
-    if N <> '' then
-      Writer.WriteIndent(N + ' ');
-    Writer.Writeln('IS ' + IsClauseNames[I]);
-  end;
 end;
 
 {$endif read_implementation}

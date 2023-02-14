@@ -538,7 +538,7 @@
 
     { Save node to a stream. Saves everything, including node name,
       node type, and node contents. }
-    procedure SaveToStream(Writer: TX3DWriter); override;
+    procedure SaveToStream; override;
 
     { Some nodes are present only in specific VRML/X3D version.
       This functions decides it.
@@ -1488,7 +1488,7 @@ begin
   finally C.Free end;
 end;
 
-procedure TX3DNode.SaveToStream(Writer: TX3DWriter);
+procedure TX3DNode.SaveToStream;
 begin
 end;
 
