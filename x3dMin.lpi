@@ -49,10 +49,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/castlefields_x3dfieldsmanager.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/castlefields_x3dfileitem.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -102,19 +98,11 @@
         <UnitName Value="X3DNodes"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/x3dnodes_destructionnotification.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/x3dnodes_initial_types.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="src/x3d/x3dnodes_mfnode.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dnodes_miscellaneous_globals.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
@@ -127,10 +115,6 @@
       </Unit>
       <Unit>
         <Filename Value="src/x3d/x3dnodes_standard_grouping.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dnodes_x3dgraphtraversestate.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
