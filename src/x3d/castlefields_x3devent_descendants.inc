@@ -38,12 +38,6 @@
     constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
   end;
 
-  TSFStringEvent = class(TX3DEvent)
-  public
-    constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-    procedure Send(const Value: string); overload;
-  end;
-
   { Universal input event that can receive value of any type.
     It is used by some InstantReality extensions, like Logger.write.
     InstantReality calls this event type XFAny. }
@@ -90,15 +84,6 @@ end;
 { TSFRotationEvent ----------------------------------------------------------- }
 
 { TSFStringEvent ------------------------------------------------------------- }
-
-constructor TSFStringEvent.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-begin
-  inherited Create(AParentNode, AName, TSFString, AInEvent);
-end;
-
-procedure TSFStringEvent.Send(const Value: string);
-begin
-end;
 
 { TSFVec2dEvent -------------------------------------------------------------- }
 
