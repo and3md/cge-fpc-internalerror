@@ -131,52 +131,6 @@
     public property EventIsActive: TSFBoolEvent read FEventIsActive;
   end;
 
-  { A metadata (extra, custom information at a node) with a boolean type. }
-  TMetadataBooleanNode = class(TAbstractNode)
-  public
-    procedure CreateNode; override;
-    class function ClassX3DType: string; override;
-    class function URNMatching(const URN: string): boolean; override;
-
-    strict private FFdName: TSFString;
-    public property FdName: TSFString read FFdName;
-
-    strict private FFdReference: TSFString;
-    public property FdReference: TSFString read FFdReference;
-  end;
-
-  { A metadata (extra, custom information at a node) with
-    a double-precision floating point number type. }
-  TMetadataDoubleNode = class(TAbstractNode)
-  public
-    procedure CreateNode; override;
-    class function ClassX3DType: string; override;
-    class function URNMatching(const URN: string): boolean; override;
-
-    strict private FFdName: TSFString;
-    public property FdName: TSFString read FFdName;
-
-    strict private FFdReference: TSFString;
-    public property FdReference: TSFString read FFdReference;
-
-  end;
-
-  { A metadata (extra, custom information at a node) with
-    a single-precision floating point number type. }
-  TMetadataFloatNode = class(TAbstractNode)
-  public
-    procedure CreateNode; override;
-    class function ClassX3DType: string; override;
-    class function URNMatching(const URN: string): boolean; override;
-
-    strict private FFdName: TSFString;
-    public property FdName: TSFString read FFdName;
-
-    strict private FFdReference: TSFString;
-    public property FdReference: TSFString read FFdReference;
-
-  end;
-
   { A metadata (extra, custom information at a node) with an integer type. }
   TMetadataIntegerNode = class(TAbstractNode)
   public
@@ -291,78 +245,6 @@ begin
 
   FEventIsActive := TSFBoolEvent.Create(Self, 'isActive', false);
   AddEvent(FEventIsActive);
-end;
-
-procedure TMetadataBooleanNode.CreateNode;
-begin
-  inherited;
-
-  FFdName := TSFString.Create(Self, true, 'name', '');
-  AddField(FFdName);
-
-  FFdReference := TSFString.Create(Self, true, 'reference', '');
-  AddField(FFdReference);
-
-  DefaultContainerField := 'metadata';
-end;
-
-class function TMetadataBooleanNode.ClassX3DType: string;
-begin
-  Result := 'MetadataBoolean';
-end;
-
-class function TMetadataBooleanNode.URNMatching(const URN: string): boolean;
-begin
-  Result := (inherited URNMatching(URN)) or
-    (URN = ClassX3DType);
-end;
-
-procedure TMetadataDoubleNode.CreateNode;
-begin
-  inherited;
-
-  FFdName := TSFString.Create(Self, true, 'name', '');
-  AddField(FFdName);
-
-  FFdReference := TSFString.Create(Self, true, 'reference', '');
-  AddField(FFdReference);
-
-  DefaultContainerField := 'metadata';
-end;
-
-class function TMetadataDoubleNode.ClassX3DType: string;
-begin
-  Result := 'MetadataDouble';
-end;
-
-class function TMetadataDoubleNode.URNMatching(const URN: string): boolean;
-begin
-  Result := (inherited URNMatching(URN)) or
-    (URN = ClassX3DType);
-end;
-
-procedure TMetadataFloatNode.CreateNode;
-begin
-  inherited;
-
-  FFdName := TSFString.Create(Self, true, 'name', '');
-  AddField(FFdName);
-
-  FFdReference := TSFString.Create(Self, true, 'reference', '');
-  AddField(FFdReference);
-
-  DefaultContainerField := 'metadata';
-end;
-
-class function TMetadataFloatNode.ClassX3DType: string;
-begin
-  Result := 'MetadataFloat';
-end;
-
-class function TMetadataFloatNode.URNMatching(const URN: string): boolean;
-begin
-  Result := (inherited URNMatching(URN)) or
-    (URN = ClassX3DType);
 end;
 
 procedure TMetadataIntegerNode.CreateNode;
