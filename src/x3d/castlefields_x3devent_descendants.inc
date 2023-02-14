@@ -45,23 +45,6 @@
     procedure Send(const Value: Single); overload;
   end;
 
-  TSFImageEvent = class(TX3DEvent)
-  public
-    constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-  end;
-
-  TSFLongEvent = class(TX3DEvent)
-  public
-    constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-    procedure Send(const Value: LongInt); overload;
-  end;
-
-  TSFInt32Event = class(TX3DEvent)
-  public
-    constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-    procedure Send(const Value: LongInt); overload;
-  end;
-
   TSFNodeEvent = class(TX3DEvent)
   public
     constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
@@ -126,34 +109,11 @@ begin
     Send(Value);
 end;
 
-{ TSFImageEvent -------------------------------------------------------------- }
-
-constructor TSFImageEvent.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-begin
-  /// inherited Create(AParentNode, AName, TSFImage, AInEvent);
-end;
-
 { TSFLongEvent --------------------------------------------------------------- }
 
-constructor TSFLongEvent.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-begin
-  inherited Create(AParentNode, AName, TSFLong, AInEvent);
-end;
-
-procedure TSFLongEvent.Send(const Value: LongInt);
-begin
-end;
 
 { TSFInt32Event -------------------------------------------------------------- }
 
-constructor TSFInt32Event.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-begin
-  inherited Create(AParentNode, AName, TSFInt32, AInEvent);
-end;
-
-procedure TSFInt32Event.Send(const Value: LongInt);
-begin
-end;
 
 { TSFNodeEvent --------------------------------------------------------------- }
 
