@@ -180,9 +180,6 @@ type
   {$I x3dnodes_standard_core.inc}
   {$I x3dnodes_standard_grouping.inc}
 
-  { More X3D nodes, not from X3D standard }
-  {$I x3dnodes_x3dinterfacedeclaration.inc}
-
 {$undef read_interface}
 
 implementation
@@ -199,8 +196,6 @@ uses
 {$define read_implementation}
 
 {$I x3dnodes_initial_types.inc}
-
-{$I x3dnodes_x3dinterfacedeclaration.inc}
 
 // These must be includes after x3dnodes_encoding_{classic,xml}.inc
 {$I x3dnodes_x3dnode.inc}

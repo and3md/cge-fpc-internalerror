@@ -57,7 +57,6 @@
     FPrototypeInstanceHelpers: TX3DNode;
     FDefaultContainerField: string;
     FHasInterfaceDeclarations: TX3DAccessTypes;
-    FInterfaceDeclarations: TX3DInterfaceDeclarationList;
     ///FScene: TX3DEventsEngine;
     FInternalSceneShape: TObject;
 
@@ -733,8 +732,6 @@
       read FHasInterfaceDeclarations
       write SetHasInterfaceDeclarations default [];
 
-    property InterfaceDeclarations: TX3DInterfaceDeclarationList
-      read FInterfaceDeclarations;
     { @groupEnd }
 
     { Scene that will be notified about changes to this node.
@@ -753,16 +750,6 @@
       @exclude }
     property InternalSceneShape: TObject
       read FInternalSceneShape write FInternalSceneShape;
-
-    { This will be always called by VRML parsers after adding new item
-      to our InterfaceDeclarations.
-
-      In this class, this simply adds
-      IDecl.FieldOrEvent to our normal fields/events by IDecl.AddFieldOrEvent.
-      You may override this in subclasses to react in some special way
-      to new fields/events, for example Script node may register here
-      to receive notification when input event is received. }
-    procedure PostAddInterfaceDeclaration(IDecl: TX3DInterfaceDeclaration); virtual;
 
     { Add to node InterfaceDeclarations given field.
       Sets the field's exposed to given Exposed parameter, for comfort.
@@ -899,7 +886,6 @@ begin
   FEvents := TX3DEventList.Create(false);
 
   FHasInterfaceDeclarations := [];
-  FInterfaceDeclarations := nil;
 
   CreateNode;
 end;
@@ -948,8 +934,6 @@ begin
       end;
     FreeAndNil(FFields);
   end;
-
-  FreeAndNil(FInterfaceDeclarations);
 
   FreeAndNil(FVRML1Children);
   FreeAndNil(FVRML1Parents);
@@ -1678,16 +1662,6 @@ begin
   if Value <> HasInterfaceDeclarations then
   begin
     FHasInterfaceDeclarations := Value;
-    if HasInterfaceDeclarations <> [] then
-    begin
-      { make sure InterfaceDeclarations is non-nil }
-      if FInterfaceDeclarations = nil then
-        FInterfaceDeclarations := TX3DInterfaceDeclarationList.Create(true);
-    end else
-    begin
-      { make sure InterfaceDeclarations is nil }
-      FreeAndNil(FInterfaceDeclarations);
-    end;
   end;
 end;
 
@@ -1725,7 +1699,6 @@ end;
 function TX3DNode.DeepCopyCore(CopyState: TX3DNodeDeepCopyState): TX3DNode;
 var
   I: Integer;
-  IDecl: TX3DInterfaceDeclaration;
 begin
   Result := DeepCopyCreate(CopyState);
 
@@ -1753,16 +1726,6 @@ begin
     { Copy InterfaceDeclarations first, before copying Fields and Events
       (as some Fields and Events come from InterfaceDeclarations). }
     Result.HasInterfaceDeclarations := HasInterfaceDeclarations;
-
-    if InterfaceDeclarations <> nil then
-    begin
-      for I := 0 to InterfaceDeclarations.Count - 1 do
-      begin
-        IDecl := InterfaceDeclarations[I].DeepCopy(Result, CopyState);
-        Result.InterfaceDeclarations.Add(IDecl);
-        Result.PostAddInterfaceDeclaration(IDecl);
-      end;
-    end;
 
     { TODO: No need to copy prototypes for now?
 
@@ -1819,20 +1782,8 @@ begin
   finally FreeAndNil(CopyState); end;
 end;
 
-procedure TX3DNode.PostAddInterfaceDeclaration(IDecl: TX3DInterfaceDeclaration);
-begin
-  IDecl.AddFieldOrEvent(Self);
-end;
-
 procedure TX3DNode.AddCustomFieldOrEvent(AFieldOrEvent: TX3DFieldOrEvent);
-var
-  IDecl: TX3DInterfaceDeclaration;
 begin
-  IDecl := TX3DInterfaceDeclaration.Create(Self);
-  IDecl.FieldOrEvent := AFieldOrEvent;
-  AFieldOrEvent.ParentInterfaceDeclaration := IDecl;
-  InterfaceDeclarations.Add(IDecl);
-  PostAddInterfaceDeclaration(IDecl);
 end;
 
 procedure TX3DNode.AddCustomField(AField: TX3DField);
