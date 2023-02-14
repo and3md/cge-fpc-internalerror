@@ -17,25 +17,6 @@
 
 {$ifdef read_interface}
 
-  { Private stuff for TX3DNode.DeepCopy and friends implementation. }
-  TX3DNodeDeepCopyState = class
-  private
-    { These two lists must always have exactly the same length. }
-    Original, New: TX3DNodeList;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    { Return a copy or OriginalNode.
-
-      To keep sharing of nodes (DEF/USE mechanism) within the newly
-      created copy, we need a list of already duplicated children.
-      This method uses and updates such list. When called for the
-      first time with OriginalNode, it actually creates a duplicate
-      (by OriginalNode.DeepCopy). Next time, it will just return
-      this copy. }
-    function DeepCopy(OriginalNode: TX3DNode): TX3DNode;
-  end;
-
   { X3D node. Every VRML/X3D node class descends from this. }
   TX3DNode = class(TX3DFileItem)
   private
@@ -75,19 +56,6 @@
     function GetFields(const Index: Integer): TX3DField;
     function GetEvents(const Index: Integer): TX3DEvent;
     procedure UnregisterSceneCallback(Node: TX3DNode);
-  protected
-
-    { Does actual DeepCopy work. You can override this to copy some
-      more properties for descendants. }
-    function DeepCopyCore(CopyState: TX3DNodeDeepCopyState): TX3DNode; virtual;
-
-    { This should be a mere call to constructor of your own class.
-
-      In TX3DNode, this simply calls default virtual constructor,
-      which is Ok for all normal nodes. But we have some special nodes,
-      like TX3DPrototypeNode or TX3DUnknownNode, that simply cannot
-      be created by default constructor. They need to override this. }
-    function DeepCopyCreate(CopyState: TX3DNodeDeepCopyState): TX3DNode; virtual;
   protected
     { Are VRML 1.0 children allowed.
       This condition is checked in VRML1ChildAdd, so it's strictly
@@ -832,36 +800,6 @@
 {$ifdef read_implementation}
 
 { TX3DNodeDeepCopyState ----------------------------------------------------- }
-
-constructor TX3DNodeDeepCopyState.Create;
-begin
-  inherited;
-  Original := TX3DNodeList.Create(false);
-  New := TX3DNodeList.Create(false);
-end;
-
-destructor TX3DNodeDeepCopyState.Destroy;
-begin
-  FreeAndNil(Original);
-  FreeAndNil(New);
-  inherited;
-end;
-
-function TX3DNodeDeepCopyState.DeepCopy(OriginalNode: TX3DNode): TX3DNode;
-var
-  I: Integer;
-begin
-  Assert(New.Count = Original.Count);
-
-  I := Original.IndexOf(OriginalNode);
-  if I = -1 then
-  begin
-    { DeepCopyCore will expand (Original, New) lists by (OriginalNode, Result).
-      This is needed, see DeepCopyCore comments. }
-    Result := OriginalNode.DeepCopyCore(Self);
-  end else
-    Result := New[I];
-end;
 
 { TX3DNode ------------------------------------------------------------------ }
 
@@ -1660,86 +1598,9 @@ begin
   end;
 end;
 
-function TX3DNode.DeepCopyCreate(CopyState: TX3DNodeDeepCopyState): TX3DNode;
-begin
-  Result := TX3DNodeClass(ClassType).Create(X3DName, BaseUrl);
-end;
-
-function TX3DNode.DeepCopyCore(CopyState: TX3DNodeDeepCopyState): TX3DNode;
-var
-  I: Integer;
-begin
-  Result := DeepCopyCreate(CopyState);
-
-  try
-
-    { We expand CopyState arrays now, right after DeepCopyCreate.
-      This is needed, as later during DeepCopyCore we may need this node
-      in case of loops within hierarchy.
-
-      For example, internal
-      routes from TX3DPrototypeNode are established to handle "IS" clauses
-      for events. There routes are to/from TX3DPrototypeNode, and are
-      also placed within this TX3DPrototypeNode instance. So when copying
-      node routes, this node must already be present in CopyState arrays.
-
-      Also, in the future we will have to allow loops in Script nodes
-      (USE within Script node may refer to the same node). So again loop
-      will be created. }
-    CopyState.Original.Add(Self);
-    CopyState.New.Add(Result);
-
-    for I := 0 to VRML1ChildrenCount - 1 do
-      Result.VRML1ChildAdd(CopyState.DeepCopy(VRML1Children[I]));
-
-    { Copy InterfaceDeclarations first, before copying Fields and Events
-      (as some Fields and Events come from InterfaceDeclarations). }
-    Result.HasInterfaceDeclarations := HasInterfaceDeclarations;
-
-    { TODO: No need to copy prototypes for now?
-
-      This DeepCopy is used for now by protos expanding.
-      It does not need prototype links (as protos are already expanded when copying,
-      and they don't need anything more).
-
-      for I := 0 to Prototypes.Count - 1 do
-        ...(Prototypes[I]);
-    }
-
-    Assert(FieldsCount = Result.FieldsCount);
-    Assert(EventsCount = Result.EventsCount);
-
-    for I := 0 to FieldsCount - 1 do
-      { Copying InterfaceDeclarations field/event already handled. }
-      if Fields[I].ParentInterfaceDeclaration = nil then
-      begin
-      end;
-
-    for I := 0 to EventsCount - 1 do
-      { Copying InterfaceDeclarations field/event already handled. }
-
-    if PrototypeInstance then
-    begin
-      Result.FPrototypeInstance := PrototypeInstance;
-      if PrototypeInstanceHelpers <> nil then
-        Result.FPrototypeInstanceHelpers := CopyState.DeepCopy(PrototypeInstanceHelpers);
-    end;
-
-    Result.DefaultContainerField := DefaultContainerField;
-  except
-    FreeAndNil(Result);
-    raise;
-  end;
-end;
-
 function TX3DNode.DeepCopy: TX3DNode;
-var
-  CopyState: TX3DNodeDeepCopyState;
 begin
-  CopyState := TX3DNodeDeepCopyState.Create;
-  try
-    Result := CopyState.DeepCopy(Self);
-  finally FreeAndNil(CopyState); end;
+  Result := nil;
 end;
 
 procedure TX3DNode.AddCustomFieldOrEvent(AFieldOrEvent: TX3DFieldOrEvent);

@@ -55,9 +55,6 @@
     FScale: Single;
   private
     procedure TopLevelCheckChild(const Child: TX3DNode);
-  protected
-    function DeepCopyCore(CopyState: TX3DNodeDeepCopyState): TX3DNode; override;
-
   public
     ForceVersion: TX3DVersion;
 
@@ -191,21 +188,6 @@ begin
     finally FreeAndNil(FileItems) end;
   end else
     inherited;
-end;
-
-function TX3DRootNode.DeepCopyCore(CopyState: TX3DNodeDeepCopyState): TX3DNode;
-var
-  Res: TX3DRootNode;
-begin
-  Result := inherited;
-
-  Res := Result as TX3DRootNode;
-
-  Res.HasForceVersion := HasForceVersion;
-  Res.ForceVersion := ForceVersion;
-  Res.Scale := Scale;
-  Res.Profile := Profile;
-  Res.Components.Assign(Components);
 end;
 
 procedure TX3DRootNode.ForceSaveAsX3D(const AMajor: Integer = 3;
