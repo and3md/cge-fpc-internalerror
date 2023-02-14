@@ -39,7 +39,6 @@ type
   {$I castlefields_x3dsinglefield.inc}
   {$I castlefields_x3dsinglefield_descendants.inc}
   {$I castlefields_x3dmultfield.inc}
-  {$I castlefields_x3dfieldsmanager.inc}
 
 {$undef read_interface}
 
@@ -61,8 +60,7 @@ uses Generics.Defaults,
 {$I castlefields_x3dsinglefield.inc}
 {$I castlefields_x3dsinglefield_descendants.inc}
 {$I castlefields_x3dmultfield.inc}
-{$I castlefields_x3dfieldsmanager.inc}
 
 finalization
-  FreeAndNil(FX3DFieldsManager);
+
 end.

@@ -218,7 +218,6 @@ uses
 
 initialization
 
-  X3DFieldsManager.RegisterClasses([TSFNode, TMFNode]);
 finalization
 
 end.
