@@ -62,6 +62,7 @@
       implementation (as TX3DPrototypeNode.Instantiate sets it to @true
       and changes back to @false for appropriate nodes). }
     NeedsInstantiateIsClause: boolean;
+    //ATest:Integer; //add to get internal error
 
     function GetVRML1Child(i: integer): TX3DNode;
     function GetVRML1Parent(i: integer): TX3DNode;
