@@ -45,7 +45,7 @@
     procedure AssignDefaultValueFromValue; override;
     procedure Send(const AValue: TItem); overload;
 
-    class function CreateEvent(const AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean): TX3DEvent; override;
+    class function CreateEvent: TX3DEvent; override;
   end;
 
 {$endif read_interface}
@@ -161,9 +161,9 @@ begin
   DefaultValueExists := true;
 end;
 
-class function TSFGenericVector.CreateEvent(const AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean): TX3DEvent;
+class function TSFGenericVector.CreateEvent: TX3DEvent;
 begin
-  Result := TEvent.Create(AParentNode, AName, AInEvent);
+  Result := TEvent.Create;
 end;
 
 procedure TSFGenericVector.Send(const AValue: TItem);

@@ -109,7 +109,7 @@
     property ParentNode: TX3DNode read FParentNode;
 
     class function X3DType: string; override;
-    class function CreateEvent(const AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean): TX3DEvent; override;
+    class function CreateEvent: TX3DEvent; override;
 
     { Checks is the Child allowed as a value of this SFNode,
       and makes WritelnWarning if not.
@@ -436,9 +436,9 @@ begin
     Result := nil;
 end;
 
-class function TSFNode.CreateEvent(const AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean): TX3DEvent;
+class function TSFNode.CreateEvent: TX3DEvent;
 begin
-  Result := TSFNodeEvent.Create(AParentNode, AName, AInEvent);
+  Result := TSFNodeEvent.Create;
 end;
 
 procedure TSFNode.Send(const AValue: TX3DNode);

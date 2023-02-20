@@ -352,7 +352,7 @@
     class function TypeName: string; deprecated 'use X3DType';
 
     { Create TX3DEvent descendant suitable as exposed event for this field. }
-    class function CreateEvent(const AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean): TX3DEvent; virtual;
+    class function CreateEvent: TX3DEvent; virtual;
 
     { Copies the current field value. Contrary to TPersistent.Assign, this
       doesn't copy the rest of properties.
@@ -600,9 +600,9 @@ begin
   Result := TX3DFieldClass(ClassType);
 end;
 
-class function TX3DField.CreateEvent(const AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean): TX3DEvent;
+class function TX3DField.CreateEvent: TX3DEvent;
 begin
-  Result := TX3DEvent.Create(AParentNode, AName, ExposedEventsFieldClass, AInEvent);
+  Result := TX3DEvent.Create(ExposedEventsFieldClass);
 end;
 
 procedure TX3DField.SetExposed(Value: boolean);
@@ -614,8 +614,8 @@ begin
     FExposed := Value;
     if Exposed then
     begin
-      FExposedEvents[false] := CreateEvent(nil, 'X3DName' + ChangedSuffix, false);
-      FExposedEvents[true] := CreateEvent(nil, SetPrefix + 'X3DName', true);
+      FExposedEvents[false] := CreateEvent;
+      FExposedEvents[true] := CreateEvent;
 
       FreeAndNil(FExposedEvents[false]);
       FreeAndNil(FExposedEvents[true]);

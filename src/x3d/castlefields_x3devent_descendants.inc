@@ -29,7 +29,7 @@
   { }
   TSFNodeEvent = class(TX3DEvent)
   public
-    constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
+    constructor Create;
   end;
 
   { Universal input event that can receive value of any type.
@@ -58,9 +58,9 @@
 
 { TSFNodeEvent --------------------------------------------------------------- }
 
-constructor TSFNodeEvent.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
+constructor TSFNodeEvent.Create;
 begin
-  inherited Create(AParentNode, AName, TSFNode, AInEvent);
+  inherited Create(TSFNode);
 end;
 
 { TSFRotationEvent ----------------------------------------------------------- }
@@ -77,7 +77,7 @@ end;
 
 constructor TXFAnyEvent.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
 begin
-  inherited Create(AParentNode, AName, TX3DField, AInEvent);
+  inherited Create(TX3DField);
 end;
 
 {$endif read_implementation}
