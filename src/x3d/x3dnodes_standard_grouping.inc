@@ -66,24 +66,6 @@
       where profile is empty.)
       Relevant only if this node is the root of X3D file. }
     property Profile: string read FProfile write FProfile;
-
-    { Set properties to force saving this node graph as X3D.
-      If we're already configured to save as X3D (major version >= 3)
-      then do nothing. Otherwise, sets major/minor versions
-      (by default: for X3D 3.2; make sure AMajor is >= 3)
-      and sets X3D profile (default: Interchange). }
-    procedure ForceSaveAsX3D(const AMajor: Integer = 3;
-      const AMinor: Integer = 2;
-      const AProfile: string = 'Interchange');
-
-    { Scale of the model.
-      When loading, this is set to honor @code("UNIT length ...")
-      declaration in X3D 3.3.
-      It scales model such that 1 unit = 1 meter. When one model is inlined
-      inside another (e.g. using X3D Inline node), this is adjusted to
-      the existing scale of the outer model (always to make the resulting
-      complete node graph keep the assumption 1 unit = 1 meter). }
-    property Scale: Single read FScale write FScale default 1.0;
   end;
 
 {$endif read_interface}
@@ -102,20 +84,6 @@ end;
 destructor TX3DRootNode.Destroy;
 begin
   inherited;
-end;
-
-procedure TX3DRootNode.ForceSaveAsX3D(const AMajor: Integer = 3;
-  const AMinor: Integer = 2;
-  const AProfile: string = 'Interchange');
-begin
-  if (not HasForceVersion) or
-     (ForceVersion.Major < 3) then
-  begin
-    HasForceVersion := true;
-    ForceVersion.Major := AMajor;
-    ForceVersion.Minor := AMinor;
-    Profile := AProfile;
-  end;
 end;
 
 procedure TX3DRootNode.TopLevelCheckChild(const Child: TX3DNode);

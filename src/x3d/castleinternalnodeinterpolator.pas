@@ -53,7 +53,6 @@ begin
         This is necessary for WrapRootNode working Ok lower in this file. }
       TX3DRootNode(Result).HasForceVersion := (Model1 as TX3DRootNode).HasForceVersion;
       TX3DRootNode(Result).ForceVersion := (Model1 as TX3DRootNode).ForceVersion;
-      TX3DRootNode(Result).Scale := (Model1 as TX3DRootNode).Scale;
       TX3DRootNode(Result).Profile := (Model1 as TX3DRootNode).Profile;
     end;
   except
