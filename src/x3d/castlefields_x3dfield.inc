@@ -133,11 +133,6 @@
       end;
 
     var
-      { Internally set to non-nil only on fields representing event value
-        (Value parameter in TX3DEventReceive callback),
-        in case they correspond to a fading-in or fading-out animation. }
-      FPartialSendIgnore: Cardinal; static;
-
       { Used by fields that have their value affected by the fading-in/fading-out
         animation. }
       PartialReceived: TPartialReceived;

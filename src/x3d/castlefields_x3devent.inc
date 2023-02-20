@@ -27,9 +27,6 @@
     FParentExposedField: TX3DField;
     Temp: TX3DField;
     TempUsed: boolean;
-
-    SendLevel: Cardinal;
-
   public
     constructor Create(AParentNode: TX3DFileItem;
       const AName: string;
