@@ -172,7 +172,12 @@ uses SysUtils, Generics.Collections, Classes, DOM,
 {$define read_interface}
 
 type
-  {$I x3dnodes_initial_types.inc}
+  TX3DNode = class;
+  TX3DRootNode = class;
+  TSFNode = class;
+
+  TX3DNodeClass = class of TX3DNode;
+
   {$I x3dnodes_x3dnode.inc}
   {$I x3dnodes_sfnode.inc}
 
@@ -183,19 +188,8 @@ type
 
 implementation
 
-// Silence warnings about using CastleNURBS (that will soon be renamed CastleInternalNurbs)
-{$warnings off}
-
-uses
-  StrUtils;
-
-{$warnings on}
-
 {$define read_implementation}
 
-{$I x3dnodes_initial_types.inc}
-
-// These must be includes after x3dnodes_encoding_{classic,xml}.inc
 {$I x3dnodes_x3dnode.inc}
 {$I x3dnodes_sfnode.inc}
 
