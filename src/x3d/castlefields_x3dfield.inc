@@ -87,39 +87,12 @@
       must be ignored. }
     procedure ExposedEventReceive(Event: TX3DEvent; Value: TX3DField); virtual;
   public
-    { Normal constructor.
-
-      @italic(Descendants implementors notes:)
-      when implementing constructors in descendants,
-      remember that Create in this class actually just calls CreateUndefined,
-      and CreateUndefined is virtual. So when calling @code(inherited Create),
-      be aware that actually you may be calling your own overriden
-      CreateUndefined.
-
-      In fact, in descendants you should focus on moving all the work to
-      CreateUndefined constructor.
-      The Create constructor should be just a comfortable extension of
-      CreateUndefined, that does the same and addiionally gets parameters
-      that specify default field value. }
-    constructor Create(const AParentNode: TX3DFileItem;
-      const AExposed: boolean; const AName: string);
+    constructor Create(const AExposed: boolean);
 
     destructor Destroy; override;
 
-    { Parse inits properties from Lexer.
-
-      In this class, Parse only appends to IsClauseNames:
-      if we stand on "IS" clause (see VRML 2.0 spec about "IS" clause)
-      and IsClauseAllowed then we append specified identifier to
-      IsClauseNames.
-
-      If "IS" clause not found, we call ParseValue which should
-      actually parse field's value.
-      Descendants should override ParseValue. }
     procedure Parse(Lexer: TX3DLexer);
 
-    { Does this field generate/accept events, that is
-      an "exposedField" (in VRML 2.0) or "inputOutput" (in X3D). }
     property Exposed: boolean read FExposed write SetExposed default false;
 
     { These are the set_xxx and xxx_changed events exposed by this field.
@@ -274,8 +247,7 @@
 
 { TX3DField ------------------------------------------------------------- }
 
-constructor TX3DField.Create(const AParentNode: TX3DFileItem;
-  const AExposed: boolean; const AName: string);
+constructor TX3DField.Create(const AExposed: boolean);
 begin
   inherited Create;
   FExposedEventsLinked := true;

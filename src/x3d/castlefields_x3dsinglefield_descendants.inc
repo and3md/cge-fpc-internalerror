@@ -28,8 +28,7 @@
     DefaultValue: TItem;
     DefaultValueExists: boolean;
 
-    constructor Create(const AParentNode: TX3DFileItem;
-      const AExposed: boolean; const AName: string; const AValue: TItem);
+    constructor Create(const AExposed: boolean; const AValue: TItem);
 
     procedure AssignLerp(const A: Double; Value1, Value2: TX3DField); override;
     function CanAssignLerp: boolean; override;
@@ -77,10 +76,9 @@
 
 { TSFGenericVector ----------------------------------------------------------- }
 
-constructor TSFGenericVector.Create(const AParentNode: TX3DFileItem;
-  const AExposed: boolean; const AName: string; const AValue: TItem);
+constructor TSFGenericVector.Create(const AExposed: boolean; const AValue: TItem);
 begin
-  inherited Create(AParentNode, AExposed, AName);
+  inherited Create(AExposed);
 
   Value := AValue;
 end;
@@ -114,7 +112,7 @@ var
   FieldValue: TSFGenericVector;
 begin
   FieldValue := TSFGenericVector(
-    TX3DFieldClass(ClassType).Create(nil, false, 'X3DName'));
+    TX3DFieldClass(ClassType).Create(false));
   try
     FieldValue.Value := AValue;
     Send(FieldValue);

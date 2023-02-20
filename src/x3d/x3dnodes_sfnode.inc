@@ -47,14 +47,8 @@
     procedure DestructionNotification(Node: TX3DNode);
   public
     constructor Create(const AParentNode: TX3DNode;
-      const AExposed: boolean; const AName: string;
-      const AAllowedChildrenClasses: array of TX3DNodeClass;
-      const AValue: TX3DNode = nil); overload;
+      const AExposed: boolean; const AValue: TX3DNode = nil); overload;
     { Constructor that allows as children any implementor of given interface. }
-    constructor Create(const AParentNode: TX3DNode;
-      const AExposed: boolean; const AName: string;
-      const AnAllowedChildrenInterface: TGUID;
-      const AValue: TX3DNode = nil); overload;
     destructor Destroy; override;
 
     { Default value of SFNode field.
@@ -152,34 +146,15 @@
 
 { TSFNode --------------------------------------------------------------------- }
 constructor TSFNode.Create(const AParentNode: TX3DNode;
-  const AExposed: boolean; const AName: string;
-  const AAllowedChildrenClasses: array of TX3DNodeClass;
-  const AValue: TX3DNode);
+  const AExposed: boolean; const AValue: TX3DNode);
 begin
-  inherited Create(AParentNode, AExposed, AName);
+  inherited Create(AExposed);
 
   { FParentNode is just a copy of inherited (TX3DFieldOrEvent) FParentNode,
     but casted to TX3DNode }
   FParentNode := AParentNode;
 
   AllowedChildren := acClasses;
-
-  Value := AValue;
-end;
-
-constructor TSFNode.Create(const AParentNode: TX3DNode;
-  const AExposed: boolean; const AName: string;
-  const AnAllowedChildrenInterface: TGUID;
-  const AValue: TX3DNode);
-begin
-  inherited Create(AParentNode, AExposed, AName);
-
-  { FParentNode is just a copy of inherited (TX3DFieldOrEvent) FParentNode,
-    but casted to TX3DNode }
-  FParentNode := AParentNode;
-
-  AllowedChildren := acInterface;
-  AllowedChildrenInterface := AnAllowedChildrenInterface;
 
   Value := AValue;
 end;
@@ -282,7 +257,7 @@ var
 begin
   { We construct using CreateUndefined constructor,to have AllowedChildren = acAll }
   { AExposed = false below, because not needed otherwise. }
-  FieldValue := TSFNode.Create(ParentNode, false, 'X3DName');
+  FieldValue := TSFNode.Create(ParentNode, false);
   try
     FieldValue.Value := AValue;
     Send(FieldValue);
