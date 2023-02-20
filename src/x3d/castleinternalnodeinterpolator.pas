@@ -25,7 +25,7 @@ uses Classes, X3DNodes;
 
 implementation
 
-uses SysUtils, X3DFields;
+uses SysUtils;
 
 { Linear interpolation between Model1 and Model2.
   A = 0 means Model1, A = 1 means Model2, A between 0 and 1 is lerp
