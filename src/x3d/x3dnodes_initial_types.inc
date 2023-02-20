@@ -23,35 +23,8 @@
 
   TX3DNodeClass = class of TX3DNode;
 
-  TX3DNodeProc = procedure (Node: TX3DNode) of object;
-  TX3DNodeSearchProc = function (Node: TX3DNode): Pointer of object;
-
-  PTraversingInfo = ^TTraversingInfo;
-  TTraversingInfo = record
-    Node: TX3DNode;
-    ParentInfo: PTraversingInfo;
-  end;
-
   TEnumerateChildrenFunction =
     function (Node, Child: TX3DNode): Pointer of object;
-
-  TEnumerateReplaceNodesFunction =
-    procedure (ParentNode: TX3DNode; var Node: TX3DNode) of object;
-
-  TNodeTransformationChange = (
-    ntcNone,
-    ntcSwitch, //< TSwitchNode
-    ntcLOD, //< TAbstractLODNode
-    ntcTransform, //< ITransformNode
-    ntcGeometry, //< TAbstractGeometryNode
-    ntcBackground, //< TAbstractBackgroundNode
-    ntcFog, //< TFogNode
-    ntcViewpoint, //< TAbstractViewpointNode
-    ntcLight, //< TAbstractLightNode
-    ntcProximitySensor, //< TProximitySensorNode
-    ntcVisibilitySensor //< TVisibilitySensorNode
-  );
-
 {$endif read_interface}
 
 {$ifdef read_implementation}
