@@ -24,27 +24,10 @@ interface
 uses Classes, Generics.Collections,
   X3DNodes;
 
-type
-  TGetKeyNodeWithTime = procedure (const Index: Cardinal;
-    out KeyNode: TX3DRootNode; out Time: Single) of object;
-
 implementation
 
 uses SysUtils, XMLRead, DOM, Math,
   X3DFields;
-
-{ EModelsStructureDifferent -------------------------------------------------- }
-
-type
-  EModelsStructureDifferent = class(Exception)
-    constructor CreateFmt(const S: string; const Args: array of const);
-  end;
-
-constructor EModelsStructureDifferent.CreateFmt(const S: string;
-  const Args: array of const);
-begin
-  inherited CreateFmt('Models are structurally different: ' + S, Args);
-end;
 
 { Linear interpolation between Model1 and Model2.
   A = 0 means Model1, A = 1 means Model2, A between 0 and 1 is lerp
@@ -64,9 +47,6 @@ function NodesLerp(const A: Single; Model1, Model2: TX3DNode): TX3DNode;
     else
       Target.Value := Field1.Value;
   end;
-
-var
-  I: Integer;
 begin
   if Model1 = Model2 then
     Exit(Model1);
