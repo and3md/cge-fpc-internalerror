@@ -96,27 +96,6 @@ type
     }
     class function LoadAnimFramesToKeyNodes(const URL: string): TAnimationList;
 
-    { From key nodes, create a series of baked nodes (with final
-      animation pose already calculated) representing an animation.
-
-      KeyNodesCount must always be at least one,
-      you cannot create animation from an empty list.
-
-      The returned animation must be freed by the caller.
-      You should take care to free the contained @link(TBakedAnimation.Nodes)
-      (they are @italic(not) automatically freed by freeing TBakedAnimation).
-
-      It always contains the "key" nodes returned by GetKeyNodeWithTime,
-      so there's no need to free the "key" nodes if you already take care of freeing
-      the resulting nodes.
-
-      We do not set the Name, Loop, Backwards, BoundingBox properties of the TBakedAnimation.
-      Caller should set them, to finalize the initialization of TBakedAnimation. }
-    class function BakeToSequence(const GetKeyNodeWithTime: TGetKeyNodeWithTime;
-      const KeyNodesCount: Cardinal;
-      ScenesPerTime: Cardinal;
-      const Epsilon: Single): TBakedAnimation;
-
     { Load animations (read by @link(LoadAnimFramesToKeyNodes) to a series
       of key nodes) into a X3D animation.
 
@@ -442,82 +421,6 @@ begin
 end;
 
 { TNodeInterpolator ---------------------------------------------------------- }
-
-class function TNodeInterpolator.BakeToSequence(
-  const GetKeyNodeWithTime: TGetKeyNodeWithTime;
-  const KeyNodesCount: Cardinal;
-  ScenesPerTime: Cardinal;
-  const Epsilon: Single): TBakedAnimation;
-var
-  I: Integer;
-  StructurallyEqual, KeyNodesEqual: boolean;
-  LastNodesIndex: Integer;
-  LastKeyNode, NewKeyNode: TX3DRootNode;
-  LastTime, NewTime: Single;
-  NodesIndex: Integer;
-begin
-  ScenesPerTime := Round(ScenesPerTime * 1);
-
-  Result := TBakedAnimation.Create;
-  try
-    Assert(KeyNodesCount > 0);
-
-    { KeyNodes[0] goes to Nodes[0], that's easy }
-    GetKeyNodeWithTime(0, NewKeyNode, NewTime);
-
-    LastNodesIndex := 0;
-    LastTime := NewTime;
-    LastKeyNode := NewKeyNode;
-
-    { calculate TimeBegin at this point }
-    Result.TimeBegin := NewTime;
-
-    for I := 1 to KeyNodesCount - 1 do
-    begin
-      { Now add KeyNodes[I] }
-      GetKeyNodeWithTime(I, NewKeyNode, NewTime);
-
-      StructurallyEqual := false;
-
-      try
-        CheckNodesStructurallyEqual(LastKeyNode, NewKeyNode, Epsilon);
-        StructurallyEqual := true;
-      except
-        on E: EModelsStructureDifferent do
-        begin
-          ;
-        end;
-      end;
-
-      if StructurallyEqual then
-      begin
-        { Try to merge it with LastKeyNode.
-          Then initialize Nodes[LastNodesIndex + 1 to Nodes.Count - 1]. }
-        KeyNodesEqual := NodesMerge(NewKeyNode, LastKeyNode, Epsilon);
-        if KeyNodesEqual then
-        begin
-          { In this case don't waste memory, simply reuse Nodes[LastNodesIndex]. }
-          FreeAndNil(NewKeyNode);
-        end else
-        begin
-          ;
-        end;
-      end else
-      begin
-        { We cannot interpolate between last and new node.
-          So just duplicate last node until Nodes.Count - 2,
-          and at Nodes.Last insert new node. }
-        LastKeyNode := NewKeyNode;
-      end;
-
-      LastTime := NewTime;
-    end;
-
-    { calculate TimeEnd at this point }
-    Result.TimeEnd := NewTime;
-
-  except FreeAndNil(Result); raise end;
-end;
 
 class function TNodeInterpolator.LoadAnimFramesToKeyNodes(const URL: string): TAnimationList;
 
