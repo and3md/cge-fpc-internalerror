@@ -15,21 +15,6 @@
 
 {$ifdef read_interface}
 
-  TStringLongIntMap = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TDictionary<string, LongInt>)
-  strict private
-    function GetItems(const AKey: string): LongInt;
-    procedure SetItems(const AKey: string; const AValue: LongInt);
-  public
-    { Assign contents (all keys, values) of another TStringLongIntMap instance. }
-    procedure Assign(const Source: TStringLongIntMap);
-
-    { Access dictionary items.
-      Setting this is allowed regardless if the key previously existed or not,
-      in other words: setting this does AddOrSetValue, contrary to the ancestor TDictionary
-      that only allows setting when the key already exists. }
-    property Items [const AKey: string]: LongInt read GetItems write SetItems; default;
-  end;
-
   { A top-level VRML/X3D node. This is what you get by loading 3D model from file.
 
     It is declared as a descendant of VRML/X3D >= 2.0 Group node,
@@ -51,7 +36,6 @@
     FHasForceVersion: boolean;
     FSaveAsRootNode: boolean;
     FProfile: string;
-    FComponents: TStringLongIntMap;
     FScale: Single;
   private
     procedure TopLevelCheckChild(const Child: TX3DNode);
@@ -83,10 +67,6 @@
       Relevant only if this node is the root of X3D file. }
     property Profile: string read FProfile write FProfile;
 
-    { Components and levels required for this X3D file.
-      Relevant if this node is the root of X3D file. }
-    property Components: TStringLongIntMap read FComponents;
-
     { Set properties to force saving this node graph as X3D.
       If we're already configured to save as X3D (major version >= 3)
       then do nothing. Otherwise, sets major/minor versions
@@ -110,41 +90,17 @@
 
 {$ifdef read_implementation}
 
-
-{ TStringLongIntMap ---------------------------------------------------------- }
-
-procedure TStringLongIntMap.Assign(const Source: TStringLongIntMap);
-var
-  Pair: TDictionaryPair;
-begin
-  Clear;
-  for Pair in Source do
-    Items[Pair.Key] := Pair.Value;
-end;
-
-function TStringLongIntMap.GetItems(const AKey: string): LongInt;
-begin
-  Result := inherited Items[AKey];
-end;
-
-procedure TStringLongIntMap.SetItems(const AKey: string; const AValue: LongInt);
-begin
-  AddOrSetValue(AKey, AValue);
-end;
-
 { TX3DRootNode --------------------------------------------------------------- }
 
 procedure TX3DRootNode.CreateNode;
 begin
   inherited;
-  FComponents := TStringLongIntMap.Create;
   FSaveAsRootNode := true;
   FScale := 1;
 end;
 
 destructor TX3DRootNode.Destroy;
 begin
-  FreeAndNil(FComponents);
   inherited;
 end;
 

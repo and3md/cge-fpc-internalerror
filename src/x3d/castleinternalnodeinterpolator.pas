@@ -55,7 +55,6 @@ begin
       TX3DRootNode(Result).ForceVersion := (Model1 as TX3DRootNode).ForceVersion;
       TX3DRootNode(Result).Scale := (Model1 as TX3DRootNode).Scale;
       TX3DRootNode(Result).Profile := (Model1 as TX3DRootNode).Profile;
-      TX3DRootNode(Result).Components.Assign((Model1 as TX3DRootNode).Components);
     end;
   except
     FreeAndNil(Result);
