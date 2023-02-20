@@ -20,21 +20,11 @@
   strict private
     FFieldClass: TX3DFieldClass;
     FInEvent: boolean;
-    { To avoid allocating memory for FNotifications list in the most-common case
-      when 0 or 1 notification is enough, store 1st notification in special
-      field instead. }
     //ATest: Integer; // uncomment to get internal error
-    FParentExposedField: TX3DField;
-    Temp: TX3DField;
-    TempUsed: boolean;
   public
     constructor Create(AParentNode: TX3DFileItem;
       const AName: string;
       const AFieldClass: TX3DFieldClass; const AInEvent: boolean);
-    destructor Destroy; override;
-
-    { Internal helper utility for SendXxx implementations. @exclude }
-    procedure FreeTemp(const Field: TX3DField);
 
     property FieldClass: TX3DFieldClass read FFieldClass;
 
@@ -44,11 +34,6 @@
     { This only reads (optional) "IS" clause of the event, as may occur
       in VRML nodeBodyStatement. }
     procedure Parse(Lexer: TX3DLexer);
-
-    { If this event is an exposed event belonging to some field,
-      this references parent field. Otherwise it's @nil. }
-    property ParentExposedField: TX3DField
-      read FParentExposedField write FParentExposedField;
 
     { Send a value to event. For input fields, this is used by routes, scripts
       etc. to send an event to a field. For output fields, this is used by
@@ -112,12 +97,6 @@ begin
   FInEvent := AInEvent;
 end;
 
-destructor TX3DEvent.Destroy;
-begin
-  FreeAndNil(Temp);
-  inherited;
-end;
-
 procedure TX3DEvent.Parse(Lexer: TX3DLexer);
 begin
 end;
@@ -131,13 +110,6 @@ end;
 function TX3DEvent.SendNeeded: boolean;
 begin
   Result := false;
-end;
-
-procedure TX3DEvent.FreeTemp(const Field: TX3DField);
-begin
-  if Field = Temp then
-    TempUsed := false else
-    Field.Free;
 end;
 
 { TX3DEventList ------------------------------------------------------------ }

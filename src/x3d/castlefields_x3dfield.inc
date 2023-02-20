@@ -615,9 +615,7 @@ begin
     if Exposed then
     begin
       FExposedEvents[false] := CreateEvent(nil, 'X3DName' + ChangedSuffix, false);
-      FExposedEvents[false].ParentExposedField := Self;
       FExposedEvents[true] := CreateEvent(nil, SetPrefix + 'X3DName', true);
-      FExposedEvents[true].ParentExposedField := Self;
 
       FreeAndNil(FExposedEvents[false]);
       FreeAndNil(FExposedEvents[true]);
