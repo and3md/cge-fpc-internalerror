@@ -87,7 +87,6 @@
       so it's more comfortable. }
     property ParentNode: TX3DNode read FParentNode;
 
-    class function X3DType: string; override;
     class function CreateEvent: TX3DEvent; override;
 
     function ChildAllowed(Child: TX3DNode): boolean;
@@ -227,11 +226,6 @@ end;
 procedure TSFNode.SetDefaultValueExists(AValue: boolean);
 begin
   FDefaultValueExists := AValue;
-end;
-
-class function TSFNode.X3DType: string;
-begin
-  Result := 'SFNode';
 end;
 
 function TSFNode.Enumerate(Func: TEnumerateChildrenFunction): Pointer;

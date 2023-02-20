@@ -74,12 +74,6 @@
     function EventOut: TX3DEvent;
     { @groupEnd }
 
-    { Field type in X3D, like @code('SFString') or @code('MFInt32').
-      As for VRML/X3D interface declaration statements.
-      In base TX3DField class, this returns @code(XFAny)
-      (name indicating any type, used by instantreality and us). }
-    class function X3DType: string; virtual;
-
     { Create TX3DEvent descendant suitable as exposed event for this field. }
     class function CreateEvent: TX3DEvent; virtual;
 
@@ -293,14 +287,6 @@ end;
 function TX3DField.CanAssignLerp: boolean;
 begin
   Result := false;
-end;
-
-{ Note that TX3DField.X3DType cannot be abstract:
-  it may be used if source event is of XFAny type in warning message
-  in TX3DRoute.SetEndingInternal }
-class function TX3DField.X3DType: string;
-begin
-  Result := 'XFAny';
 end;
 
 {$endif read_implementation}
