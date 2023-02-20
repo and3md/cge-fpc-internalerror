@@ -31,7 +31,6 @@
     FPrototypeInstance: boolean;
     FPrototypeInstanceHelpers: TX3DNode;
     FDefaultContainerField: string;
-    FHasInterfaceDeclarations: TX3DAccessTypes;
     ///FScene: TX3DEventsEngine;
     FInternalSceneShape: TObject;
 
@@ -44,7 +43,6 @@
     function GetParentFieldsNodeItem(Index: Integer): TX3DNode;
     procedure RemoveParentField(Field: TX3DField);
     procedure AddParentField(Field: TX3DField);
-    procedure SetHasInterfaceDeclarations(const Value: TX3DAccessTypes);
     function GetFields(const Index: Integer): TX3DField;
     function GetEvents(const Index: Integer): TX3DEvent;
     procedure UnregisterSceneCallback(Node: TX3DNode);
@@ -661,32 +659,6 @@
     property DefaultContainerField: string
       read FDefaultContainerField write FDefaultContainerField;
 
-    { For some special VRML / X3D nodes (like Script, ComposedShader)
-      that allow the definition of additional fields/events within.
-
-      In X3D specification this is marked like
-
-      @preformatted(
-        # And any number of:
-        fieldType [in]     fieldName
-        fieldType [in,out] fieldName    initialValue
-        fieldType [out]    fieldName
-        fieldType []       fieldName    initialValue
-      )
-
-      If HasInterfaceDeclarations is not [], then InterfaceDeclarations
-      will be non-nil and parser (classic VRML parser in this unit,
-      X3D XML reader too) will read this from VRML files.
-      Moreover, for each interface declaration, also appropriate field/event
-      will be added to the list of @link(Fields) or @link(Events),
-      so fields/events created by interface declarations will function
-      just like other standard fields everywhere.
-
-      @groupBegin }
-    property HasInterfaceDeclarations: TX3DAccessTypes
-      read FHasInterfaceDeclarations
-      write SetHasInterfaceDeclarations default [];
-
     { @groupEnd }
 
     { Scene that will be notified about changes to this node.
@@ -809,8 +781,6 @@ begin
   FParentFields := TX3DFieldList.Create(false);
   FFields := TX3DFieldList.Create(false);
   FEvents := TX3DEventList.Create(false);
-
-  FHasInterfaceDeclarations := [];
 
   CreateNode;
 end;
@@ -1578,14 +1548,6 @@ begin
     Exit(Events[I]);
 
   Result := nil; { not found }
-end;
-
-procedure TX3DNode.SetHasInterfaceDeclarations(const Value: TX3DAccessTypes);
-begin
-  if Value <> HasInterfaceDeclarations then
-  begin
-    FHasInterfaceDeclarations := Value;
-  end;
 end;
 
 function TX3DNode.DeepCopy: TX3DNode;

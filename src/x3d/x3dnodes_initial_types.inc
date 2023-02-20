@@ -38,9 +38,6 @@
   TEnumerateReplaceNodesFunction =
     procedure (ParentNode: TX3DNode; var Node: TX3DNode) of object;
 
-  TX3DAccessType = (atInputOnly, atOutputOnly, atInitializeOnly, atInputOutput);
-  TX3DAccessTypes = set of TX3DAccessType;
-
   TNodeTransformationChange = (
     ntcNone,
     ntcSwitch, //< TSwitchNode
@@ -54,9 +51,6 @@
     ntcProximitySensor, //< TProximitySensorNode
     ntcVisibilitySensor //< TVisibilitySensorNode
   );
-
-///  TX3DVersion = CastleInternalX3DLexer.TX3DVersion;
-///  TX3DEncoding = CastleInternalX3DLexer.TX3DEncoding;
 
 {$endif read_interface}
 
