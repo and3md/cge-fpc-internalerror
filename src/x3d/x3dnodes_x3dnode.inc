@@ -31,7 +31,6 @@
     FPrototypeInstance: boolean;
     FPrototypeInstanceHelpers: TX3DNode;
     FDefaultContainerField: string;
-    ///FScene: TX3DEventsEngine;
     FInternalSceneShape: TObject;
 
     //ATest:Integer; //add to get internal error
@@ -45,7 +44,6 @@
     procedure AddParentField(Field: TX3DField);
     function GetFields(const Index: Integer): TX3DField;
     function GetEvents(const Index: Integer): TX3DEvent;
-    procedure UnregisterSceneCallback(Node: TX3DNode);
   protected
     { Are VRML 1.0 children allowed.
       This condition is checked in VRML1ChildAdd, so it's strictly
@@ -77,31 +75,6 @@
       VRML1Children internally, e.g. *Inline nodes. }
     class function VRML1ChildrenSaveToStream: boolean; virtual;
 
-    { Enumerate all active child nodes of given node.
-
-      "Active nodes" are the ones affecting current look or collisions,
-      e.g. from Switch node only one child will be enumerated.
-      See @link(Traverse) for more precise definition.
-
-      "Direct" means that this enumerates only direct descendants,
-      i.e. this is not recursive. See methods like Traverse or EnumerateNodes
-      if you want recursive behavior.
-
-      This can enumerate both @link(VRML1Children) nodes
-      and nodes within TSFNode and TMFNode fields.
-
-      Default implementation in this class enumerates all Children
-      nodes of VRML 1.0. If you need to remove some children
-      for VRML 1.0 (e.g. for Switch or LOD nodes)
-      or add some children for VRML 2.0 you
-      have to override this. @bold(You do not need to call inherited
-      when overriding this --- in fact, you should not, if you
-      want to omit some nodes.)
-
-      Stops and returns immediately if Func returns non-nil for some child. }
-    function DirectEnumerateActive(
-      Func: TEnumerateChildrenFunction): Pointer; virtual;
-
     { Simply enumerate all direct descendant nodes.
       That is, all children in VRML 1.0 style and
       all nodes in SFNode and MFNode fields.
@@ -109,13 +82,6 @@
       from prototype: PrototypeInstanceSourceNode and PrototypeInstanceHelpers. }
     function DirectEnumerateAll(
       Func: TEnumerateChildrenFunction): Pointer;
-
-    { This enumerates direct descendant nodes of this node.
-      This is equivalent to DirectEnumerateActive or
-      DirectEnumerateAll, depending on value of OnlyActive param. }
-    function DirectEnumerate(
-      Func: TEnumerateChildrenFunction;
-      OnlyActive: boolean): Pointer;
 
     procedure CreateNode; virtual;
   public
@@ -378,80 +344,6 @@
       at actual instance. }
     class function ClassX3DType: string; virtual;
 
-    { Enumerate all our children of some class. Recursively.
-      Enumerates also this instance (Self), if it satisfies the
-      NodeClass and SeekNodeName conditions.
-
-      This enumerates both VRML 1.0 children (@link(VRML1Children)) as well as
-      VRML >= 2.0 (including X3D) children (nodes in TSFNode and TMFNode fields).
-
-      If OnlyActive then it will enumerate only active parts
-      of the graph ("active" as defined by @link(Traverse)),
-      so it will work as a simpler version of Traverse
-      (simpler, because it doesn't track any state).
-
-      If not OnlyActive then it will simply enumerate all nodes.
-      This will include then also prototype helpers, if this node
-      was expanded from prototype: see PrototypeInstanceSourceNode
-      and PrototypeInstanceHelpers.
-
-      If you give SeekNodeName parameter, we'll only look for nodes
-      with X3DName = SeekNodeName. When SeekNodeName = '' it,
-      consistently, looks for unnamed nodes (where X3DName = '').
-
-      Enumerates children only after enumerating Self.
-      So you can modify children before enumerating them in the Proc callback.
-      You can only modify your children in the Proc callback.
-
-      @groupBegin }
-    procedure EnumerateNodes(
-      proc: TX3DNodeProc; OnlyActive: boolean); overload;
-    procedure EnumerateNodes(nodeClass: TX3DNodeClass;
-      proc: TX3DNodeProc; OnlyActive: boolean); overload;
-    procedure EnumerateNodes(nodeClass: TX3DNodeClass;
-      const SeekNodeName: string;
-      proc: TX3DNodeProc; OnlyActive: boolean); overload;
-    { @groupEnd }
-
-    { Search nodes, like enumerating nodes but allows early exit during
-      the enumeration.
-      We search for a node for which Proc(Node) returns something non-nil.
-
-      For every node, the given Proc callback is run.
-      If the Proc callback returns something non-nil,
-      the enumeration of the following nodes stops,
-      and we return the callback result. }
-    function SearchNodes(const Proc: TX3DNodeSearchProc;
-      const OnlyActive: boolean): Pointer;
-
-    { TryFindNodeByName and TryFindNode seek for a node with
-      given class (and node name, in case of TryFindNodeByName).
-      If OnlyActive then they seek among only active nodes
-      ("active" as defined by @link(Traverse)), otherwise all nodes.
-
-      These functions are quite like EnumerateNodes, except
-      they stop at the first occurrence and return it.
-
-      TryFindNodeByName and TryFindNode return @nil if such node
-      is not found. FindNodeByName and FindNode raise exception EX3DNotFound
-      in this case.
-      @raises(EX3DNotFound FindNodeByName and FindNode raise
-        this exception when node is not found.)
-      @groupBegin }
-    function TryFindNodeByName(FindClass: TX3DNodeClass;
-      const FindName: string;
-      OnlyActive: boolean): TX3DNode;
-    function FindNodeByName(FindClass: TX3DNodeClass;
-      const FindName: string;
-      OnlyActive: boolean): TX3DNode;
-    function TryFindNode(FindClass: TX3DNodeClass;
-      OnlyActive: boolean): TX3DNode;
-    function FindNode(FindClass: TX3DNodeClass;
-      OnlyActive: boolean): TX3DNode;
-    { @groupEnd }
-
-    { @groupEnd }
-
     { Seeks Self and parent nodes (from VRML1Parents and ParentFields,
       recursively) for given node name.
 
@@ -477,23 +369,6 @@
     { Search immediate parents of this node for a node with given FindName.
       Returns @nil if not found. }
     function TryFindDirectParentByName(const FindName: string): TX3DNode;
-
-    { Looks for a given node in our children (direct and not, including self).
-      If OnlyActive, then only active parts are searched
-      ("active" as defined by @link(Traverse)). }
-    function IsNodePresent(Node: TX3DNode; OnlyActive: boolean): boolean;
-
-    { Count the occurrences of given node class in our children.
-      For example, you can pass NodeClass = TAbstractLightNode to count
-      the light sources in the scene.
-
-      If CountOnlyActiveNodes, then only active parts are searched
-      ("active" as defined by @link(Traverse)).
-
-      This traverses both VRML 1.0 children nodes and VRML 2.0 nodes
-      inside SFNode and MFNode fields. }
-    function NodesCount(NodeClass: TX3DNodeClass;
-      CountOnlyActiveNodes: boolean): integer;
 
     { Some nodes are present only in specific VRML/X3D version.
       This functions decides it.
@@ -696,40 +571,6 @@
     { Nice and concise node description for user.
       Shows node type and name. }
     function NiceName: string;
-
-    { Detach this node from parent scene, recursively.
-      Useful if you take a node and want to put it in another TCastleSceneCore.
-
-      @italic(You almost never need to call this method from your application).
-      This is done automatically for you when TCastleSceneCore is destroyed.
-      And a node can only be part of one TCastleSceneCore instance
-      at one time.
-
-      Notable exceptions when you need to call this:
-
-      @orderedList(
-        @item(
-          If you process RootNode graph and extract some node from it
-          (that is, delete node from one RootNode graph,
-          but instead of freeing it you insert it into some other VRML/X3D graph)
-          you must call it to manually
-          detach this node (and all it's children) from a previous TCastleSceneCore
-          instance.
-        )
-
-        @item(
-          Right now the TCastleSceneCore doesn't call RootNode.UnregisterScene
-          when TCastleSceneCore.OwnsRootNode.
-          This is done for speed, because it's not needed in 99% cases.
-
-          However, if your scene contains some node that isn't freed
-          because of @link(KeepExistingBegin),
-          then such node will remain attached to non-existing scene.
-          You should call UnregisterScene on such node manually, for now.
-        )
-      )
-    }
-    procedure UnregisterScene;
   end;
 
   TX3DNodeList = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TObjectList<TX3DNode>)
@@ -989,18 +830,6 @@ begin
   Result := FParentFields.Count;
 end;
 
-function TX3DNode.DirectEnumerateActive(Func: TEnumerateChildrenFunction): Pointer;
-var
-  I: Integer;
-begin
-  Result := nil;
-  for I := 0 to VRML1ChildrenCount - 1 do
-  begin
-    Result := Func(Self, VRML1Children[I]);
-    if Result <> nil then Exit;
-  end;
-end;
-
 function TX3DNode.DirectEnumerateAll(
   Func: TEnumerateChildrenFunction): Pointer;
 var
@@ -1038,15 +867,6 @@ begin
   end;
 end;
 
-function TX3DNode.DirectEnumerate(
-  Func: TEnumerateChildrenFunction;
-  OnlyActive: boolean): Pointer;
-begin
-  if OnlyActive then
-    Result := DirectEnumerateActive(Func) else
-    Result := DirectEnumerateAll(Func);
-end;
-
 function TX3DNode.X3DType: string;
 begin
  result := ClassX3DType;
@@ -1081,128 +901,6 @@ begin
 end;
 
 type
-  TEnumerateNodes0Enumerator = class
-    Proc: TX3DNodeProc;
-    OnlyActive: boolean;
-    function EnumerateChildrenFunction(Node, Child: TX3DNode): Pointer;
-  end;
-
-  function TEnumerateNodes0Enumerator.EnumerateChildrenFunction(
-    Node, Child: TX3DNode): Pointer;
-  begin
-    Result := nil;
-    Proc(Child);
-    Child.DirectEnumerate({$ifdef CASTLE_OBJFPC}@{$endif} Self.EnumerateChildrenFunction, OnlyActive);
-  end;
-
-procedure TX3DNode.EnumerateNodes(
-  Proc: TX3DNodeProc; OnlyActive: boolean);
-var
-  Enumerator: TEnumerateNodes0Enumerator;
-begin
-  Enumerator := TEnumerateNodes0Enumerator.Create;
-  try
-    Enumerator.Proc := Proc;
-    Enumerator.OnlyActive := OnlyActive;
-    Enumerator.EnumerateChildrenFunction(nil, Self);
-  finally FreeAndNil(Enumerator) end;
-end;
-
-type
-  TEnumerateNodes1Enumerator = class
-    NodeClass: TX3DNodeClass;
-    Proc: TX3DNodeProc;
-    OnlyActive: boolean;
-    function EnumerateChildrenFunction(Node, Child: TX3DNode): Pointer;
-  end;
-
-  function TEnumerateNodes1Enumerator.EnumerateChildrenFunction(
-    Node, Child: TX3DNode): Pointer;
-  begin
-    Result := nil;
-    if Child is NodeClass then Proc(Child);
-    Child.DirectEnumerate({$ifdef CASTLE_OBJFPC}@{$endif} Self.EnumerateChildrenFunction, OnlyActive);
-  end;
-
-procedure TX3DNode.EnumerateNodes(nodeClass: TX3DNodeClass;
-  Proc: TX3DNodeProc; OnlyActive: boolean);
-var
-  Enumerator: TEnumerateNodes1Enumerator;
-begin
-  Enumerator := TEnumerateNodes1Enumerator.Create;
-  try
-    Enumerator.NodeClass := NodeClass;
-    Enumerator.Proc := Proc;
-    Enumerator.OnlyActive := OnlyActive;
-    Enumerator.EnumerateChildrenFunction(nil, Self);
-  finally FreeAndNil(Enumerator) end;
-end;
-
-type
-  TEnumerateNodes2Enumerator = class
-    NodeClass: TX3DNodeClass;
-    SeekNodeName: string;
-    Proc: TX3DNodeProc;
-    OnlyActive: boolean;
-    function EnumerateChildrenFunction(Node, Child: TX3DNode): Pointer;
-  end;
-
-  function TEnumerateNodes2Enumerator.EnumerateChildrenFunction(
-    Node, Child: TX3DNode): Pointer;
-  begin
-    Result := nil;
-    if (Child is NodeClass) and
-       (Child.X3DName = SeekNodeName) then
-      Proc(Child);
-    Child.DirectEnumerate({$ifdef CASTLE_OBJFPC}@{$endif} Self.EnumerateChildrenFunction, OnlyActive);
-  end;
-
-procedure TX3DNode.EnumerateNodes(NodeClass: TX3DNodeClass;
-  const SeekNodeName: string;
-  Proc: TX3DNodeProc; OnlyActive: boolean);
-var
-  Enumerator: TEnumerateNodes2Enumerator;
-begin
-  Enumerator := TEnumerateNodes2Enumerator.Create;
-  try
-    Enumerator.NodeClass := NodeClass;
-    Enumerator.SeekNodeName := SeekNodeName;
-    Enumerator.Proc := Proc;
-    Enumerator.OnlyActive := OnlyActive;
-    Enumerator.EnumerateChildrenFunction(nil, Self);
-  finally FreeAndNil(Enumerator) end;
-end;
-
-type
-  TSearchNodes0Helper = class
-    Proc: TX3DNodeSearchProc;
-    OnlyActive: boolean;
-    function Callback(Node, Child: TX3DNode): Pointer;
-  end;
-
-  function TSearchNodes0Helper.Callback(
-    Node, Child: TX3DNode): Pointer;
-  begin
-    Result := Proc(Child);
-    if Result <> nil then Exit;
-
-    Result := Child.DirectEnumerate({$ifdef CASTLE_OBJFPC}@{$endif} Self.Callback, OnlyActive);
-  end;
-
-function TX3DNode.SearchNodes(
-  const Proc: TX3DNodeSearchProc; const OnlyActive: boolean): Pointer;
-var
-  Helper: TSearchNodes0Helper;
-begin
-  Helper := TSearchNodes0Helper.Create;
-  try
-    Helper.Proc := Proc;
-    Helper.OnlyActive := OnlyActive;
-    Result := Helper.Callback(nil, Self);
-  finally FreeAndNil(Helper) end;
-end;
-
-type
   TFindNodeHelper = class
     NodeClass: TX3DNodeClass;
     function Callback(Node: TX3DNode): Pointer;
@@ -1214,24 +912,6 @@ type
       Result := Node else
       Result := nil;
   end;
-
-function TX3DNode.TryFindNode(FindClass: TX3DNodeClass; OnlyActive: boolean): TX3DNode;
-var
-  Helper: TFindNodeHelper;
-begin
-  Helper := TFindNodeHelper.Create;
-  try
-    Helper.NodeClass := FindClass;
-    Result := TX3DNode(SearchNodes({$ifdef CASTLE_OBJFPC}@{$endif} Helper.Callback, OnlyActive));
-  finally FreeAndNil(Helper) end;
-end;
-
-function TX3DNode.FindNode(FindClass: TX3DNodeClass; OnlyActive: boolean): TX3DNode;
-begin
-  result := TryFindNode(FindClass, OnlyActive);
-  if Result = nil then
-    raise Exception.CreateFmt('Node class "%s" not found', [FindClass.ClassName]);
-end;
 
 type
   TFindNodeByNameHelper = class
@@ -1246,28 +926,6 @@ type
       Result := Node else
       Result := nil;
   end;
-
-function TX3DNode.TryFindNodeByName(
-  FindClass: TX3DNodeClass; const FindName: string; OnlyActive: boolean): TX3DNode;
-var
-  Helper: TFindNodeByNameHelper;
-begin
-  Helper := TFindNodeByNameHelper.Create;
-  try
-    Helper.NodeClass := FindClass;
-    Helper.NodeName := FindName;
-    Result := TX3DNode(SearchNodes({$ifdef CASTLE_OBJFPC}@{$endif} Helper.Callback, OnlyActive));
-  finally FreeAndNil(Helper) end;
-end;
-
-function TX3DNode.FindNodeByName(
-  FindClass: TX3DNodeClass; const FindName: string;
-  OnlyActive: boolean): TX3DNode;
-begin
-  result := TryFindNodeByName(FindClass, FindName, OnlyActive);
-  if Result = nil then
-    raise Exception.CreateFmt('Node name "%s" not found', [FindName]);
-end;
 
 { TX3DNode.TryFindNodeState/Transform ----------------------------------------- }
 
@@ -1351,17 +1009,6 @@ type
       Result := nil;
   end;
 
-function TX3DNode.IsNodePresent(Node: TX3DNode; OnlyActive: boolean): boolean;
-var
-  Helper: TIsNodePresentHelper;
-begin
-  Helper := TIsNodePresentHelper.Create;
-  try
-    Helper.SeekNode := Node;
-    Result := SearchNodes({$ifdef CASTLE_OBJFPC}@{$endif} Helper.Callback, OnlyActive) <> nil;
-  finally FreeAndNil(Helper) end;
-end;
-
 type
   TNodesCountHelper = class
     Counter: integer;
@@ -1370,18 +1017,6 @@ type
 
   procedure TNodesCountHelper.CountNode(node: TX3DNode);
   begin Inc(Counter) end;
-
-function TX3DNode.NodesCount(NodeClass: TX3DNodeClass;
-  CountOnlyActiveNodes: boolean): integer;
-var
-  C: TNodesCountHelper;
-begin
-  C := TNodesCountHelper.Create;
-  try
-    EnumerateNodes(NodeClass, {$ifdef CASTLE_OBJFPC}@{$endif} C.CountNode, CountOnlyActiveNodes);
-    result := C.Counter;
-  finally C.Free end;
-end;
 
 class function TX3DNode.ForVRMLVersion(const Version: TX3DVersion): boolean;
 begin
@@ -1614,16 +1249,6 @@ end;
 function TX3DNode.IndexOfEvent(const AName: string): Integer;
 begin
   Result := FEvents.IndexOfName(AName);
-end;
-
-procedure TX3DNode.UnregisterSceneCallback(Node: TX3DNode);
-begin
-  //Node.Scene := nil;
-end;
-
-procedure TX3DNode.UnregisterScene;
-begin
-  EnumerateNodes(TX3DNode, {$ifdef CASTLE_OBJFPC}@{$endif} UnregisterSceneCallback, false);
 end;
 
 { TX3DNodeList ------------------------------------------------------------- }
