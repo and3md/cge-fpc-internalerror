@@ -24,14 +24,12 @@
       when 0 or 1 notification is enough, store 1st notification in special
       field instead. }
     //ATest: Integer; // uncomment to get internal error
-    FFirstNotification: TX3DEventReceive;
     FParentExposedField: TX3DField;
     Temp: TX3DField;
     TempUsed: boolean;
 
     SendLevel: Cardinal;
 
-    procedure RemoveNotificationNow(const Notification: TX3DEventReceive);
   public
     constructor Create(AParentNode: TX3DFileItem;
       const AName: string;
@@ -77,48 +75,6 @@
       processing is not turned on, that is TCastleSceneCore.ProcessEvents is @false)
       then event is not send. }
     procedure Send(Field: TX3DField); overload;
-
-    { Add notification about receiving new value. For input events,
-      these are used by node itself to listen to events send to it.
-      For output events, these are used by routes, scripts to listen
-      to events occuring.
-
-      When you handle this callback to send another X3D event,
-      you should pass around the same @code(Time) value.
-      This makes sure that X3D route loop detection mechanism works fine.
-      For example, here's how handling TimeSensor.elapsedTime_receive event
-      sends fraction_changed event:
-
-      @longCode(#
-        procedure TTimeSensorNode.EventElapsedTimeReceive(
-          Event: TX3DEvent; Value: TX3DField; const Time: TX3DTime);
-        var
-          Fraction: Single;
-        begin
-          if FdEnabled.Value then
-          begin
-            Fraction := ...; // doesn't matter here how this is calculated
-            // Pass "Time" parameter further by a call below
-            Eventfraction_changed.Send(Fraction, Time);
-          end;
-        end;
-      #)
-
-      All callbacks registered here are simply called by @link(Send) method. }
-    procedure AddNotification(const Notification: TX3DEventReceive);
-
-    { Remove notification (previously added by @link(AddNotification))
-      about receiving new value.
-
-      This is guaranteed to work correctly even if we're right now
-      in the middle of this event's processing (which means that we may
-      be iterating over a list of notifications).
-      The handler may be actually removed a bit later (when it's safe).
-
-      Note that adding a notification two-times makes it called two times.
-      Removing a notification removes one copy of a notification,
-      so it should then be removed two-times too. }
-    procedure RemoveNotification(const Notification: TX3DEventReceive);
 
     { @abstract(Is anything actually listening on this events @link(Send)?)
 
@@ -188,20 +144,11 @@ procedure TX3DEvent.Send(Field: TX3DField);
 begin
   Assert(Field <> nil);
   Assert(Field is FieldClass);
-
-  Inc(SendLevel);
-  try
-    if Assigned(FFirstNotification) then
-      FFirstNotification(Self, Field);
-  finally
-    Dec(SendLevel);
-  end;
 end;
 
 function TX3DEvent.SendNeeded: boolean;
 begin
-  Result :=
-    Assigned(FFirstNotification);
+  Result := false;
 end;
 
 function TX3DEvent.CreateTemp(const PartialSend: TPartialSend): TX3DField;
@@ -222,31 +169,6 @@ begin
   if Field = Temp then
     TempUsed := false else
     Field.Free;
-end;
-
-procedure TX3DEvent.AddNotification(const Notification: TX3DEventReceive);
-begin
-  if not Assigned(FFirstNotification) then
-  begin
-    FFirstNotification := Notification;
-  end else
-  begin
-    ;
-  end;
-end;
-
-procedure TX3DEvent.RemoveNotificationNow(const Notification: TX3DEventReceive);
-begin
-end;
-
-procedure TX3DEvent.RemoveNotification(const Notification: TX3DEventReceive);
-begin
-  if SendLevel = 0 then
-  begin
-    RemoveNotificationNow(Notification);
-  end else
-  begin
-  end;
 end;
 
 { TX3DEventList ------------------------------------------------------------ }

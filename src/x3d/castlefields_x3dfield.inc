@@ -21,10 +21,6 @@
 
   TX3DFieldClass = class of TX3DField;
 
-  { Called when @link(TX3DEvent) is received,
-    see @link(TX3DEvent.AddNotification). }
-  TX3DEventReceive = procedure (Event: TX3DEvent; Value: TX3DField) of object;
-
   { Send along with the animation that should be applied only partially
     (because it fades-out or fades-in). }
   TPartialSend = class
@@ -543,27 +539,6 @@
       ) }
     procedure Send(Value: TX3DField);
 
-    { Notifications when exposed field received new value through VRML/X3D event.
-      Use only for exposed fields.
-      This is simply a shortcut for @code(EventOut.AddNotification),
-      @code(EventOut.RemoveNotification),
-      see @link(TX3DEvent.AddNotification) for details how does this work.
-
-      Note that this observes the "out" event (not the "in" event).
-      This way you know inside the handler that the field value is already
-      changed as appropriate. Inside "in" event handlers, you would not
-      know this (it would depend on the order in which handlers are run,
-      one "in" handler sets the field value).
-
-      Note that "out" event handlers are executed before Scene is notified
-      about the field value change (before TCastleSceneCore.InternalChangedField is called).
-      This is also usually exactly what you want --- you can change the scene
-      graph inside the event handler (for example, load something on
-      Inline.load or Inline.url changes), and let the TX3DField.ChangesAlways
-      cause appropriate action on this change. }
-    procedure AddNotification(const Notification: TX3DEventReceive);
-    procedure RemoveNotification(const Notification: TX3DEventReceive);
-
     { @exclude Internal routine, needed by animation blending. }
     procedure InternalAffectedPartial;
     { @exclude Internal routine, needed by animation blending. }
@@ -736,18 +711,7 @@ const
 procedure TX3DField.SetExposedEventsLinked(const Value: boolean);
 begin
   if FExposedEventsLinked <> Value then
-  begin
     FExposedEventsLinked := Value;
-    if Exposed then
-    begin
-      if ExposedEventsLinked then
-        FExposedEvents[true].AddNotification(
-          {$ifdef CASTLE_OBJFPC}@{$endif} ExposedEventReceive)
-      else
-        FExposedEvents[true].RemoveNotification(
-          {$ifdef CASTLE_OBJFPC}@{$endif} ExposedEventReceive);
-    end;
-  end;
 end;
 
 class function TX3DField.ExposedEventsFieldClass: TX3DFieldClass;
@@ -773,16 +737,6 @@ begin
       FExposedEvents[false].ParentExposedField := Self;
       FExposedEvents[true] := CreateEvent(nil, SetPrefix + 'X3DName', true);
       FExposedEvents[true].ParentExposedField := Self;
-
-
-      if ExposedEventsLinked then
-        FExposedEvents[true].AddNotification(
-          {$ifdef CASTLE_OBJFPC}@{$endif} ExposedEventReceive);
-    end else
-    begin
-      if ExposedEventsLinked then
-        FExposedEvents[true].RemoveNotification(
-          {$ifdef CASTLE_OBJFPC}@{$endif} ExposedEventReceive);
 
       FreeAndNil(FExposedEvents[false]);
       FreeAndNil(FExposedEvents[true]);
@@ -1003,18 +957,6 @@ end;
 class function TX3DField.TypeName: string;
 begin
   Result := X3DType;
-end;
-
-procedure TX3DField.AddNotification(const Notification: TX3DEventReceive);
-begin
-  Assert(Exposed, 'Use TX3DField.AddNotification only on Exposed fields');
-  FExposedEvents[false].AddNotification(Notification);
-end;
-
-procedure TX3DField.RemoveNotification(const Notification: TX3DEventReceive);
-begin
-  Assert(Exposed, 'Use TX3DField.RemoveNotification only on Exposed fields');
-  FExposedEvents[false].RemoveNotification(Notification);
 end;
 
 { TX3DFieldList ------------------------------------------------------------- }
