@@ -32,52 +32,15 @@
     constructor Create;
   end;
 
-  { Universal input event that can receive value of any type.
-    It is used by some InstantReality extensions, like Logger.write.
-    InstantReality calls this event type XFAny. }
-  TXFAnyEvent = class(TX3DEvent)
-  public
-    constructor Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-  end;
-
 {$endif read_interface}
 
 {$ifdef read_implementation}
-
-{ TSFBoolEvent --------------------------------------------------------------- }
-
-{ TSFDoubleEvent ------------------------------------------------------------- }
-
-{ TSFFloatEvent -------------------------------------------------------------- }
-
-{ TSFLongEvent --------------------------------------------------------------- }
-
-
-{ TSFInt32Event -------------------------------------------------------------- }
-
-
-{ TSFNodeEvent --------------------------------------------------------------- }
 
 constructor TSFNodeEvent.Create;
 begin
   inherited Create(TSFNode);
 end;
 
-{ TSFRotationEvent ----------------------------------------------------------- }
-
-{ TSFStringEvent ------------------------------------------------------------- }
-
-{ TSFVec2dEvent -------------------------------------------------------------- }
-
-{ TSFColorEvent -------------------------------------------------------------- }
-
-{ TSFColorRGBAEvent ---------------------------------------------------------- }
-
 { ---------------------------------------------------------------------------- }
-
-constructor TXFAnyEvent.Create(AParentNode: TX3DFileItem; const AName: string; const AInEvent: boolean);
-begin
-  inherited Create(TX3DField);
-end;
 
 {$endif read_implementation}
