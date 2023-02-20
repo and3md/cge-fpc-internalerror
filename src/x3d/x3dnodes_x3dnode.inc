@@ -227,13 +227,6 @@
       like Inline or ImageTexture immediately after parsing them. }
     property BaseUrl: string read FBaseUrl write FBaseUrl;
 
-    { Old deprecated name for BaseUrl. @deprecated }
-    property WWWBasePath: string read FBaseUrl write FBaseUrl; deprecated;
-
-    { Returns an absolute path, assuming that RelativePath is relative
-      path from BaseUrl or that RelativePath is already absolute. }
-    function PathFromBaseUrl(const RelativePath: string): string;
-
     { Constructor. Initializes various properties:
 
       @unorderedList(
@@ -261,7 +254,6 @@
       In TX3DNode, this returns ClassX3DType, which is suitable
       for most nodes. See ClassX3DType. }
     function X3DType: string; virtual;
-    function NodeTypeName: string; deprecated 'use X3DType';
 
     { Node type name in VRML/X3D, for this class.
       Normal VRML/X3D node classes should override this to return something
@@ -508,11 +500,6 @@ begin
  result := ClassX3DType;
 end;
 
-function TX3DNode.NodeTypeName: string;
-begin
- result := X3DType;
-end;
-
 class function TX3DNode.ClassX3DType: string;
 begin
  result := '';
@@ -521,14 +508,6 @@ end;
 function BlenderRelativePath(const RelativePath: string): boolean;
 begin
   Result := false;
-end;
-
-function TX3DNode.PathFromBaseUrl(const RelativePath: string): string;
-begin
-  { This is a workaround for Blender errorneous VRML 1.0 export.
-    Blender exports relative paths by prefixing them by "//"
-    (that's a general convention used internally by Blender, AFAIK).
-    Here we simply remove this "//". }
 end;
 
 
