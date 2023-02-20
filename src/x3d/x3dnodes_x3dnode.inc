@@ -21,11 +21,9 @@
   TX3DNode = class(TX3DFileItem)
   private
     FFields, FFieldsSFNode, FFieldsMFNode: TX3DFieldList;
-    FEvents: TX3DEventList;
 
     //ATest:Integer; //add to get internal error
     function GetFields(const Index: Integer): TX3DField;
-    function GetEvents(const Index: Integer): TX3DEvent;
   protected
     procedure CreateNode; virtual;
   public
@@ -52,22 +50,9 @@
     function IndexOfField(const AName: string): Integer;
     { @groupEnd }
 
-    { Explicit events (that is, not exposed by some field) of this node.
-      For exposed events, see each field's property ExposedEvents.
-      @groupBegin }
-    property Events [Index: Integer]: TX3DEvent read GetEvents;
-    function EventsCount: Integer;
-    procedure AddEvent(const Value: TX3DEvent);
-    function IndexOfEvent(const AName: string): Integer;
-    { @groupEnd }
-
     { Search by name for given field.
       @nil if not found. }
     function Field(const AName: string): TX3DField;
-
-    { Search by name for given event (exposed by some field or not).
-      @nil if not found. }
-    function AnyEvent(const AName: string): TX3DEvent;
 
     { Constructor. Initializes various properties:
 
@@ -98,8 +83,6 @@ constructor TX3DNode.Create;
 begin
   inherited Create;
   FFields := TX3DFieldList.Create(false);
-  FEvents := TX3DEventList.Create(false);
-
   CreateNode;
 end;
 
@@ -116,16 +99,6 @@ begin
     So these references have to be valid, and omitted by checking
     ParentInterfaceDeclaration <> nil. }
 
-  if FEvents <> nil then
-  begin
-    for I := 0 to FEvents.Count - 1 do
-    begin
-        FEvents[I].Free;
-        FEvents[I] := nil;
-    end;
-    FreeAndNil(FEvents);
-  end;
-
   if FFields <> nil then
   begin
     for I := 0 to FFields.Count - 1 do
@@ -139,12 +112,6 @@ begin
   inherited;
 end;
 
-function BlenderRelativePath(const RelativePath: string): boolean;
-begin
-  Result := false;
-end;
-
-
 procedure TX3DNode.CreateNode;
 begin
 end;
@@ -157,21 +124,6 @@ begin
   if I <> -1 then
     Result := FFields[I] else
     Result := nil; { not found }
-end;
-
-function TX3DNode.AnyEvent(const AName: string): TX3DEvent;
-var
-  I: Integer;
-begin
-  I := FFields.IndexOfExposedEvent(AName, Result);
-  if I <> -1 then
-    Exit; { Result is already set }
-
-  I := FEvents.IndexOfName(AName);
-  if I <> -1 then
-    Exit(Events[I]);
-
-  Result := nil; { not found }
 end;
 
 function TX3DNode.GetFields(const Index: Integer): TX3DField;
@@ -200,26 +152,6 @@ end;
 function TX3DNode.IndexOfField(const AName: string): Integer;
 begin
   Result := FFields.IndexOfName(AName);
-end;
-
-function TX3DNode.GetEvents(const Index: Integer): TX3DEvent;
-begin
-  Result := FEvents[Index];
-end;
-
-function TX3DNode.EventsCount: Integer;
-begin
-  Result := FEvents.Count;
-end;
-
-procedure TX3DNode.AddEvent(const Value: TX3DEvent);
-begin
-  FEvents.Add(Value);
-end;
-
-function TX3DNode.IndexOfEvent(const AName: string): Integer;
-begin
-  Result := FEvents.IndexOfName(AName);
 end;
 
 { TX3DNodeList ------------------------------------------------------------- }
