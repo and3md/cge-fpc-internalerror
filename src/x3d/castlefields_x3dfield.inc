@@ -56,31 +56,6 @@
     { Create TX3DEvent descendant suitable as exposed event for this field. }
     class function CreateEvent: TX3DEvent; virtual;
 
-    { Assigns value to this node calculated from linear interpolation
-      between two given nodes Value1, Value2. Just like other lerp
-      functions in our units (like @link(CastleVectors.Lerp)).
-
-      Like AssignValue, this copies only the current value.
-      All other properties (like Name, IsClauseNames, ValueFromIsClause,
-      default value) are untouched.
-
-      There are some special precautions for this:
-
-      @unorderedList(
-        @item(First of all, AssignLerp is defined only for fields where
-          CanAssignLerp returns @true, so always check CanAssignLerp first.
-          All float-based fields should have this implemented.)
-
-        @item(Use this only if Value1 and Value2
-          are equal or descendant of target (Self) class.)
-
-        @item(For multiple-value fields, counts of Value1 and Value2
-          must be equal, or EListsDifferentCount will be raised.)
-      )
-
-      @raises(EListsDifferentCount When field is multiple-value
-        field and Value1.Count <> Value2.Count.)
-    }
     procedure AssignLerp(const A: Double; Value1, Value2: TX3DField); virtual;
 
     { @abstract(Is AssignLerp usable on this field type?)
@@ -89,25 +64,6 @@
       In this class, this always returns @false. }
     function CanAssignLerp: boolean; virtual;
 
-    { Set the value of the field, notifying the scenes and events engine.
-      This sets the value of this field in the nicest possible way for
-      any possible TCastleSceneCore (with events on or off) containing the node
-      with this field.
-
-      Precise specification:
-
-      @unorderedList(
-        @item(If this is an exposed field and we have events engine working:
-
-          We will send this value through
-          it's input event. In this case, this is equivalent to doing
-          @code(EventIn.Send(Value, Scene.Time)).
-          The scenes (including events engine) will be notified correctly
-          by exposed events handler already.)
-
-        @item(Otherwise, we will just set the fields value.
-          And then notify the scenes (including events engine).)
-      ) }
     procedure Send(Value: TX3DField);
   end;
 
