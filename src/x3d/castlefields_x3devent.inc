@@ -18,14 +18,6 @@
   { X3D event. }
   TX3DEvent = class(TX3DFileItem)
   strict private
-    type
-      TX3DEventReceiveList = class(specialize TList<TX3DEventReceive>)
-      public
-        { Call all functions. }
-        procedure ExecuteAll(Event: TX3DEvent; Value: TX3DField);
-      end;
-
-    var
     FFieldClass: TX3DFieldClass;
     FInEvent: boolean;
     { To avoid allocating memory for FNotifications list in the most-common case
@@ -33,13 +25,11 @@
       field instead. }
     //ATest: Integer; // uncomment to get internal error
     FFirstNotification: TX3DEventReceive;
-    FNotifications: TX3DEventReceiveList;
     FParentExposedField: TX3DField;
     Temp: TX3DField;
     TempUsed: boolean;
 
     SendLevel: Cardinal;
-    NotificationsToRemove: TX3DEventReceiveList;
 
     procedure RemoveNotificationNow(const Notification: TX3DEventReceive);
   public
@@ -163,17 +153,6 @@
 
 {$ifdef read_implementation}
 
-{ TX3DEvent.TX3DEventReceiveList -------------------------------------------------- }
-
-procedure TX3DEvent.TX3DEventReceiveList.ExecuteAll(
-  Event: TX3DEvent; Value: TX3DField);
-var
-  I: Integer;
-begin
-  for I := 0 to Count - 1 do
-    Items[I](Event, Value);
-end;
-
 { TX3DEvent ----------------------------------------------------------------- }
 
 constructor TX3DEvent.Create(AParentNode: TX3DFileItem;
@@ -188,8 +167,6 @@ end;
 destructor TX3DEvent.Destroy;
 begin
   FreeAndNil(Temp);
-  FreeAndNil(NotificationsToRemove);
-  FreeAndNil(FNotifications);
   inherited;
 end;
 
@@ -208,17 +185,6 @@ begin
 end;
 
 procedure TX3DEvent.Send(Field: TX3DField);
-
-  procedure RemoveNotifications;
-  var
-    I: Integer;
-  begin
-    for I := 0 to NotificationsToRemove.Count - 1 do
-      RemoveNotificationNow(NotificationsToRemove.Items[I]);
-    // clear NotificationsToRemove
-    NotificationsToRemove.Count := 0;
-  end;
-
 begin
   Assert(Field <> nil);
   Assert(Field is FieldClass);
@@ -227,22 +193,15 @@ begin
   try
     if Assigned(FFirstNotification) then
       FFirstNotification(Self, Field);
-    if FNotifications <> nil then
-      FNotifications.ExecuteAll(Self, Field);
   finally
     Dec(SendLevel);
-    if (NotificationsToRemove <> nil) and
-       (NotificationsToRemove.Count <> 0) and
-       (SendLevel = 0) then
-      RemoveNotifications;
   end;
 end;
 
 function TX3DEvent.SendNeeded: boolean;
 begin
   Result :=
-    Assigned(FFirstNotification) or
-    ((FNotifications <> nil) and (FNotifications.Count <> 0));
+    Assigned(FFirstNotification);
 end;
 
 function TX3DEvent.CreateTemp(const PartialSend: TPartialSend): TX3DField;
@@ -272,21 +231,12 @@ begin
     FFirstNotification := Notification;
   end else
   begin
-    { create FNotifications on-demand, as in cases of models with a large number
-      of nodes (or using prototypes a lot, which also creates a large number of nodes)
-      we have a lot of TX3DEvent instances, and they eat a significant part of memory }
-    if FNotifications = nil then
-      FNotifications := TX3DEventReceiveList.Create;
-    FNotifications.Add(Notification);
+    ;
   end;
 end;
 
 procedure TX3DEvent.RemoveNotificationNow(const Notification: TX3DEventReceive);
 begin
-  { The "else" below is important to remove only the first notification present,
-    if you added multiple notifications. }
-  if FNotifications <> nil then
-    FNotifications.Remove(Notification);
 end;
 
 procedure TX3DEvent.RemoveNotification(const Notification: TX3DEventReceive);
@@ -296,9 +246,6 @@ begin
     RemoveNotificationNow(Notification);
   end else
   begin
-    if NotificationsToRemove = nil then
-      NotificationsToRemove := TX3DEventReceiveList.Create;
-    NotificationsToRemove.Add(Notification);
   end;
 end;
 
