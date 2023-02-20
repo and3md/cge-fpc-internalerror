@@ -38,6 +38,7 @@
     procedure Send(const AValue: TX3DNode); overload;
   end;
 
+  // removing this helper removes internal error on fixes branch fpc 3.2
   TSFNodeEventHelper = class helper for TSFNodeEvent
     procedure Send(const Value: TX3DNode); overload;
   end;
