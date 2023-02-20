@@ -45,8 +45,6 @@
     procedure SetWeakLink(const AValue: boolean);
     procedure WarningIfUnusedWeakLink;
     procedure DestructionNotification(Node: TX3DNode);
-  strict protected
-    procedure SaveToStreamValue; override;
   public
     { Construct a field allowing any children class.
       Suitable only for special cases. For example, in instantiated prototypes,
@@ -245,10 +243,6 @@ begin
   end;
 end;
 
-procedure TSFNode.SaveToStreamValue;
-begin
-end;
-
 function TSFNode.EqualsDefaultValue: boolean;
 begin
   Result := DefaultValueExists and (Value = DefaultValue);
@@ -267,8 +261,7 @@ begin
   begin
     inherited;
     Value := TSFNode(Source).Value;
-  end else
-    AssignValueRaiseInvalidClass(Source);
+  end;
 end;
 
 procedure TSFNode.AssignDefaultValueFromValue;

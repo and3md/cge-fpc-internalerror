@@ -22,8 +22,6 @@
   TSFGenericVector<
     TItem,
     TEvent> = class(TX3DField)
-  strict protected
-    procedure SaveToStreamValue; override;
   public
     Value: TItem;
 
@@ -93,10 +91,6 @@ begin
   AssignDefaultValueFromValue;
 end;
 
-procedure TSFGenericVector.SaveToStreamValue;
-begin
-end;
-
 function TSFGenericVector.EqualsDefaultValue: boolean;
 begin
   Result := DefaultValueExists and TItem.PerfectlyEquals(DefaultValue, Value);
@@ -131,8 +125,7 @@ begin
   begin
     inherited;
     Value := TSFGenericVector(Source).Value;
-  end else
-    AssignValueRaiseInvalidClass(Source);
+  end;
 end;
 
 procedure TSFGenericVector.AssignDefaultValueFromValue;

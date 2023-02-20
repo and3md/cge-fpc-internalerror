@@ -66,28 +66,6 @@
   strict protected
     function SendsByEvent: boolean;
 
-    { Save field value to a stream. Must be overriden for each specific
-      field.
-
-      For classic encoding, FieldSaveToStream and SaveToStream write
-      Indent, Name, ' ', then call SaveToStreamValue, then write @link(NL).
-
-      IS clauses are not saved by FieldSaveToStream or SaveToStream.
-      (They must be saved specially, by SaveToStreamClassicIsClauses
-      or special XML output.)
-      SaveToStream still checks ValueFromIsClause, if ValueFromIsClause
-      we will not call SaveToStreamValue. So when overriding
-      SaveToStreamValue, you can safely assume that ValueFromIsClause
-      is @false. }
-    procedure SaveToStreamValue; virtual; abstract;
-
-    { Call this inside overriden Assign methods.
-      I don't want to place this inside TX3DField.Assign, since I want
-      "inherited" in Assign methods to cause exception. }
-    procedure VRMLFieldAssignCommon(Source: TX3DField);
-
-    procedure AssignValueRaiseInvalidClass(Source: TX3DField);
-
     { Class of the fields allowed in the exposed events of this field.
       This should usually be using ClassType of this object,
       and this is the default implementation of this method in TX3DField.
@@ -522,39 +500,6 @@ end;
 
 procedure TX3DField.Parse(Lexer: TX3DLexer;IsClauseAllowed: boolean);
 begin
-end;
-
-procedure TX3DField.VRMLFieldAssignCommon(Source: TX3DField);
-begin
-  ValueFromIsClause := Source.ValueFromIsClause;
-
-  Exposed := Source.Exposed;
-  Assert(Exposed = (ExposedEvents[false] <> nil));
-  Assert(Exposed = (ExposedEvents[true] <> nil));
-
-  { This is a little tricky: we copied Exposed value by SetExposed,
-    to actually create or destroy exposed events.
-
-    But note that events in
-    ExposedEvents have names dependent on our name. So we have to eventually
-    change their names too. This is not needed if exposed
-    changes from true->false (then events will be destroyed),
-    changes from false->true (then events will be created with already new names),
-    stays as false->false (then events don't exist).
-    So it's needed only when exposed was true, and stays true, but name changed.
-  }
-
-  { Once again an issue with dependency of ExposedEvents on our name:
-    potentially alternative names changed,
-    so we have to redo this in exposed events. }
-end;
-
-procedure TX3DField.AssignValueRaiseInvalidClass(Source: TX3DField);
-begin
-  raise Exception.CreateFmt('Cannot assign VRML/X3D field ' +
-    '%s (%s) from %s (%s)',
-    [        'X3DName',        X3DType,
-      'Source.X3DName', Source.X3DType]);
 end;
 
 procedure TX3DField.AssignValue(Source: TX3DField);
