@@ -45,10 +45,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/castlefields_x3dfieldorevent.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/castlefields_x3dfileitem.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
