@@ -189,11 +189,6 @@ begin
       'Different nodes classes: "%s" and "%s"',
       [Model1.ClassName, Model2.ClassName]);
 
-  if Model1.X3DName <> Model2.X3DName then
-    raise EModelsStructureDifferent.CreateFmt(
-      'Different names of nodes: "%s" and "%s"',
-      [Model1.X3DName, Model2.X3DName]);
-
   { Yes, the situation below can happen. *Usually* when we know
     that Model1 and Model2 are equal classes then we know that
     they have the same number of fields of the same type.
@@ -347,7 +342,7 @@ begin
   if Model1 = Model2 then
     Exit(Model1);
 
-  Result := TX3DNodeClass(Model1.ClassType).Create(Model1.X3DName);
+  Result := TX3DNodeClass(Model1.ClassType).Create;
   try
     if Result is TX3DRootNode then
     begin

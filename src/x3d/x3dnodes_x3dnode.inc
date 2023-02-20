@@ -20,7 +20,6 @@
   { X3D node. Every VRML/X3D node class descends from this. }
   TX3DNode = class(TX3DFileItem)
   private
-    FX3DName: string;
     FFields, FFieldsSFNode, FFieldsMFNode: TX3DFieldList;
     FEvents: TX3DEventList;
 
@@ -70,20 +69,6 @@
       @nil if not found. }
     function AnyEvent(const AName: string): TX3DEvent;
 
-    { Name of this node. When saving/loading, this comes from VRML/X3D
-      "DEF" construct. Empty value means that the name is not defined.
-      Do not change this during loading / saving of the X3D graph,
-      or searching for nodes e.g. by @link(EnumerateNodes).
-
-      Note that this property is deliberately not called @code(Name).
-      In the future, this class may descend from the standard TComponent
-      class, that defines a @code(Name) field with a special restrictions
-      (it must be a valid Pascal identifier), which cannot apply to X3D node names
-      (that can have quite free names, see
-      http://www.web3d.org/documents/specifications/19776-2/V3.3/Part02/grammar.html ).
-      We don't want to confuse these two properties. }
-    property X3DName: string read FX3DName write FX3DName;
-
     { Constructor. Initializes various properties:
 
       @unorderedList(
@@ -96,7 +81,7 @@
           in CreateNode, that is called at the end of this constructor.)
       )
     }
-    constructor Create(const AX3DName: string = ''); virtual;
+    constructor Create; virtual;
 
     destructor Destroy; override;
   end;
@@ -109,11 +94,9 @@
 
 { TX3DNode ------------------------------------------------------------------ }
 
-constructor TX3DNode.Create(const AX3DName: String);
+constructor TX3DNode.Create;
 begin
   inherited Create;
-  FX3DName := AX3DName;
-
   FFields := TX3DFieldList.Create(false);
   FEvents := TX3DEventList.Create(false);
 
@@ -165,47 +148,6 @@ end;
 procedure TX3DNode.CreateNode;
 begin
 end;
-
-type
-  TFindNodeHelper = class
-    NodeClass: TX3DNodeClass;
-    function Callback(Node: TX3DNode): Pointer;
-  end;
-
-  function TFindNodeHelper.Callback(Node: TX3DNode): Pointer;
-  begin
-    if Node is NodeClass then
-      Result := Node else
-      Result := nil;
-  end;
-
-type
-  TFindNodeByNameHelper = class
-    NodeClass: TX3DNodeClass;
-    NodeName: string;
-    function Callback(Node: TX3DNode): Pointer;
-  end;
-
-  function TFindNodeByNameHelper.Callback(Node: TX3DNode): Pointer;
-  begin
-    if (Node is NodeClass) and (Node.X3DName = NodeName) then
-      Result := Node else
-      Result := nil;
-  end;
-
-  type
-    TRemoveChildrenWithMatchingNameHelper = class
-      Wildcard: string;
-      IgnoreCase: boolean;
-      procedure DoIt(ParentNode: TX3DNode; var Node: TX3DNode);
-    end;
-
-  procedure TRemoveChildrenWithMatchingNameHelper.DoIt(
-    ParentNode: TX3DNode; var Node: TX3DNode);
-  begin
-    if IsWild(Node.X3DName, Wildcard, IgnoreCase) then
-      Node := nil;
-  end;
 
 function TX3DNode.Field(const AName: string): TX3DField;
 var

@@ -104,16 +104,6 @@
       the existing scale of the outer model (always to make the resulting
       complete node graph keep the assumption 1 unit = 1 meter). }
     property Scale: Single read FScale write FScale default 1.0;
-
-    { Export node without using X3D parser. Use if you build X3D graph by hand,
-      and you want do add the EXPORT X3D clause (see X3D specification about EXPORT
-      to know what it does), such that it's not only serializable, but also
-      works (is recognized by models that Inline this one).
-
-      @groupBegin }
-    procedure ManuallyExportNode(const Node: TX3DNode; const ExportedAlias: string); overload;
-    procedure ManuallyExportNode(const Node: TX3DNode); overload;
-    { @groupEnd }
   end;
 
 {$endif read_interface}
@@ -183,17 +173,6 @@ begin
     This is special (see http://www.web3d.org/x3d/specifications/ISO-IEC-19775-1.2-X3D-AbstractSpecification/Part01/concepts.html#Rootnodes),
     "4.3.2 Root nodes" from X3D 3.2 spec.
   }
-end;
-
-procedure TX3DRootNode.ManuallyExportNode(const Node: TX3DNode; const ExportedAlias: string);
-begin
-  if Node.X3DName = '' then
-    raise Exception.Create('You cannot export nodes with empty names');
-end;
-
-procedure TX3DRootNode.ManuallyExportNode(const Node: TX3DNode);
-begin
-  ManuallyExportNode(Node, Node.X3DName);
 end;
 
 {$endif read_implementation}
