@@ -27,7 +27,6 @@
     FImports, FExports: TX3DFileItemList;
     FFields, FFieldsSFNode, FFieldsMFNode: TX3DFieldList;
     FEvents: TX3DEventList;
-    FDefaultContainerField: string;
 
     //ATest:Integer; //add to get internal error
 
@@ -276,45 +275,6 @@
       is that it works on classes (it's "class function"), without needing
       at actual instance. }
     class function ClassX3DType: string; virtual;
-
-    { Internal notes:
-
-      TODO: memory leaks are known to be possible in some difficult cases
-      with PrototypeInstanceHelpers. See e.g.
-      ../../../demo-models/prototypes/warnings/errors/proto_leak.wrl and
-      ../../../demo-models/prototypes/warnings/errors/proto_leak_2.wrl
-      for simple testcases. Reason: PrototypeInstanceHelpers may contain,
-      by DEF statements, links to Self.
-      This causes circular dependency (Self is child of some node on
-      PrototypeInstanceHelpers, but PrototypeInstanceHelpers will
-      be freed only if Self is freed) causing some memory to be left
-      always allocated.
-
-      PrototypeInstanceHelpers are actually always TX3DRootNode,
-      may be declared as such in the future if needed.
-    }
-
-    { Default value of "containerField" attribute for this node in X3D XML
-      encoding. }
-    property DefaultContainerField: string
-      read FDefaultContainerField write FDefaultContainerField;
-
-    { @groupEnd }
-
-    { Add to node InterfaceDeclarations given field.
-      Sets the field's exposed to given Exposed parameter, for comfort.
-      This should only be used with nodes having
-      HasInterfaceDeclarations = @true, like Script or ComposedShader. }
-    procedure AddCustomField(AField: TX3DField);
-
-    { Add to node InterfaceDeclarations given field or event.
-      This should only be used with nodes having
-      HasInterfaceDeclarations = @true, like Script or ComposedShader. }
-    procedure AddCustomFieldOrEvent(AFieldOrEvent: TX3DFileItem);
-
-    { Nice and concise node description for user.
-      Shows node type and name. }
-    function NiceName: string;
   end;
 
   TX3DNodeList = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TObjectList<TX3DNode>)
@@ -677,22 +637,6 @@ begin
     Exit(Events[I]);
 
   Result := nil; { not found }
-end;
-
-procedure TX3DNode.AddCustomFieldOrEvent(AFieldOrEvent: TX3DFileItem);
-begin
-end;
-
-procedure TX3DNode.AddCustomField(AField: TX3DField);
-begin
-  AddCustomFieldOrEvent(AField);
-end;
-
-function TX3DNode.NiceName: string;
-begin
-  Result := X3DType;
-  if X3DName <> '' then
-    Result := Result + '(' + X3DName + ')';
 end;
 
 function TX3DNode.GetFields(const Index: Integer): TX3DField;
