@@ -21,48 +21,14 @@
 
   TX3DFieldClass = class of TX3DField;
 
-  { Base class for all VRML/X3D fields.
-
-    Common notes for all descendants: most of them expose a field or property
-    "Value", which specifies the current value of the field.
-    Many of them also expose DefaultValue and DefaultValueExists
-    fields/properties, these should be the default X3D value for this field.
-    You can even change DefaultValue after the object is created.
-
-    Most of descendants include constructor that initializes
-    both DefaultValue and Value to the same thing, as this is what
-    you usually want.
-
-    Some notes about @code(Assign) method (inherited from TPersistent and
-    overridied appropriately in TX3DField descendants):
-
-    @orderedList(
-      @item(There are some exceptions, but usually
-        assignment is possible only when source and destination field classes
-        are equal.)
-
-      @item(Assignment (by @code(Assign), inherited from TPersistent)
-        tries to copy everything: name (with alternative names), default value,
-        IsClauseNames, ValueFromIsClause, Exposed, and of course current value.
-
-        Exceptions are things related to hierarchy of containers:
-        ParentNode, ParentInterfaceDeclaration. Also ExposedEventsLinked.
-
-        If you want to copy only the current value, use AssignValue
-        (or AssignLerp, where available).))
-  }
   TX3DField = class(TX3DFileItem)
   strict private
     FExposedEvents: array [boolean] of TX3DEvent;
 
-    // keep booleans together, to pack them together in memory
     FExposed: boolean;
-    FValueFromIsClause: boolean;
-    FExposedEventsLinked: boolean;
 
     procedure SetExposed(Value: boolean);
     function GetExposedEvents(InEvent: boolean): TX3DEvent;
-    procedure SetExposedEventsLinked(const Value: boolean);
   strict protected
     function SendsByEvent: boolean;
 
@@ -107,20 +73,6 @@
     function EventIn: TX3DEvent;
     function EventOut: TX3DEvent;
     { @groupEnd }
-
-    { When @true (default) we will automatically handle exposed events
-      behavior. This means that we will listen on EventIn,
-      and when something will be received we will set current field's value
-      and produce appropriate EventOut.
-
-      You almost certainly want to leave this as @true in all typical
-      situations, as it takes care of implementing required exposed events
-      behavior.
-
-      That said, in special cases you may decide to break this. }
-    property ExposedEventsLinked: boolean
-      read FExposedEventsLinked write SetExposedEventsLinked
-      default true;
 
     { Field type in X3D, like @code('SFString') or @code('MFInt32').
       As for VRML/X3D interface declaration statements.
@@ -223,7 +175,7 @@
     procedure Send(Value: TX3DField);
   end;
 
-  TX3DFieldList = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TObjectList<TX3DField>)
+  TX3DFieldList = class(specialize TObjectList<TX3DField>)
   public
   end;
 
@@ -231,16 +183,11 @@
 
 {$ifdef read_implementation}
 
-{ TPartialSend --------------------------------------------------------------- }
-
-{ TX3DField.TPartialReceived --------------------------------------------------------------- }
-
 { TX3DField ------------------------------------------------------------- }
 
 constructor TX3DField.Create(const AExposed: boolean);
 begin
   inherited Create;
-  FExposedEventsLinked := true;
 
   { Set Exposed by the property, to force FExposedEvents initialization }
   FExposed := false;
@@ -300,16 +247,6 @@ begin
       Reason: AssignValue also removes "IS" clause. }
     AssignValue(Value);
   end;
-end;
-
-const
-  SetPrefix = 'set_';
-  ChangedSuffix = '_changed';
-
-procedure TX3DField.SetExposedEventsLinked(const Value: boolean);
-begin
-  if FExposedEventsLinked <> Value then
-    FExposedEventsLinked := Value;
 end;
 
 class function TX3DField.ExposedEventsFieldClass: TX3DFieldClass;
