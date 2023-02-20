@@ -63,79 +63,6 @@
     procedure SetExposed(Value: boolean);
     function GetExposedEvents(InEvent: boolean): TX3DEvent;
     procedure SetExposedEventsLinked(const Value: boolean);
-  private
-    type
-      { Tracking of fading-in/out animation state on this particular field. }
-      TPartialReceived = class
-        { Strength of the fading-in/out value accumulated inside PartialValue.
-          Reset each frame.
-
-          Sending value with TPartialSend.Partial = X always adds X to this
-          TPartialReceived.Partial, when send in the same frame.
-          So e.g. sending two values, one with TPartialSend.Partial = 0.3,
-          one with TPartialSend.Partial = 0.7, sets TPartialReceived.Partial = 1.0.
-
-          At the end, PartialValue will be mixed (lerp) with SettledValue,
-          to produce final Value.
-          This way animation blending works in various cases:
-          - New animations fades-in, old animation fades-out
-            (at the end, Partial = 1.0).
-          - New animations fades-in, no old animation fades-out
-            (maybe fading-out animation does not affect this field,
-            or maybe there is no fading-out animation)
-            (at the end, Partial <= 1.0).
-        }
-        Partial: Single;
-
-        { Accumulated (this frame) partial values. }
-        PartialValue: TX3DField;
-
-        { Last known value when animation blending did not occur. }
-        SettledValue: TX3DField;
-
-        { Should the PartialValue, SettledValue be used to determine
-          field value this frame.
-
-          Why do we need this?
-
-            Checking this in InternalAffectedPartial avoids processing the field
-            twice, in case it was added twice to PartialSend.AffectedFields
-            (easily possible if it was under the influence of both old and new
-            animations).
-
-          Why not using Partial <> 0 for this?
-
-            Because sometimes Partial may be 0.
-
-            When starting a 1st animation, and it has TransitionDuration <> 0,
-            then the SetTime in HandleChangeTimeStopStart
-            activates the sensor, and the next SetTime (from Update)
-            may produce PartialReceived instance with PartialReceived.Partial = 0.
-
-            We *want* to apply this PartialReceived.Partial with 0.
-            Otherwise, the field value would be set immediately to the 1st pose
-            of new animation, disregarding smooth animation blending.
-
-            Testcase: examples/play_animation/ , switch to sample 3D,
-            increase transition = max, play "idle".
-            When "Partial <> 0" is used instead of ToBeApplied,
-            the 1st frame of "idle" quickly blinks at the beginning.
-
-            We could hack it by not doing SetTime in HandleChangeTimeStopStart,
-            but it's better to behave reliably in this case (Partial = 0) alwatys.
-
-          This is now just a shortcut for "PartialValue <> nil", as this satisfies
-          our needs.
-        }
-        function ToBeApplied: boolean;
-
-        destructor Destroy; override;
-      end;
-
-    var
-      { Used by fields that have their value affected by the fading-in/fading-out
-        animation. }
-      PartialReceived: TPartialReceived;
   strict protected
     function SendsByEvent: boolean;
 
@@ -489,18 +416,6 @@
 
 { TX3DField.TPartialReceived --------------------------------------------------------------- }
 
-function TX3DField.TPartialReceived.ToBeApplied: boolean;
-begin
-  Result := PartialValue <> nil;
-end;
-
-destructor TX3DField.TPartialReceived.Destroy;
-begin
-  FreeAndNil(SettledValue);
-  FreeAndNil(PartialValue);
-  inherited;
-end;
-
 { TX3DField ------------------------------------------------------------- }
 
 constructor TX3DField.Create(const AParentNode: TX3DFileItem;
@@ -524,8 +439,6 @@ destructor TX3DField.Destroy;
 begin
   FreeAndNil(FExposedEvents[false]);
   FreeAndNil(FExposedEvents[true]);
-  // FreeAndNil(FPartialSend); // do not free this, TCastleSceneCore frees it
-  FreeAndNil(PartialReceived);
   inherited;
 end;
 
