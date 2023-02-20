@@ -83,7 +83,6 @@
       http://www.web3d.org/documents/specifications/19776-2/V3.3/Part02/grammar.html ).
       We don't want to confuse these two properties. }
     property X3DName: string read FX3DName write FX3DName;
-    property NodeName: string read FX3DName write FX3DName; deprecated 'use X3DName';
 
     { Constructor. Initializes various properties:
 
@@ -100,30 +99,6 @@
     constructor Create(const AX3DName: string = ''); virtual;
 
     destructor Destroy; override;
-
-    { Type of the node in X3D, like @code('Group') or @code('Shape'). Never empty.
-      Constant for the class lifetime (even for special
-      TX3DUnknownNode and TX3DPrototypeNode, where this is calculated
-      at runtime).
-
-      Note that VRML/X3D is generally case-sensitive, so this property is too.
-
-      In TX3DNode, this returns ClassX3DType, which is suitable
-      for most nodes. See ClassX3DType. }
-    function X3DType: string; virtual;
-
-    { Node type name in VRML/X3D, for this class.
-      Normal VRML/X3D node classes should override this to return something
-      non-empty, and then X3DType automatically will return the same value.
-
-      Empty for classes that don't have a hardcoded VRML/X3D node name,
-      like a special TX3DUnknownNode. Such special classes should override
-      then X3DType to return actual non-empty name there.
-
-      You usually should call X3DType. The only use of this method
-      is that it works on classes (it's "class function"), without needing
-      at actual instance. }
-    class function ClassX3DType: string; virtual;
   end;
 
   TX3DNodeList = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TObjectList<TX3DNode>)
@@ -202,16 +177,6 @@ begin
   end;
 
   inherited;
-end;
-
-function TX3DNode.X3DType: string;
-begin
- result := ClassX3DType;
-end;
-
-class function TX3DNode.ClassX3DType: string;
-begin
- result := '';
 end;
 
 function BlenderRelativePath(const RelativePath: string): boolean;

@@ -111,20 +111,6 @@
     class function X3DType: string; override;
     class function CreateEvent: TX3DEvent; override;
 
-    { Checks is the Child allowed as a value of this SFNode,
-      and makes WritelnWarning if not.
-
-      Check is allowed is done looking at AllowedChildrenAll
-      and AllowedChildren properties.
-
-      Child must not be @nil.
-
-      WritelnWarning message will suggest that this Child is used as value
-      of this node. In other words, you should only pass as Child
-      a node that you want to assign as Value to this field,
-      otherwise WritelnWarning message will be a little unsensible. }
-    procedure WarningIfChildNotAllowed(Child: TX3DNode);
-
     function ChildAllowed(Child: TX3DNode): boolean;
     function CurrentChildAllowed: boolean;
 
@@ -253,23 +239,6 @@ begin
   Result := ChildAllowed(Value);
 end;
 
-procedure TSFNode.WarningIfChildNotAllowed(Child: TX3DNode);
-
-  procedure ChildNotAllowed;
-  var
-    S: string;
-  begin
-    S := Format('Node "%s" is not allowed in the field "%s"',
-      [Child.X3DType, 'X3DName']);
-    if ParentNode <> nil then
-      S := S + Format(' of the node "%s"', [ParentNode.X3DType]);
-  end;
-
-begin
-  if not ChildAllowed(Child) then
-    ChildNotAllowed;
-end;
-
 procedure TSFNode.WarningIfUnusedWeakLink;
 begin
   if WeakLink and
@@ -291,7 +260,6 @@ begin
     //Value := ParseNode(Lexer, Reader as TX3DReaderNames, true);
     if Value <> nil then
     begin
-      WarningIfChildNotAllowed(Value);
       WarningIfUnusedWeakLink;
     end;
   end;
@@ -321,7 +289,6 @@ begin
   begin
   end else
   begin
-    WarningIfChildNotAllowed(Value);
     WarningIfUnusedWeakLink;
   end;
 end;
