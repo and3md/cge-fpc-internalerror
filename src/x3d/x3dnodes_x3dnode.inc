@@ -495,10 +495,6 @@
     function NodesCount(NodeClass: TX3DNodeClass;
       CountOnlyActiveNodes: boolean): integer;
 
-    { Save node to a stream. Saves everything, including node name,
-      node type, and node contents. }
-    procedure SaveToStream; override;
-
     { Some nodes are present only in specific VRML/X3D version.
       This functions decides it.
 
@@ -1385,10 +1381,6 @@ begin
     EnumerateNodes(NodeClass, {$ifdef CASTLE_OBJFPC}@{$endif} C.CountNode, CountOnlyActiveNodes);
     result := C.Counter;
   finally C.Free end;
-end;
-
-procedure TX3DNode.SaveToStream;
-begin
 end;
 
 class function TX3DNode.ForVRMLVersion(const Version: TX3DVersion): boolean;

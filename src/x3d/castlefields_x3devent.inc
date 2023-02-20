@@ -45,8 +45,6 @@
       in VRML nodeBodyStatement. }
     procedure Parse(Lexer: TX3DLexer);
 
-    procedure SaveToStream; override;
-
     { If this event is an exposed event belonging to some field,
       this references parent field. Otherwise it's @nil. }
     property ParentExposedField: TX3DField
@@ -122,11 +120,6 @@ end;
 
 procedure TX3DEvent.Parse(Lexer: TX3DLexer);
 begin
-end;
-
-procedure TX3DEvent.SaveToStream;
-begin
-  { saves nothing. IS clauses are saved separately by SaveToStreamIsClauses }
 end;
 
 procedure TX3DEvent.Send(Field: TX3DField);

@@ -264,16 +264,6 @@
       FieldSaveWhenDefault: boolean = false;
       XmlAvoidSavingNameBeforeValue: boolean = false);
 
-    { Save the field to the stream.
-
-      This simply calls FieldSaveToStream(Writer).
-      See FieldSaveToStream for more comments and when you need control over
-      FieldSaveWhenDefault behavior.
-
-      It doesn't actually save anything if field value is defined
-      and equals default value. }
-    procedure SaveToStream; override;
-
     { Does current field value came from expanding "IS" clause.
       If yes, then saving this field to stream will only save it's "IS" clauses,
       never saving actual value. }
@@ -637,11 +627,6 @@ end;
 
 procedure TX3DField.FieldSaveToStream(FieldSaveWhenDefault, XmlAvoidSavingNameBeforeValue: boolean);
 begin
-end;
-
-procedure TX3DField.SaveToStream;
-begin
-  FieldSaveToStream;
 end;
 
 function TX3DField.EqualsDefaultValue: boolean;

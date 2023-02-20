@@ -71,15 +71,6 @@
     property SaveAsRootNode: boolean read FSaveAsRootNode write FSaveAsRootNode
       default true;
 
-    { Save contents to the stream.
-
-      If SaveAsRootNode then this is saved in a special way,
-      such that only the contents are written, without surrounding
-      braces (for classic encoding) or XML element (for xml encoding).
-      This way, when saving, we hide the fact that everything was wrapped
-      in an artificial TX3DRootNode. }
-    procedure SaveToStream; override;
-
     { Set HasForceVersion to @true to force saving this model with
       given ForceVersion. }
     property HasForceVersion: boolean
@@ -165,29 +156,6 @@ destructor TX3DRootNode.Destroy;
 begin
   FreeAndNil(FComponents);
   inherited;
-end;
-
-procedure TX3DRootNode.SaveToStream;
-var
-  I: integer;
-  FileItems: TX3DFileItemList;
-begin
-  if SaveAsRootNode then
-  begin
-    { Special things for root node saving:
-      - Name is ignored (should be '').
-      - Fields are ignored, except "children", that holds children
-        (for any VRML version, including VRML 1).
-        It's output in a special way, without writing "children [...]" around.
-        Other fields are ignored (should never have any meaning). }
-
-    FileItems := TX3DFileItemList.Create(false);
-    try
-      Assert(VRML1ChildrenCount = 0);
-
-    finally FreeAndNil(FileItems) end;
-  end else
-    inherited;
 end;
 
 procedure TX3DRootNode.ForceSaveAsX3D(const AMajor: Integer = 3;
