@@ -33,8 +33,6 @@
     constructor Create(const AParentNode: TX3DFileItem;
       const AExposed: boolean; const AName: string; const AValue: TItem);
 
-    procedure ParseValue(Lexer: TX3DLexer); override;
-
     function EqualsDefaultValue: boolean; override;
     function Equals(SecondValue: TX3DField): boolean; override;
     function FastEqualsValue(SecondValue: TX3DField): boolean; override;
@@ -93,23 +91,6 @@ begin
 
   Value := AValue;
   AssignDefaultValueFromValue;
-end;
-
-procedure TSFGenericVector.ParseValue(Lexer: TX3DLexer);
-var
-  I: Integer;
-begin
-  for I := 0 to High(Value.Data) do
-  begin
-    Lexer.CheckTokenIs(TokenNumbers, 'float number');
-    Value.Data[I] := Lexer.TokenFloat;
-    Lexer.NextToken;
-  end;
-
-  // Calling ParseVector or ParseFloat here causes FPC 3.0.2 error
-  // Error: Global Generic template references static symtable
-  // TODO: check on other FPC versions and report.
-  // ParseVector(Value.Data, Lexer);
 end;
 
 procedure TSFGenericVector.SaveToStreamValue;

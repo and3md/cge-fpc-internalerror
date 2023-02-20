@@ -160,37 +160,6 @@
       Descendants should override ParseValue. }
     procedure Parse(Lexer: TX3DLexer; IsClauseAllowed: boolean);
 
-    procedure ParseValue(Lexer: TX3DLexer); virtual; abstract;
-
-    { Parse field value from X3D XML encoded attribute using a Lexer.
-      Attributes in X3D are generally encoded such that normal
-      @code(ParseValue(Lexer, nil)) call is appropriate,
-      so this is done in this class. }
-    procedure ParseXMLAttributeLexer(Lexer: TX3DLexer); virtual;
-
-    { Parse field value from X3D XML encoded attribute.
-
-      Implementation in this class creates a Lexer to parse the string,
-      and calls ParseXMLAttributeLexer. }
-    procedure ParseXMLAttribute(const AttributeValue: string); virtual;
-
-    { Parse field's value from XML Element children.
-      This is used to read SFNode / MFNode field value inside <field>
-      (for interface declaration default field value) and <fieldValue>
-      inside <ProtoInstance>. }
-    procedure ParseXMLElement(Element: TDOMElement); virtual;
-
-    { Save the field to the stream.
-      Field name (if set, omitted if empty) and value are saved.
-      Unless the current field value equals default value and
-      FieldSaveWhenDefault is @false (default), then nothing is saved.
-
-      IS clauses are not saved here (because they often have to be treated
-      specially anyway, for XML encoding, for prototype declarations etc.). }
-    procedure FieldSaveToStream(
-      FieldSaveWhenDefault: boolean = false;
-      XmlAvoidSavingNameBeforeValue: boolean = false);
-
     { Does current field value came from expanding "IS" clause.
       If yes, then saving this field to stream will only save it's "IS" clauses,
       never saving actual value. }
@@ -536,10 +505,6 @@ begin
   end;
 end;
 
-procedure TX3DField.FieldSaveToStream(FieldSaveWhenDefault, XmlAvoidSavingNameBeforeValue: boolean);
-begin
-end;
-
 function TX3DField.EqualsDefaultValue: boolean;
 begin
   Result := false;
@@ -556,31 +521,6 @@ begin
 end;
 
 procedure TX3DField.Parse(Lexer: TX3DLexer;IsClauseAllowed: boolean);
-begin
-end;
-
-procedure TX3DField.ParseXMLAttributeLexer(Lexer: TX3DLexer);
-begin
-end;
-
-procedure TX3DField.ParseXMLAttribute(const AttributeValue: string);
-var
-  Lexer: TX3DLexer;
-  A: TX3dVersion;
-begin
-  A.Major := 1;
-  A.Minor := 1;
-  Lexer := TX3DLexer.CreateForPartialStream(AttributeValue, A);
-  try
-    try
-      ParseXMLAttributeLexer(Lexer);
-    except
-      ;
-    end;
-  finally FreeAndNil(Lexer) end;
-end;
-
-procedure TX3DField.ParseXMLElement(Element: TDOMElement);
 begin
 end;
 

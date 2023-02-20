@@ -89,9 +89,6 @@
       read FDefaultValueExists write SetDefaultValueExists default false;
 
     property Value: TX3DNode read FValue write SetValue;
-    procedure ParseValue(Lexer: TX3DLexer); override;
-    procedure ParseXMLAttribute(const AttributeValue: string); override;
-    procedure ParseXMLElement(Element: TDOMElement); override;
 
     function EqualsDefaultValue: boolean; override;
     function Equals(SecondValue: TX3DField): boolean; override;
@@ -246,55 +243,6 @@ begin
   begin
     FValue := nil;
   end;
-end;
-
-procedure TSFNode.ParseValue(Lexer: TX3DLexer);
-begin
-  if (Lexer.Token = vtKeyword) and (Lexer.TokenKeyword = vkNULL) then
-  begin
-    Value := nil;
-    Lexer.NextToken;
-  end else
-  begin
-    { This is one case when we can use NilIfUnresolvedUSE = @true }
-    //Value := ParseNode(Lexer, Reader as TX3DReaderNames, true);
-    if Value <> nil then
-    begin
-      WarningIfUnusedWeakLink;
-    end;
-  end;
-end;
-
-procedure TSFNode.ParseXMLAttribute(const AttributeValue: string);
-const
-  SNull = 'NULL';
-var
-  UsedNodeFinished: boolean;
-  V: TX3DNode;
-begin
-  { For SFNode and MFNode, X3D XML encoding has special handling:
-    field value just indicates the node name, or NULL.
-    (other values for SFNode / MFNode cannot be expressed inside
-    the attribute). }
-
-  V := nil;// (Reader as TX3DReaderNames).Nodes.Bound(AttributeValue, UsedNodeFinished);
-  if (V <> nil)  then
-  begin
-    Value := nil;
-    Exit;
-  end;
-
-  Value := V;
-  if Value = nil then
-  begin
-  end else
-  begin
-    WarningIfUnusedWeakLink;
-  end;
-end;
-
-procedure TSFNode.ParseXMLElement(Element: TDOMElement);
-begin
 end;
 
 procedure TSFNode.SaveToStreamValue;
