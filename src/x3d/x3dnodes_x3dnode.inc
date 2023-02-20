@@ -30,11 +30,6 @@
     property Fields [Index: Integer]: TX3DField read GetFields;
     function FieldsCount: Integer;
     procedure AddField(const Value: TX3DField);
-    function IndexOfField(const AName: string): Integer;
-
-    { Search by name for given field.
-      @nil if not found. }
-    function Field(const AName: string): TX3DField;
 
     constructor Create; virtual;
     destructor Destroy; override;
@@ -76,16 +71,6 @@ procedure TX3DNode.CreateNode;
 begin
 end;
 
-function TX3DNode.Field(const AName: string): TX3DField;
-var
-  I: Integer;
-begin
-  I := FFields.IndexOfName(AName);
-  if I <> -1 then
-    Result := FFields[I] else
-    Result := nil; { not found }
-end;
-
 function TX3DNode.GetFields(const Index: Integer): TX3DField;
 begin
   Result := FFields[Index];
@@ -99,11 +84,6 @@ end;
 procedure TX3DNode.AddField(const Value: TX3DField);
 begin
   FFields.Add(Value);
-end;
-
-function TX3DNode.IndexOfField(const AName: string): Integer;
-begin
-  Result := FFields.IndexOfName(AName);
 end;
 
 { TX3DNodeList ------------------------------------------------------------- }

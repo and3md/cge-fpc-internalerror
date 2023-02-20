@@ -225,16 +225,6 @@
 
   TX3DFieldList = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TObjectList<TX3DField>)
   public
-    { Searches for a field with given Name, returns it's index or -1 if not found. }
-    function IndexOfName(const AName: string): integer;
-
-    { Returns if EventName is an event implicitly exposed by one of our
-      exposed fields (i.e. set_xxx or xxx_changed). If yes, then
-      returns index of event, and the event reference itself
-      (so always @code(Fields[ReturnedIndex].ExposedEvent[ReturnedEvent.InEvent]
-      = ReturnedEvent)). Otherwise, returns -1. }
-    function IndexOfExposedEvent(const EventName: string;
-      out Event: TX3DEvent): Integer;
   end;
 
 {$endif read_interface}
@@ -374,39 +364,6 @@ end;
 class function TX3DField.X3DType: string;
 begin
   Result := 'XFAny';
-end;
-
-{ TX3DFieldList ------------------------------------------------------------- }
-
-function TX3DFieldList.IndexOfName(const AName: string): integer;
-begin
-  Result := -1;
-end;
-
-function TX3DFieldList.IndexOfExposedEvent(const EventName: string;
-  out Event: TX3DEvent): Integer;
-var
-  InEvent: boolean;
-begin
-  { This implementation is quite optimized.
-    Instead of browsing all fields and their ExposedEvents,
-    looking for EventName event, instead we examine EventName
-    to look whether this has any chance of being set_xxx or xxx_changed
-    event. So we utilize the fact that exposed events have consistent
-    naming. }
-
-  Result := -1;
-  InEvent := true;
-  { check is field really exposed now }
-  if (Result <> -1) and (not Items[Result].Exposed) then
-  begin
-    Result := -1;
-  end;
-
-  if Result <> -1 then
-  begin
-    Event := Items[Result].ExposedEvents[InEvent];
-  end;
 end;
 
 {$endif read_implementation}
