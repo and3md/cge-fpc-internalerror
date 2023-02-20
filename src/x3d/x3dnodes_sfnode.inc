@@ -82,9 +82,6 @@
 
     property Value: TX3DNode read FValue write SetValue;
 
-    function EqualsDefaultValue: boolean; override;
-    function Equals(SecondValue: TX3DField): boolean; override;
-
     procedure AssignValue(Source: TX3DField); override;
 
     { VRML node containing this field. May be @nil if unknown, in special
@@ -218,18 +215,6 @@ begin
   begin
     FValue := nil;
   end;
-end;
-
-function TSFNode.EqualsDefaultValue: boolean;
-begin
-  Result := DefaultValueExists and (Value = DefaultValue);
-end;
-
-function TSFNode.Equals(SecondValue: TX3DField): boolean;
-begin
- Result := (inherited Equals(SecondValue)) and
-   (SecondValue is TSFNode) and
-   (TSFNode(SecondValue).Value = Value);
 end;
 
 procedure TSFNode.AssignValue(Source: TX3DField);

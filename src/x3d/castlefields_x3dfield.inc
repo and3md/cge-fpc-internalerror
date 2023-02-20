@@ -116,56 +116,7 @@
       If "IS" clause not found, we call ParseValue which should
       actually parse field's value.
       Descendants should override ParseValue. }
-    procedure Parse(Lexer: TX3DLexer; IsClauseAllowed: boolean);
-
-    { Does current field value came from expanding "IS" clause.
-      If yes, then saving this field to stream will only save it's "IS" clauses,
-      never saving actual value. }
-    property ValueFromIsClause: boolean
-      read FValueFromIsClause write FValueFromIsClause;
-
-    { Zwraca zawsze false w tej klasie. Mozesz to przedefiniowac w podklasach
-      aby SaveToStream nie zapisywalo do strumienia pol o wartosci domyslnej. }
-    function EqualsDefaultValue: boolean; virtual;
-
-    { @true if the SecondValue object has exactly the same type and properties.
-      For this class, this returns just (SecondValue.Name = Name).
-
-      All descendants (that add some property that should be compared)
-      should override this like
-
-      @longCode(#
-        Result := (inherited Equals(SecondValue)) and
-          (SecondValue is TMyType) and
-          (TMyType(SecondValue).MyProperty = MyProperty);
-      #)
-
-      The floating-point fields may be compared with a small epsilon
-      tolerance by this method.
-
-      Note that this *doesn't* compare the default values of two fields
-      instances. This compares only the current values of two fields
-      instances, and eventually some other properties that affect
-      parsing (like names for TSFEnum and TSFBitMask) or allowed
-      future values (like TSFFloat.MustBeNonnegative).
-    }
-    function Equals(SecondValue: TX3DField): boolean; virtual; reintroduce;
-
-    { Compare value of this field, with other field, fast.
-
-      This compares only the values of the fields, not other properties
-      (it doesn't care about names of the fields or such, or default values;
-      only current values). In other words, it compares only the things
-      copied by AssignValue.
-
-      This tries to compare very fast, which means that for large
-      (multi-valued) fields it may give up and answer @false even
-      when they are in fact equal. So this is usable only for optimization
-      purposes: when it answers @true, it is @true. When it answers @false,
-      it actually doesn't know.
-
-      Default implementation in this class (@classname) just returns @false. }
-    function FastEqualsValue(SecondValue: TX3DField): boolean; virtual;
+    procedure Parse(Lexer: TX3DLexer);
 
     { Does this field generate/accept events, that is
       an "exposedField" (in VRML 2.0) or "inputOutput" (in X3D). }
@@ -363,14 +314,6 @@ begin
   Assert(Exposed);
   Assert(Event = FExposedEvents[true]);
   Assert(Value is ExposedEventsFieldClass);
-
-  { When not ValuePossiblyChanged, we don't have to call InternalChangedField.
-    (Although we still have to call FExposedEvents[false].Send,
-    to push the change through the routes.)
-    This may be an important optimization when simple field's change
-    causes large time-consuming work in InternalChangedField. }
-  ValuePossiblyChanged := not FastEqualsValue(Value);
-
   { This is trivial handling of exposed events: just set our value,
     and call out event. }
 
@@ -435,28 +378,12 @@ begin
   end;
 end;
 
-function TX3DField.EqualsDefaultValue: boolean;
-begin
-  Result := false;
-end;
-
-function TX3DField.Equals(SecondValue: TX3DField): boolean;
-begin
-  Result := true;
-end;
-
-function TX3DField.FastEqualsValue(SecondValue: TX3DField): boolean;
-begin
-  Result := false;
-end;
-
-procedure TX3DField.Parse(Lexer: TX3DLexer;IsClauseAllowed: boolean);
+procedure TX3DField.Parse(Lexer: TX3DLexer);
 begin
 end;
 
 procedure TX3DField.AssignValue(Source: TX3DField);
 begin
-  ValueFromIsClause := false;
 end;
 
 procedure TX3DField.AssignLerp(const A: Double; Value1, Value2: TX3DField);

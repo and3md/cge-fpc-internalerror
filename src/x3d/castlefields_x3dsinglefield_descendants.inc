@@ -31,10 +31,6 @@
     constructor Create(const AParentNode: TX3DFileItem;
       const AExposed: boolean; const AName: string; const AValue: TItem);
 
-    function EqualsDefaultValue: boolean; override;
-    function Equals(SecondValue: TX3DField): boolean; override;
-    function FastEqualsValue(SecondValue: TX3DField): boolean; override;
-
     procedure AssignLerp(const A: Double; Value1, Value2: TX3DField); override;
     function CanAssignLerp: boolean; override;
     procedure AssignValue(Source: TX3DField); override;
@@ -87,24 +83,6 @@ begin
   inherited Create(AParentNode, AExposed, AName);
 
   Value := AValue;
-end;
-
-function TSFGenericVector.EqualsDefaultValue: boolean;
-begin
-  Result := DefaultValueExists and TItem.PerfectlyEquals(DefaultValue, Value);
-end;
-
-function TSFGenericVector.Equals(SecondValue: TX3DField): boolean;
-begin
-  Result := (inherited Equals(SecondValue)) and
-    (SecondValue is TSFGenericVector) and
-    TItem.Equals(TSFGenericVector(SecondValue).Value, Value);
-end;
-
-function TSFGenericVector.FastEqualsValue(SecondValue: TX3DField): boolean;
-begin
-  Result := (SecondValue is TSFGenericVector) and
-    TItem.PerfectlyEquals(TSFGenericVector(SecondValue).Value, Value);
 end;
 
 procedure TSFGenericVector.AssignLerp(const A: Double; Value1, Value2: TX3DField);
