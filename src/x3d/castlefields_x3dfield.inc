@@ -104,26 +104,6 @@
     constructor Create(const AParentNode: TX3DFileItem;
       const AExposed: boolean; const AName: string);
 
-    { Virtual constructor, that you can use to construct field instance when
-      field class is known only at runtime.
-
-      The idea is that in some cases, you need to create fields using
-      variable like FieldClass: TX3DFieldClass. See e.g. TX3DInterfaceDeclaration,
-      VRML 2.0 feature that simply requires this ability, also
-      implementation of TX3DSimpleMultField.Parse and
-      TX3DSimpleMultField.CreateItemBeforeParse.
-
-      Later you can initialize such instance from string using it's Parse method.
-
-      Note that some exceptional fields simply cannot work when initialized
-      by this constructor: these are SFEnum and SFBitMask fields.
-      They simply need to know their TSFEnum.EnumNames, or
-      TSFBitMask.FlagNames + TSFBitMask.NoneString + TSFBitMask.AllString
-      before they can be parsed. I guess that's one of the reasons why these
-      field types were entirely removed from VRML 2.0. }
-    constructor CreateUndefined(const AParentNode: TX3DFileItem;
-      const AExposed: boolean; const AName: string); virtual;
-
     destructor Destroy; override;
 
     { Parse inits properties from Lexer.
@@ -223,7 +203,6 @@
       In base TX3DField class, this returns @code(XFAny)
       (name indicating any type, used by instantreality and us). }
     class function X3DType: string; virtual;
-    class function TypeName: string; deprecated 'use X3DType';
 
     { Create TX3DEvent descendant suitable as exposed event for this field. }
     class function CreateEvent: TX3DEvent; virtual;
@@ -264,21 +243,6 @@
       #)
     }
     procedure AssignValue(Source: TX3DField); virtual;
-
-    { Set field's default value from the current value.
-
-      Note that for now this doesn't guarantee that every possible field's value
-      can be stored as default value. In case of trouble, it will silently
-      record "no default is known" information, so e.g. EqualsDefaultValue
-      will always return @false.
-      Our default value mechanisms are sometimes
-      limited, not every value can be a default value. For example,
-      for multiple-valued nodes, we usually cannot save arrays longer than
-      one as default value. This is not a problem, since X3D specification
-      doesn't specify too long default values. But it may be a problem
-      for prototypes, since then user can assign any value as default value.
-      May be corrected in the future. }
-    procedure AssignDefaultValueFromValue; virtual;
 
     { Assigns value to this node calculated from linear interpolation
       between two given nodes Value1, Value2. Just like other lerp
@@ -336,13 +300,7 @@
   end;
 
   TX3DFieldList = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TObjectList<TX3DField>)
-  strict private
-    function GetByName(const AName: string): TX3DField;
   public
-    { Access field by name.
-      Raises EX3DNotFound if the given Name doesn't exist. }
-    property ByName[const AName: string]: TX3DField read GetByName;
-
     { Searches for a field with given Name, returns it's index or -1 if not found. }
     function IndexOfName(const AName: string): integer;
 
@@ -366,12 +324,6 @@
 { TX3DField ------------------------------------------------------------- }
 
 constructor TX3DField.Create(const AParentNode: TX3DFileItem;
-  const AExposed: boolean; const AName: string);
-begin
-  CreateUndefined(AParentNode, AExposed, AName);
-end;
-
-constructor TX3DField.CreateUndefined(const AParentNode: TX3DFileItem;
   const AExposed: boolean; const AName: string);
 begin
   inherited Create;
@@ -507,11 +459,6 @@ begin
   ValueFromIsClause := false;
 end;
 
-procedure TX3DField.AssignDefaultValueFromValue;
-begin
-  { do nothing in this class }
-end;
-
 procedure TX3DField.AssignLerp(const A: Double; Value1, Value2: TX3DField);
 begin
   { do nothing, CanAssignLerp is false }
@@ -530,26 +477,11 @@ begin
   Result := 'XFAny';
 end;
 
-class function TX3DField.TypeName: string;
-begin
-  Result := X3DType;
-end;
-
 { TX3DFieldList ------------------------------------------------------------- }
 
 function TX3DFieldList.IndexOfName(const AName: string): integer;
 begin
   Result := -1;
-end;
-
-function TX3DFieldList.GetByName(const AName: string): TX3DField;
-var
-  I: integer;
-begin
-  I := IndexOfName(AName);
-  if I <> -1 then
-    Result := Items[I] else
-    raise Exception.CreateFmt('Field name "%s" not found', [AName]);
 end;
 
 function TX3DFieldList.IndexOfExposedEvent(const EventName: string;

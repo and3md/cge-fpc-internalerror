@@ -46,12 +46,6 @@
     procedure WarningIfUnusedWeakLink;
     procedure DestructionNotification(Node: TX3DNode);
   public
-    { Construct a field allowing any children class.
-      Suitable only for special cases. For example, in instantiated prototypes,
-      we must initially just allow all children, otherwise valid prototypes
-      with SFNode/MFNode would cause warnings when parsing. }
-    constructor CreateUndefined(const AParentNode: TX3DFileItem;
-      const AExposed: boolean; const AName: string); override;
     constructor Create(const AParentNode: TX3DNode;
       const AExposed: boolean; const AName: string;
       const AAllowedChildrenClasses: array of TX3DNodeClass;
@@ -92,7 +86,6 @@
     function Equals(SecondValue: TX3DField): boolean; override;
 
     procedure AssignValue(Source: TX3DField); override;
-    procedure AssignDefaultValueFromValue; override;
 
     { VRML node containing this field. May be @nil if unknown, in special
       cases.
@@ -161,20 +154,6 @@
 {$ifdef read_implementation}
 
 { TSFNode --------------------------------------------------------------------- }
-
-constructor TSFNode.CreateUndefined(const AParentNode: TX3DFileItem;
-  const AExposed: boolean; const AName: string);
-begin
-  inherited;
-  Value := nil;
-
-  AllowedChildren := acAll;
-  { AllowedChildrenClasses may remain nil in this case }
-
-  FDefaultValue := nil;
-  FDefaultValueExists := false;
-end;
-
 constructor TSFNode.Create(const AParentNode: TX3DNode;
   const AExposed: boolean; const AName: string;
   const AAllowedChildrenClasses: array of TX3DNodeClass;
@@ -189,7 +168,6 @@ begin
   AllowedChildren := acClasses;
 
   Value := AValue;
-  AssignDefaultValueFromValue;
 end;
 
 constructor TSFNode.Create(const AParentNode: TX3DNode;
@@ -207,7 +185,6 @@ begin
   AllowedChildrenInterface := AnAllowedChildrenInterface;
 
   Value := AValue;
-  AssignDefaultValueFromValue;
 end;
 
 destructor TSFNode.Destroy;
@@ -262,13 +239,6 @@ begin
     inherited;
     Value := TSFNode(Source).Value;
   end;
-end;
-
-procedure TSFNode.AssignDefaultValueFromValue;
-begin
-  inherited;
-  DefaultValue := Value;
-  DefaultValueExists := true;
 end;
 
 procedure TSFNode.SetValue(AValue: TX3DNode);
@@ -327,7 +297,7 @@ var
 begin
   { We construct using CreateUndefined constructor,to have AllowedChildren = acAll }
   { AExposed = false below, because not needed otherwise. }
-  FieldValue := TSFNode.CreateUndefined(ParentNode, false, 'X3DName');
+  FieldValue := TSFNode.Create(ParentNode, false, 'X3DName');
   try
     FieldValue.Value := AValue;
     Send(FieldValue);

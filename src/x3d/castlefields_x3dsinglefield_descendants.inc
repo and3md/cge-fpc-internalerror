@@ -38,7 +38,6 @@
     procedure AssignLerp(const A: Double; Value1, Value2: TX3DField); override;
     function CanAssignLerp: boolean; override;
     procedure AssignValue(Source: TX3DField); override;
-    procedure AssignDefaultValueFromValue; override;
     procedure Send(const AValue: TItem); overload;
 
     class function CreateEvent: TX3DEvent; override;
@@ -88,7 +87,6 @@ begin
   inherited Create(AParentNode, AExposed, AName);
 
   Value := AValue;
-  AssignDefaultValueFromValue;
 end;
 
 function TSFGenericVector.EqualsDefaultValue: boolean;
@@ -128,13 +126,6 @@ begin
   end;
 end;
 
-procedure TSFGenericVector.AssignDefaultValueFromValue;
-begin
-  inherited;
-  DefaultValue := Value;
-  DefaultValueExists := true;
-end;
-
 class function TSFGenericVector.CreateEvent: TX3DEvent;
 begin
   Result := TEvent.Create;
@@ -145,7 +136,7 @@ var
   FieldValue: TSFGenericVector;
 begin
   FieldValue := TSFGenericVector(
-    TX3DFieldClass(ClassType).CreateUndefined(nil, false, 'X3DName'));
+    TX3DFieldClass(ClassType).Create(nil, false, 'X3DName'));
   try
     FieldValue.Value := AValue;
     Send(FieldValue);
