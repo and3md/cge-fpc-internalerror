@@ -639,18 +639,11 @@ class function TNodeInterpolator.LoadAnimFramesToKeyNodes(const URL: string): TA
     DefaultLoop = false;
     DefaultBackwards = false;
   var
-    AbsoluteBaseUrl: string;
-    FrameElement: TDOMElement;
     I: Integer;
-    FrameTime: Single;
-    FrameURL: string;
-    NewNode: TX3DRootNode;
     Attr: TDOMAttr;
   begin
     Result := TAnimation.Create;
     try
-      AbsoluteBaseUrl := URL;
-
       { Assign default values for optional attributes }
       Result.Name := DefaultAnimationName;
       Result.ScenesPerTime := DefaultScenesPerTime;
