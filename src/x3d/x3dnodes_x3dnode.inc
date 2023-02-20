@@ -21,7 +21,7 @@
   TX3DNode = class(TX3DFileItem)
   private
     FX3DName: string;
-    FVRML1Children, FVRML1Parents: TX3DNodeList;
+    FVRML1Parents: TX3DNodeList;
     FParentFields: TX3DFieldList;
     FImports, FExports: TX3DFileItemList;
     FFields, FFieldsSFNode, FFieldsMFNode: TX3DFieldList;
@@ -29,9 +29,7 @@
 
     //ATest:Integer; //add to get internal error
 
-    function GetVRML1Child(i: integer): TX3DNode;
     function GetVRML1Parent(i: integer): TX3DNode;
-    procedure SetVRML1Child(I: Integer; Value: TX3DNode);
     function GetParentFieldsItem(Index: Integer): TX3DField;
     function GetParentFieldsNodeItem(Index: Integer): TX3DNode;
     procedure RemoveParentField(Field: TX3DField);
@@ -84,60 +82,6 @@
     { Search by name for given event (exposed by some field or not).
       @nil if not found. }
     function AnyEvent(const AName: string): TX3DEvent;
-
-    { VRML 1.0 children nodes. These are nodes directly specified inside
-      a VRML 1.0 node, they don't belong to any node field. (In VRML 1.0,
-      there was no SFNode / MFNode fields.)
-
-      In VRML 2.0, this is always empty.
-
-      VRML 1.0 nodes may have any number of children.
-      The children nodes refer back to it's parent nodes in VRML1Parents list.
-      When travelling over VRML/X3D graph, remember that cycles
-      are possible, because of DEF/USE.
-      Obviously, they possible when travelling along the VRML1Parents list.
-      We currently assume that there are no cycles when we treat the graph
-      as directed, but it may change one day (some VRML/X3D models
-      create real cycles).
-
-      Adding/removing stuff from the VRML1Children list keeps track
-      of how many times a node is used. If the child node has no parents,
-      it will be freed.
-      Actually, nodes can be children of both nodes (VRML 1.0 style,
-      then VRML1Children and VRML1Parents is used) or fields (TMFNode or TSFNode,
-      in VRML 2.0 style; then ParentFields is used). So the node is freed
-      only when it's not referenced by any node and not referenced by any
-      field. Generally, it's the parent that takes care of reference-counting
-      and freeing the children, not the other way around.
-
-      Note that given node instance may be a children of a single node
-      multiple times, through DEF/USE mechanism. The order of children
-      is important and preserved. (On the other hand, the order of
-      VRML1Parents is not important, as that list is mostly for reference-counting.)
-
-      You can replace one children with another like
-      @code(VRML1Children[I] := NewChildren;).
-      This works like a shortcut for
-      @code(VRML1ChildRemove(I); VRML1ChildAdd(I, NewChildren);).
-      But 1. it's more efficient; 2. it's safer --- if Children[I]
-      is already equal to NewChildren, it does nothing.
-
-      @groupBegin }
-    property VRML1Children [i: integer]: TX3DNode read GetVRML1Child write SetVRML1Child;
-    function VRML1ChildrenCount: integer;
-    { @groupEnd }
-
-    { Add a VRML 1.0 child node at given position.
-      Index (position) must be in [0..VRML1ChildrenCount].
-      Items at and above Index position are moved to the right,
-      to insert new child at Index position. }
-    procedure VRML1ChildAdd(Index: Integer; child: TX3DNode); overload;
-
-    { Add a VRML 1.0 child node at the end of VRML1Children list. }
-    procedure VRML1ChildAdd(child: TX3DNode); overload;
-
-    procedure VRML1ChildRemove(i: integer);
-    procedure VRML1ChildrenClear;
 
     { All VRML 1.0 parent nodes. VRML1Parents is a reverse of
       VRML1Children --- it lists all the nodes where we are on VRML1Children
@@ -288,7 +232,6 @@ begin
   inherited Create;
   FX3DName := AX3DName;
 
-  FVRML1Children := TX3DNodeList.Create(false);
   FVRML1Parents := TX3DNodeList.Create(false);
   FParentFields := TX3DFieldList.Create(false);
   FFields := TX3DFieldList.Create(false);
@@ -301,8 +244,6 @@ destructor TX3DNode.Destroy;
 var
   I: Integer;
 begin
-  if FVRML1Children <> nil then VRML1ChildrenClear;
-
   FreeAndNil(FImports);
   FreeAndNil(FExports);
   FreeAndNil(FFieldsSFNode);
@@ -334,7 +275,6 @@ begin
     FreeAndNil(FFields);
   end;
 
-  FreeAndNil(FVRML1Children);
   FreeAndNil(FVRML1Parents);
   FreeAndNil(FParentFields);
 
@@ -359,63 +299,9 @@ begin
   end;
 end;
 
-procedure TX3DNode.VRML1ChildAdd(Index: Integer; child: TX3DNode);
-begin
- child.FVRML1Parents.Add(Self);
- FVRML1Children.Insert(Index, child);
-end;
-
-procedure TX3DNode.VRML1ChildAdd(child: TX3DNode);
-begin
-  VRML1ChildAdd(FVRML1Children.Count, child);
-end;
-
-procedure TX3DNode.VRML1ChildRemove(i: integer);
-var
-  OldChild: TX3DNode;
-begin
-  OldChild := FVRML1Children[i];
-  FVRML1Children.Delete(i);
-  OldChild.FVRML1Parents.Remove(Self);
-  OldChild.FreeIfUnused;
-end;
-
-procedure TX3DNode.SetVRML1Child(I: Integer; Value: TX3DNode);
-var
-  OldChild: TX3DNode;
-begin
-  { Inefficient implementation: VRML1ChildRemove(I); VRML1ChildAdd(I, Value); }
-
-  if Value <> FVRML1Children[I] then
-  begin
-    OldChild := FVRML1Children[i];
-    FVRML1Children[I] := Value;
-
-    OldChild.FVRML1Parents.Remove(Self);
-    OldChild.FreeIfUnused;
-
-    Value.FVRML1Parents.Add(Self);
-  end;
-end;
-
-procedure TX3DNode.VRML1ChildrenClear;
-begin
- while FVRML1Children.Count > 0 do VRML1ChildRemove(0);
-end;
-
-function TX3DNode.GetVRML1Child(i: integer): TX3DNode;
-begin
-  result := FVRML1Children[i];
-end;
-
 function TX3DNode.GetVRML1Parent(i: integer): TX3DNode;
 begin
   result := FVRML1Parents[i];
-end;
-
-function TX3DNode.VRML1ChildrenCount: integer;
-begin
-  result := FVRML1Children.Count
 end;
 
 function TX3DNode.VRML1ParentsCount: integer;
@@ -429,15 +315,6 @@ var
   SF: TSFNode;
 begin
   if Self = nil then exit;
-
-  for i := 0 to FVRML1Parents.Count - 1 do
-  begin
-    j := FVRML1Parents[i].FVRML1Children.IndexOf(Self);
-    FVRML1Parents[i].FVRML1Children.Delete(j);
-    { nie musimy sie tu martwic usuwaniem naszego Parenta z listy
-      FVRML1Parents ktora
-     wlasnie przegladamy bo przeciez i tak zaraz zrobimy sobie Destroy; }
-  end;
 
   for I := 0 to FParentFields.Count - 1 do
   begin

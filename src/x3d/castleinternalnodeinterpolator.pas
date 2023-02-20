@@ -220,14 +220,6 @@ begin
       'Different names of nodes: "%s" and "%s"',
       [Model1.X3DName, Model2.X3DName]);
 
-  if Model1.VRML1ChildrenCount <> Model2.VRML1ChildrenCount then
-    raise EModelsStructureDifferent.CreateFmt(
-      'Different number of Inventor / VRML 1.0 children in nodes: %d vs %d',
-      [Model1.VRML1ChildrenCount, Model2.VRML1ChildrenCount]);
-
-  for I := 0 to Model1.VRML1ChildrenCount - 1 do
-    CheckNodesStructurallyEqual(Model1.VRML1Children[I], Model2.VRML1Children[I], Epsilon);
-
   { Yes, the situation below can happen. *Usually* when we know
     that Model1 and Model2 are equal classes then we know that
     they have the same number of fields of the same type.
@@ -337,23 +329,6 @@ var
 begin
   Result := true;
 
-  { Note that this loop will iterate over every Children,
-    even if somewhere along the way we will already set Result to false.
-    Even if we already know that Result is false, we stil want to
-    merge Model1 and Model2 children as much as we can. }
-  for I := 0 to Model1.VRML1ChildrenCount - 1 do
-  begin
-    if NodesMerge(Model1.VRML1Children[I], Model2.VRML1Children[I], Epsilon) then
-    begin
-      { Tests: Writeln('merged child ', I, ' of class ',
-        Model1.VRML1Children[I].X3DType); }
-      Model1.VRML1Children[I] := Model2.VRML1Children[I];
-    end else
-      Result := false;
-  end;
-
-  if not Result then Exit;
-
   for I := 0 to Model1.FieldsCount - 1 do
   begin
     if Model1.Fields[I] is TSFNode then
@@ -410,14 +385,6 @@ begin
       TX3DRootNode(Result).Profile := (Model1 as TX3DRootNode).Profile;
       TX3DRootNode(Result).Components.Assign((Model1 as TX3DRootNode).Components);
     end;
-
-    { TODO: the code below doesn't deal efficiently with the situation when single
-      TX3DNode is used as a child many times in one of the nodes.
-      (through "USE" keyword). Code below will then unnecessarily
-      create copies of such things (wasting construction time and memory),
-      instead of reusing the same object reference. }
-    for I := 0 to Model1.VRML1ChildrenCount - 1 do
-      Result.VRML1ChildAdd(NodesLerp(A, Model1.VRML1Children[I], Model2.VRML1Children[I]));
 
     { TODO: for TX3DUnknownNode, we should fill here Result.Fields.
       Also for TX3DPrototypeNode. }
