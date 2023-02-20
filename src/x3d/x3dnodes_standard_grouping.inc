@@ -34,69 +34,15 @@
   TX3DRootNode = class(TX3DNode)
   strict private
     FHasForceVersion: boolean;
-    FSaveAsRootNode: boolean;
-    FProfile: string;
-    FScale: Single;
-  private
-    procedure TopLevelCheckChild(const Child: TX3DNode);
   public
     ForceVersion: TX3DVersion;
 
-    procedure CreateNode; override;
-    destructor Destroy; override;
-
-    { Should SaveToStream take care to nicely save us, treating as
-      a root node of whole VRML file or prototype.
-
-      If this node isn't a root node, you should set this to @false
-      (or saving this node may generate dumb contents).
-      Although, generally, you should avoid using the TX3DRootNode
-      class at all for non-root nodes. }
-    property SaveAsRootNode: boolean read FSaveAsRootNode write FSaveAsRootNode
-      default true;
-
-    { Set HasForceVersion to @true to force saving this model with
-      given ForceVersion. }
     property HasForceVersion: boolean
       read FHasForceVersion write FHasForceVersion default false;
-
-    { Profile required for this X3D file. See X3D spec about profiles.
-      Every X3D file must always define a profile.
-      (However, we use this class also for VRML 1.0 and 2.0 root nodes,
-      where profile is empty.)
-      Relevant only if this node is the root of X3D file. }
-    property Profile: string read FProfile write FProfile;
   end;
 
 {$endif read_interface}
 
 {$ifdef read_implementation}
-
-{ TX3DRootNode --------------------------------------------------------------- }
-
-procedure TX3DRootNode.CreateNode;
-begin
-  inherited;
-  FSaveAsRootNode := true;
-  FScale := 1;
-end;
-
-destructor TX3DRootNode.Destroy;
-begin
-  inherited;
-end;
-
-procedure TX3DRootNode.TopLevelCheckChild(const Child: TX3DNode);
-begin
-  { We could just do here FdChildren.WarningIfChildNotAllowed(Child),
-    but the warning message of it is a little unfriendly: it uncovers
-    to user that we have a special TX3DRootNode that descends from Group node.
-    So instead, do it by hand.
-
-    Also, add LayerSet (not allowed in Group.FdChildren).
-    This is special (see http://www.web3d.org/x3d/specifications/ISO-IEC-19775-1.2-X3D-AbstractSpecification/Part01/concepts.html#Rootnodes),
-    "4.3.2 Root nodes" from X3D 3.2 spec.
-  }
-end;
 
 {$endif read_implementation}
