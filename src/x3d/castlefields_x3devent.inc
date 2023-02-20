@@ -48,18 +48,6 @@
     procedure Send(Field: TX3DField); overload;
   end;
 
-  TX3DEventList = class(specialize TObjectList<TX3DEvent>)
-  strict private
-    function GetByName(const AName: string): TX3DEvent;
-  public
-    { Access event by name.
-      Raises EX3DNotFound if the given Name doesn't exist. }
-    property ByName[const AName: string]: TX3DEvent read GetByName;
-
-    { Find event index on the list. -1 if not found. }
-    function IndexOfName(const Name: string): Integer;
-  end;
-
 {$endif read_interface}
 
 {$ifdef read_implementation}
@@ -83,20 +71,5 @@ begin
 end;
 
 { TX3DEventList ------------------------------------------------------------ }
-
-function TX3DEventList.IndexOfName(const Name: string): Integer;
-begin
-  Result := -1;
-end;
-
-function TX3DEventList.GetByName(const AName: string): TX3DEvent;
-var
-  I: integer;
-begin
-  I := IndexOfName(AName);
-  if I <> -1 then
-    Result := Items[I] else
-    raise Exception.CreateFmt('Event name "%s" not found', [AName]);
-end;
 
 {$endif read_implementation}
