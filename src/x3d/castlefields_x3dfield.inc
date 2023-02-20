@@ -21,20 +21,6 @@
 
   TX3DFieldClass = class of TX3DField;
 
-  { Send along with the animation that should be applied only partially
-    (because it fades-out or fades-in). }
-  TPartialSend = class
-    { Strength of the fading-in/out animation, in 0..1. }
-    Partial: Single;
-
-    { All fields affected by sending of this TPartialSend should
-      add themselves to this list. }
-    AffectedFields: TX3DFieldList;
-
-    constructor Create;
-    destructor Destroy; override;
-  end;
-
   { Base class for all VRML/X3D fields.
 
     Common notes for all descendants: most of them expose a field or property
@@ -151,7 +137,6 @@
       { Internally set to non-nil only on fields representing event value
         (Value parameter in TX3DEventReceive callback),
         in case they correspond to a fading-in or fading-out animation. }
-      FPartialSend: TPartialSend;
       FPartialSendIgnore: Cardinal; static;
 
       { Used by fields that have their value affected by the fading-in/fading-out
@@ -538,13 +523,6 @@
           And then notify the scenes (including events engine).)
       ) }
     procedure Send(Value: TX3DField);
-
-    { @exclude Internal routine, needed by animation blending. }
-    procedure InternalAffectedPartial;
-    { @exclude Internal routine, needed by animation blending. }
-    procedure InternalRemovePartial;
-    { @exclude Internal property, needed by animation blending. }
-    property InternalPartialSend: TPartialSend read FPartialSend write FPartialSend;
   end;
 
   TX3DFieldList = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TObjectList<TX3DField>)
@@ -572,18 +550,6 @@
 {$ifdef read_implementation}
 
 { TPartialSend --------------------------------------------------------------- }
-
-constructor TPartialSend.Create;
-begin
-  AffectedFields := TX3DFieldList.Create(false);
-  inherited;
-end;
-
-destructor TPartialSend.Destroy;
-begin
-  FreeAndNil(AffectedFields);
-  inherited;
-end;
 
 { TX3DField.TPartialReceived --------------------------------------------------------------- }
 
@@ -853,82 +819,8 @@ begin
 end;
 
 procedure TX3DField.AssignValue(Source: TX3DField);
-
-  procedure UpdatePartialReceived(const PartialSend: TPartialSend);
-  begin
-    if PartialReceived = nil then
-    begin
-      PartialReceived := TPartialReceived.Create;
-      { when PartialReceived is created, initialize SettledValue by copying Self }
-      PartialReceived.SettledValue := TX3DFieldClass(ClassType).CreateUndefined(nil, false, '');
-      PartialReceived.SettledValue.AssignValue(Self);
-    end;
-
-    { update PartialReceived.PartialValue, by lerp with weights
-        PartialReceived.Partial, PartialSend.Partial
-      between these two values:
-        PartialReceived.PartialValue, new Source value. }
-    if PartialReceived.PartialValue = nil then
-    begin
-      PartialReceived.PartialValue := TX3DFieldClass(ClassType).CreateUndefined(nil, false, '');
-      { For the first assignment, it's faster to use AssignValue then AssignLerp.
-        Also, AssignLerp expects MF fields to have correct counts. }
-      PartialReceived.PartialValue.AssignValue(Source);
-    end else
-    begin
-      PartialReceived.PartialValue.AssignLerp(
-        1 - PartialReceived.Partial / (PartialReceived.Partial + PartialSend.Partial),
-        PartialReceived.PartialValue, Source);
-    end;
-    Assert(PartialReceived.ToBeApplied); // we have initialized PartialReceived.PartialValue
-    PartialReceived.Partial += PartialSend.Partial;
-    // note that we can add duplicates to PartialSend.AffectedFields, that's OK
-    PartialSend.AffectedFields.Add(Self);
-  end;
-
 begin
   ValueFromIsClause := false;
-
-  if (Source.InternalPartialSend <> nil) and
-     (FPartialSendIgnore = 0) and
-     CanAssignLerp then
-  begin
-    { using FPartialSendIgnore, to ignore Source.InternalPartialSend
-      in recursive AssignValue inside UpdatePartialReceived. }
-    Inc(FPartialSendIgnore);
-    UpdatePartialReceived(Source.InternalPartialSend);
-    Dec(FPartialSendIgnore);
-  end;
-
-  { fade-in/out overridden by another animation that is not fading-in/out }
-  if (PartialReceived <> nil) and (Source.InternalPartialSend = nil) then
-    FreeAndNil(PartialReceived);
-end;
-
-procedure TX3DField.InternalAffectedPartial;
-begin
-  { About PartialReceived <> nil: usually PartialReceived <> nil now,
-    but in some corner-cases it may be nil: if it was freed by
-    "fade-in/out overridden by another animation that is not fading-in/out".. }
-
-  if (PartialReceived <> nil) and PartialReceived.ToBeApplied then
-  begin
-    AssignLerp(PartialReceived.Partial, PartialReceived.SettledValue, PartialReceived.PartialValue);
-    PartialReceived.Partial := 0;
-    FreeAndNil(PartialReceived.PartialValue);
-    Assert(not PartialReceived.ToBeApplied); // we have destroyed PartialReceived.PartialValue
-
-    Changed;
-  end;
-end;
-
-procedure TX3DField.InternalRemovePartial;
-begin
-  { Field is no longer affected by faded-in/out animation.
-    Next time it *will* become affected,
-    PartialReceived and in particular PartialReceived.SettledValue
-    will be initialized again. }
-  FreeAndNil(PartialReceived);
 end;
 
 procedure TX3DField.AssignDefaultValueFromValue;

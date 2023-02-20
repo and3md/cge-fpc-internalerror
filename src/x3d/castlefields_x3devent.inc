@@ -37,8 +37,6 @@
     destructor Destroy; override;
 
     { Internal helper utility for SendXxx implementations. @exclude }
-    function CreateTemp(const PartialSend: TPartialSend): TX3DField;
-    { Internal helper utility for SendXxx implementations. @exclude }
     procedure FreeTemp(const Field: TX3DField);
 
     property FieldClass: TX3DFieldClass read FFieldClass;
@@ -149,19 +147,6 @@ end;
 function TX3DEvent.SendNeeded: boolean;
 begin
   Result := false;
-end;
-
-function TX3DEvent.CreateTemp(const PartialSend: TPartialSend): TX3DField;
-begin
-  if not TempUsed then
-  begin
-    if Temp = nil then
-      Temp := FieldClass.CreateUndefined(nil, false, 'X3DName');
-    Result := Temp;
-    TempUsed := true;
-  end else
-    Result := FieldClass.CreateUndefined(nil, false, 'X3DName');
-  Result.InternalPartialSend := PartialSend;
 end;
 
 procedure TX3DEvent.FreeTemp(const Field: TX3DField);
