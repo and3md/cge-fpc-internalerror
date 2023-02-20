@@ -92,11 +92,6 @@
     function ChildAllowed(Child: TX3DNode): boolean;
     function CurrentChildAllowed: boolean;
 
-    { Calls Func for our @link(Value), assuming it's set (non-nil).
-      The main use for this is to simplify implementation of
-      TX3DNode.DirectEnumerateActive overrides in TX3DNode descendants. }
-    function Enumerate(Func: TEnumerateChildrenFunction): Pointer;
-
     procedure Send(const AValue: TX3DNode); overload;
 
     { Use weak links to deal with cycles in the X3D graph.
@@ -226,18 +221,6 @@ end;
 procedure TSFNode.SetDefaultValueExists(AValue: boolean);
 begin
   FDefaultValueExists := AValue;
-end;
-
-function TSFNode.Enumerate(Func: TEnumerateChildrenFunction): Pointer;
-begin
-  { checking CurrentChildAllowed is not really necessary here,
-    and costs time, because it may do a slow Supports() call }
-  //if (Value <> nil) and CurrentChildAllowed and not WeakLink then
-
-  if (Value <> nil) and not WeakLink then
-    Result := Func(ParentNode, Value)
-  else
-    Result := nil;
 end;
 
 class function TSFNode.CreateEvent: TX3DEvent;

@@ -21,9 +21,6 @@
   TSFNode = class;
 
   TX3DNodeClass = class of TX3DNode;
-
-  TEnumerateChildrenFunction =
-    function (Node, Child: TX3DNode): Pointer of object;
 {$endif read_interface}
 
 {$ifdef read_implementation}
