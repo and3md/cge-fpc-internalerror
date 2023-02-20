@@ -273,12 +273,9 @@ end;
 procedure TSFNode.WarningIfUnusedWeakLink;
 begin
   if WeakLink and
-     (Value <> nil) and
-     (Value.FParentFields.Count = 0) then
+     (Value <> nil) then
   begin
-    FValue.FreeIfUnused; // we know it will be freed now
     FValue := nil;
-    { do a warning after freeing FValue, to avoid memory leaks in case OnWarning makes exception }
   end;
 end;
 
@@ -369,37 +366,13 @@ end;
 procedure TSFNode.SetValue(AValue: TX3DNode);
 begin
   if FValue <> AValue then
-  begin
-    if FValue <> nil then
-    begin
-        FValue.RemoveParentField(Self);
-    end;
-
     FValue := AValue;
-
-    if AValue <> nil then
-    begin
-        FValue.AddParentField(Self);
-    end;
-  end;
 end;
 
 procedure TSFNode.SetDefaultValue(ADefaultValue: TX3DNode);
 begin
   if FDefaultValue <> ADefaultValue then
-  begin
-    if FDefaultValue <> nil then
-    begin
-        FDefaultValue.RemoveParentField(Self);
-    end;
-
     FDefaultValue := ADefaultValue;
-
-    if ADefaultValue <> nil then
-    begin
-        FDefaultValue.AddParentField(Self);
-    end;
-  end;
 end;
 
 procedure TSFNode.DestructionNotification(Node: TX3DNode);

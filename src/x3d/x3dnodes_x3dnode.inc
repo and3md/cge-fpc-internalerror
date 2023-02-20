@@ -21,16 +21,10 @@
   TX3DNode = class(TX3DFileItem)
   private
     FX3DName: string;
-    FParentFields: TX3DFieldList;
-    FImports, FExports: TX3DFileItemList;
     FFields, FFieldsSFNode, FFieldsMFNode: TX3DFieldList;
     FEvents: TX3DEventList;
 
     //ATest:Integer; //add to get internal error
-    function GetParentFieldsItem(Index: Integer): TX3DField;
-    function GetParentFieldsNodeItem(Index: Integer): TX3DNode;
-    procedure RemoveParentField(Field: TX3DField);
-    procedure AddParentField(Field: TX3DField);
     function GetFields(const Index: Integer): TX3DField;
     function GetEvents(const Index: Integer): TX3DEvent;
   protected
@@ -79,54 +73,6 @@
     { Search by name for given event (exposed by some field or not).
       @nil if not found. }
     function AnyEvent(const AName: string): TX3DEvent;
-
-    { All SFNode and MFNode fields where this node is referenced.
-      This is somewhat analogous for VRML1Parents, but for VRML 2.0.
-
-      ParentFieldsNode is just for your comfort, it returns always
-      appropriate field's ParentNode property value
-      (i.e. @code((ParentField[Index] as TSFNode).ParentNode)
-      or @code((ParentField[Index] as TMFNode).ParentNode)).
-
-      @groupBegin }
-    property ParentFields[Index: Integer]: TX3DField read GetParentFieldsItem;
-    property ParentFieldsNode[Index: Integer]: TX3DNode
-      read GetParentFieldsNodeItem;
-    function ParentFieldsCount: Integer;
-    { @groupEnd }
-
-    { Free this object (if it's not @nil) @italic(also removing
-      it from @bold(all) parent nodes and fields).
-
-      By design, normal destructor (Destroy called by Free)
-      doesn't care about removing references to this object from
-      it's parents. That's because it's the parents that usually
-      initialize freeing of their children, and they free child
-      when it's reference count is 0. So this freeing method
-      is special in this regard.
-
-      Use this if you really want to remove all node occurrences from the middle
-      of VRML hierarchy. }
-    procedure FreeRemovingFromAllParents;
-
-    { Free this node if it is not referenced by any parent fields or nodes.
-      Takes into account that node may have VRML 1.0 parent nodes
-      and VRML 2.0 / X3D parent fields (SFNode or MFNode).
-      This is a safe way of removing
-      a node that may, but doesn't have to, be part of some VRML/X3D graph.
-      The idea is that if a node is a part of some graph,
-      we don't need to do anything (since you should have
-      a reference to the entine graph somewhere anyway), otherwise node is
-      considered unused and freed.
-
-      Analogous to standard TObject.Free, this also works when called on
-      a @nil value (does nothing in this case).
-
-      For safety, it's advised to set reference to @nil after calling FreeIfUnused.
-      You can use FreeIfUnusedAndNil utility for this (that employs a trick
-      to @nil the visible reference even before freeing, which is even safer).
-      This is analogous to standard FreeAndNil. }
-    procedure FreeIfUnused;
 
     { Name of this node. When saving/loading, this comes from VRML/X3D
       "DEF" construct. Empty value means that the name is not defined.
@@ -220,7 +166,6 @@ begin
   inherited Create;
   FX3DName := AX3DName;
 
-  FParentFields := TX3DFieldList.Create(false);
   FFields := TX3DFieldList.Create(false);
   FEvents := TX3DEventList.Create(false);
 
@@ -231,8 +176,6 @@ destructor TX3DNode.Destroy;
 var
   I: Integer;
 begin
-  FreeAndNil(FImports);
-  FreeAndNil(FExports);
   FreeAndNil(FFieldsSFNode);
   FreeAndNil(FFieldsMFNode);
 
@@ -262,71 +205,7 @@ begin
     FreeAndNil(FFields);
   end;
 
-  FreeAndNil(FParentFields);
-
   inherited;
-end;
-
-procedure TX3DNode.FreeIfUnused;
-begin
-  if (Self <> nil) and
-     (FParentFields.Count = 0) then
-  begin
-    { For FPC <= 2.2.2:
-      This is written as "Self.Destroy" to actually do the desctruction,
-      freeing memory etc. If I would just call it "Destroy", it would
-      perform what destructor does but leaving object instance unfreed.
-
-      In FPC 2.2.4, 2.4.0, 2.4.2, 2.4.4, 2.6.0, calling Destroy always
-      does the actual destruction, there seems to be no difference
-      between "Self.Destroy" and "Destroy" below. }
-    Self.Destroy;
-  end;
-end;
-
-procedure TX3DNode.FreeRemovingFromAllParents;
-var
-  i, j: integer;
-  SF: TSFNode;
-begin
-  if Self = nil then exit;
-
-  for I := 0 to FParentFields.Count - 1 do
-  begin
-    if FParentFields[I] is TSFNode then
-    begin
-      SF := TSFNode(FParentFields[I]);
-      { We remove accessing private SF.FValue,
-        not SF.Value property setter,
-        to avoid checking our reference count (and possibly calling
-        our destructor) by this setter. }
-      SF.FValue := nil;
-    end else
-  end;
-
-  Self.Destroy;
-end;
-
-function TX3DNode.GetParentFieldsItem(Index: Integer): TX3DField;
-begin
-  Result := FParentFields[Index];
-end;
-
-function TX3DNode.GetParentFieldsNodeItem(Index: Integer): TX3DNode;
-var
-  F: TX3DField;
-begin
-  F := ParentFields[Index];
-  if F is TSFNode then
-    Result := TSFNode(F).ParentNode
-  else
-    Result := nil;
-
-end;
-
-function TX3DNode.ParentFieldsCount: Integer;
-begin
-  Result := FParentFields.Count;
 end;
 
 function TX3DNode.X3DType: string;
@@ -375,16 +254,6 @@ type
       Result := Node else
       Result := nil;
   end;
-
-procedure TX3DNode.RemoveParentField(Field: TX3DField);
-begin
-  FreeIfUnused;
-end;
-
-procedure TX3DNode.AddParentField(Field: TX3DField);
-begin
-  FParentFields.Add(Field);
-end;
 
   type
     TRemoveChildrenWithMatchingNameHelper = class
