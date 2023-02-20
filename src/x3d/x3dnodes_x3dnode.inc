@@ -23,15 +23,11 @@
     FX3DName: string;
     FBaseUrl: string;
     FVRML1Children, FVRML1Parents: TX3DNodeList;
-    FKeepExisting: Cardinal;
     FParentFields: TX3DFieldList;
     FImports, FExports: TX3DFileItemList;
     FFields, FFieldsSFNode, FFieldsMFNode: TX3DFieldList;
     FEvents: TX3DEventList;
-    FPrototypeInstance: boolean;
-    FPrototypeInstanceHelpers: TX3DNode;
     FDefaultContainerField: string;
-    FInternalSceneShape: TObject;
 
     //ATest:Integer; //add to get internal error
 
@@ -281,25 +277,6 @@
       at actual instance. }
     class function ClassX3DType: string; virtual;
 
-    { Create a deep copy of this node and all it's children.
-
-      New copy is completely independent from original,
-      having all children nodes (in both VRML 1.0 sense (Children)
-      and VRML >= 2.0 (inside SFNode and MFNode fields)) also
-      duplicated. New copy has protypes, routes, interface declarations
-      and generally everything established like in the original, using copied
-      nodes.
-
-      Doesn't copy things which are dependent on container hierarchy.
-      (So copying them would be more dangerous than useful.)
-      This means: DestructionNotifications, Scene, VRML1Parents,
-      ParentFields. VRML1Parents and ParentFields will be set for children
-      anyway (to appropriate copies).
-
-      Caller owns this newly created copy --- as returned by this method,
-      it's not linked anywhere. }
-    function DeepCopy: TX3DNode;
-
     { Internal notes:
 
       TODO: memory leaks are known to be possible in some difficult cases
@@ -317,75 +294,12 @@
       may be declared as such in the future if needed.
     }
 
-    { PrototypeInstance = @true indicates that this node was created
-      from a non-external prototype instantiation.
-
-      Then PrototypeInstanceSourceNode is non-nil and indicates
-      parsed prototype node (and PrototypeInstanceSourceNode.Prototype
-      gives you even a link to the actual prototype specification).
-
-      PrototypeInstanceSourceNode is used for events: any ROUTEs
-      specified @italic(outside) of prototype and
-      leading to/from instantiated prototype should actually lead
-      to PrototypeInstanceSourceNode events (not to events of Self).
-      Reason: prototype events may be different than actual expanded
-      node events, and ROUTEs want to lead to prototype events.
-      This is implemented when expanding prototype
-      (@link(TX3DPrototypeNode.Instantiate))
-      and when linking ROUTE (TX3DRoute.SetSource, TX3DRoute.SetDestination).
-
-      PrototypeInstanceHelpers may be @nil if empty, or may contain
-      a list of other nodes duplicated along with the main prototype node.
-      From VRML spec:
-
-      @italic(Any other nodes and accompanying scene graphs
-      are not part of the transformation hierarchy, but may be referenced
-      by ROUTE statements or Script nodes in the prototype definition.)
-
-      Note that for TX3DPrototypeNode (within PrototypeInstanceSourceNode)
-      these have a little different meaning: they describe the
-      @italic(nested prototype), if any, that was used to create this node.
-      This may happen if the node was expanded from one prototype within
-      another. (Usually, you shouldn't be concerned about this;
-      see TX3DPrototypeNode.Instantiate implementation comments for
-      gory details about this.)
-
-      @groupBegin }
-    property PrototypeInstance: boolean read FPrototypeInstance;
-    property PrototypeInstanceHelpers: TX3DNode read FPrototypeInstanceHelpers;
-    { @groupEnd }
-
-    { Does this node matches the given URN. This is used when searching for an built-in
-      implementation of a node declared in X3D using the EXTERNPROTO.
-
-      Implementors note: in this class, this returns @false.
-      You can use constants like @link(URNVRML97Nodes) and functions like
-      @link(URNMatchingCastle) to implement this easily. }
-    class function URNMatching(const URN: string): boolean; virtual;
-
     { Default value of "containerField" attribute for this node in X3D XML
       encoding. }
     property DefaultContainerField: string
       read FDefaultContainerField write FDefaultContainerField;
 
     { @groupEnd }
-
-    { Scene that will be notified about changes to this node.
-      This is necessary to allow the scene to properly process VRML/X3D
-      events, and also to react properly to any other changes to the nodes
-      (like when you change some field directly by ObjectPascal code,
-      e.g. by TX3DField.Send).
-
-      May be @nil if none.
-
-      A given TX3DNode may be renderable only by a single renderer.
-      This means it can be placed only within one TCastleScene. }
-    ///property Scene: TX3DEventsEngine read FScene write FScene;
-
-    { Internally used by @link(Scene) to store some information at node.
-      @exclude }
-    property InternalSceneShape: TObject
-      read FInternalSceneShape write FInternalSceneShape;
 
     { Add to node InterfaceDeclarations given field.
       Sets the field's exposed to given Exposed parameter, for comfort.
@@ -397,14 +311,6 @@
       This should only be used with nodes having
       HasInterfaceDeclarations = @true, like Script or ComposedShader. }
     procedure AddCustomFieldOrEvent(AFieldOrEvent: TX3DFileItem);
-
-    { What happens when transformation of the node changes.
-      This is internally used by TCastleSceneCore when Transform (or similar)
-      node affecting this node changes. It's an important optimization,
-      to avoid large if clause with many "is" and "Supports" checks
-      that would be quite slow.
-      @exclude }
-    function TransformationChange: TNodeTransformationChange; virtual;
 
     { Nice and concise node description for user.
       Shows node type and name. }
@@ -462,12 +368,6 @@ var
   I: Integer;
 begin
   if FVRML1Children <> nil then VRML1ChildrenClear;
-
-  if PrototypeInstance then
-  begin
-    FreeAndNil(FPrototypeInstanceHelpers);
-    FPrototypeInstance := false;
-  end;
 
   FreeAndNil(FImports);
   FreeAndNil(FExports);
@@ -727,11 +627,6 @@ end;
       Node := nil;
   end;
 
-class function TX3DNode.URNMatching(const URN: string): boolean;
-begin
-  Result := false;
-end;
-
 function TX3DNode.Field(const AName: string): TX3DField;
 var
   I: Integer;
@@ -784,11 +679,6 @@ begin
   Result := nil; { not found }
 end;
 
-function TX3DNode.DeepCopy: TX3DNode;
-begin
-  Result := nil;
-end;
-
 procedure TX3DNode.AddCustomFieldOrEvent(AFieldOrEvent: TX3DFileItem);
 begin
 end;
@@ -796,11 +686,6 @@ end;
 procedure TX3DNode.AddCustomField(AField: TX3DField);
 begin
   AddCustomFieldOrEvent(AField);
-end;
-
-function TX3DNode.TransformationChange: TNodeTransformationChange;
-begin
-  Result := ntcNone;
 end;
 
 function TX3DNode.NiceName: string;
