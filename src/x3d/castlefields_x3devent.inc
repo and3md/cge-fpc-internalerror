@@ -25,26 +25,8 @@
 
     property FieldClass: TX3DFieldClass read FFieldClass;
 
-    { This only reads (optional) "IS" clause of the event, as may occur
-      in VRML nodeBodyStatement. }
     procedure Parse(Lexer: TX3DLexer);
 
-    { Send a value to event. For input fields, this is used by routes, scripts
-      etc. to send an event to a field. For output fields, this is used by
-      node itself to send event to routes, scripts etc.
-
-      Field must be non-nil, of class FieldClass.
-
-      The Field instance doesn't become owned in any way by the TX3DEvent.
-      That is, it's the caller responsibility to free the Field instance
-      at any comfortable time, possibly right after calling Send.
-
-      Overloaded versions without explicit Time parameter just take time
-      from ParentNode.Scene.GetTime. If ParentNode is @nil
-      (which should not happen with normal fields within nodes)
-      or if ParentNode.Scene is @nil (which may happen only if events
-      processing is not turned on, that is TCastleSceneCore.ProcessEvents is @false)
-      then event is not send. }
     procedure Send(Field: TX3DField); overload;
   end;
 
