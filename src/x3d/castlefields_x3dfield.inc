@@ -849,6 +849,8 @@ var
   Lexer: TX3DLexer;
   A: TX3dVersion;
 begin
+  A.Major := 1;
+  A.Minor := 1;
   Lexer := TX3DLexer.CreateForPartialStream(AttributeValue, A);
   try
     try
@@ -864,12 +866,7 @@ begin
 end;
 
 procedure TX3DField.VRMLFieldAssignCommon(Source: TX3DField);
-var
-  NameChanges, ExposedChanges: boolean;
-  I: Integer;
 begin
-  ExposedChanges := Exposed <> Source.Exposed;
-
   ValueFromIsClause := Source.ValueFromIsClause;
 
   Exposed := Source.Exposed;
@@ -1050,7 +1047,7 @@ begin
     naming. }
 
   Result := -1;
-
+  InEvent := true;
   { check is field really exposed now }
   if (Result <> -1) and (not Items[Result].Exposed) then
   begin

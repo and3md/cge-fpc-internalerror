@@ -35,14 +35,6 @@
     ///FScene: TX3DEventsEngine;
     FInternalSceneShape: TObject;
 
-    { Internally used by PROTO instantiating mechanism,
-      in TX3DPrototypeNode.InstantiateIsClauses
-      and TX3DPrototypeNode.Instantiate.
-
-      This is always @false outside of TX3DPrototypeNode.Instantiate
-      implementation (as TX3DPrototypeNode.Instantiate sets it to @true
-      and changes back to @false for appropriate nodes). }
-    NeedsInstantiateIsClause: boolean;
     //ATest:Integer; //add to get internal error
 
     function GetVRML1Child(i: integer): TX3DNode;

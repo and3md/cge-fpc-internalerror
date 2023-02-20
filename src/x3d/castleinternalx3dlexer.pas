@@ -470,8 +470,6 @@ const
     from S. Otherwise return @false (without modifying S).
     Allows also an UTF-8 BOM before a prefix. }
   function CheckRemoveHeader(Prefix: string; var S: string): boolean;
-  const
-    Utf8Bom = #$EF + #$BB + #$BF;
   begin
     Result := true;
     S := Prefix[1];
