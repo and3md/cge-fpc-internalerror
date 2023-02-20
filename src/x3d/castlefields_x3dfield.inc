@@ -56,43 +56,6 @@
     { Create TX3DEvent descendant suitable as exposed event for this field. }
     class function CreateEvent: TX3DEvent; virtual;
 
-    { Copies the current field value. Contrary to TPersistent.Assign, this
-      doesn't copy the rest of properties.
-
-      After setting, our ValueFromIsClause is always changed to @false.
-      You can manually change it to @true, if this copy indeed was done
-      following "IS" clause.
-
-      @raises(EX3DFieldAssignInvalidClass
-        Usually it's required the Source class to be equal to our class,
-        if Source classes cannot be assigned we raise EX3DFieldCannotAssignClass.)
-
-      @raises(EX3DFieldAssign
-        Raised in case of any field assignment problem. It's guaranteed that
-        in case of such problem, our value will not be modified before
-        raising the exception.
-
-        EX3DFieldAssignInvalidClass inherits from EX3DFieldAssign,
-        so actually EX3DFieldAssignInvalidClass is just a special case of this
-        exceptiion.)
-
-      @italic(Descendants implementors notes):
-
-      In this class, implementation takes care of
-      setting our ValueFromIsClause to @false. In descendants,
-      you should do like
-
-      @longCode(#
-        if Source is <appropriate class> then
-        begin
-          inherited;
-          Value := Source.value;
-        end else
-          AssignValueRaiseInvalidClass(Source);
-      #)
-    }
-    procedure AssignValue(Source: TX3DField); virtual;
-
     { Assigns value to this node calculated from linear interpolation
       between two given nodes Value1, Value2. Just like other lerp
       functions in our units (like @link(CastleVectors.Lerp)).
@@ -192,14 +155,7 @@ end;
 procedure TX3DField.Send(Value: TX3DField);
 begin
   if Exposed then
-  begin
     EventIn.Send(Value);
-  end else
-  begin
-    { Call AssignValue regardless of ValuePossiblyChanged.
-      Reason: AssignValue also removes "IS" clause. }
-    AssignValue(Value);
-  end;
 end;
 
 class function TX3DField.ExposedEventsFieldClass: TX3DFieldClass;
@@ -231,10 +187,6 @@ begin
 end;
 
 procedure TX3DField.Parse(Lexer: TX3DLexer);
-begin
-end;
-
-procedure TX3DField.AssignValue(Source: TX3DField);
 begin
 end;
 

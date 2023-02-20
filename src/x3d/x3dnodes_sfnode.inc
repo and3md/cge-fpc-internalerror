@@ -76,8 +76,6 @@
 
     property Value: TX3DNode read FValue write SetValue;
 
-    procedure AssignValue(Source: TX3DField); override;
-
     { VRML node containing this field. May be @nil if unknown, in special
       cases.
 
@@ -183,15 +181,6 @@ begin
      (Value <> nil) then
   begin
     FValue := nil;
-  end;
-end;
-
-procedure TSFNode.AssignValue(Source: TX3DField);
-begin
-  if Source is TSFNode then
-  begin
-    inherited;
-    Value := TSFNode(Source).Value;
   end;
 end;
 

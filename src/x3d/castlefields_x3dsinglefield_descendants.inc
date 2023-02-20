@@ -32,7 +32,6 @@
 
     procedure AssignLerp(const A: Double; Value1, Value2: TX3DField); override;
     function CanAssignLerp: boolean; override;
-    procedure AssignValue(Source: TX3DField); override;
     procedure Send(const AValue: TItem); overload;
 
     class function CreateEvent: TX3DEvent; override;
@@ -91,15 +90,6 @@ end;
 function TSFGenericVector.CanAssignLerp: boolean;
 begin
   Result := true;
-end;
-
-procedure TSFGenericVector.AssignValue(Source: TX3DField);
-begin
-  if Source is TSFGenericVector then
-  begin
-    inherited;
-    Value := TSFGenericVector(Source).Value;
-  end;
 end;
 
 class function TSFGenericVector.CreateEvent: TX3DEvent;
