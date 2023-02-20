@@ -398,8 +398,7 @@ begin
   if Model1 = Model2 then
     Exit(Model1);
 
-  Result := TX3DNodeClass(Model1.ClassType).Create(Model1.X3DName,
-    Model1.BaseUrl);
+  Result := TX3DNodeClass(Model1.ClassType).Create(Model1.X3DName);
   try
     if Result is TX3DRootNode then
     begin

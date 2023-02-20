@@ -21,7 +21,6 @@
   TX3DNode = class(TX3DFileItem)
   private
     FX3DName: string;
-    FBaseUrl: string;
     FVRML1Children, FVRML1Parents: TX3DNodeList;
     FParentFields: TX3DFieldList;
     FImports, FExports: TX3DFileItemList;
@@ -212,21 +211,6 @@
     property X3DName: string read FX3DName write FX3DName;
     property NodeName: string read FX3DName write FX3DName; deprecated 'use X3DName';
 
-    { Base URL for all URLs inside our fields.
-      Used everywhere as a base for relative URLs, to handle fields that refer
-      to external files like textures, other 3D models (ImageTexture,
-      Inline nodes, many others).
-
-      It must be an absolute URL. Currently, it doesn't have to contain
-      a protocol, and is then interpreted as a path on local filesystem
-      (just like it had file:// prefix). Still, it must be an absolute path.
-
-      This is set in constructor, and eventually adjusted by
-      various parsing routines.
-      This way we could, if only we would like to, resolve nodes
-      like Inline or ImageTexture immediately after parsing them. }
-    property BaseUrl: string read FBaseUrl write FBaseUrl;
-
     { Constructor. Initializes various properties:
 
       @unorderedList(
@@ -239,8 +223,7 @@
           in CreateNode, that is called at the end of this constructor.)
       )
     }
-    constructor Create(const AX3DName: string = '';
-      const ABaseUrl: string = ''); virtual;
+    constructor Create(const AX3DName: string = ''); virtual;
 
     destructor Destroy; override;
 
@@ -300,11 +283,10 @@
 
 { TX3DNode ------------------------------------------------------------------ }
 
-constructor TX3DNode.Create(const AX3DName, ABaseUrl: string);
+constructor TX3DNode.Create(const AX3DName: String);
 begin
   inherited Create;
   FX3DName := AX3DName;
-  FBaseUrl := ABaseUrl;
 
   FVRML1Children := TX3DNodeList.Create(false);
   FVRML1Parents := TX3DNodeList.Create(false);
