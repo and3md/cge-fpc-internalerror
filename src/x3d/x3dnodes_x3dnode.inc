@@ -45,21 +45,6 @@
     function GetFields(const Index: Integer): TX3DField;
     function GetEvents(const Index: Integer): TX3DEvent;
   protected
-    { Should SaveToStream save our VRML1Children.
-      In this class default implementation returns @true,
-      this is what you will want in 99% of cases.
-      It's useful to set this to false if you use
-      VRML1Children internally, e.g. *Inline nodes. }
-    class function VRML1ChildrenSaveToStream: boolean; virtual;
-
-    { Simply enumerate all direct descendant nodes.
-      That is, all children in VRML 1.0 style and
-      all nodes in SFNode and MFNode fields.
-      This includes prototype stuff, if this node is expanded
-      from prototype: PrototypeInstanceSourceNode and PrototypeInstanceHelpers. }
-    function DirectEnumerateAll(
-      Func: TEnumerateChildrenFunction): Pointer;
-
     procedure CreateNode; virtual;
   public
     { Node fields.
@@ -160,15 +145,6 @@
     procedure VRML1ChildRemove(i: integer);
     procedure VRML1ChildrenClear;
 
-    { Remove a VRML 1.0 children at index I and return it (do not free it).
-      Compare this with VRML1Remove, that removes children I and
-      frees it if it's no longer used by anything.
-
-      This removes children I, appropriately adjusting
-      all parent / children links, but even if a node is unused after removing,
-      it is not freed. It's always returned. }
-    function VRML1ChildExtract(I: Integer): TX3DNode;
-
     { All VRML 1.0 parent nodes. VRML1Parents is a reverse of
       VRML1Children --- it lists all the nodes where we are on VRML1Children
       list.
@@ -225,22 +201,6 @@
       to @nil the visible reference even before freeing, which is even safer).
       This is analogous to standard FreeAndNil. }
     procedure FreeIfUnused;
-
-    { Increase KeepExisting property value to disable automatic freeing
-      of the node when unused.
-      This may be useful in cases when you remove the node from VRML graph
-      hierarchy, but you want to keep a valid reference to it anyway
-      (for example, maybe you'll free it later by hand or add it somewhere
-      else).
-
-      Simple methods KeepExistingBegin and KeepExistingEnd simply increase /
-      decrease KeepExisting value by 1. This is the most usual usage.
-
-      @groupBegin }
-    property KeepExisting: Cardinal read FKeepExisting write FKeepExisting;
-    procedure KeepExistingBegin;
-    procedure KeepExistingEnd;
-    { @groupEnd }
 
     { Name of this node. When saving/loading, this comes from VRML/X3D
       "DEF" construct. Empty value means that the name is not defined.
@@ -320,105 +280,6 @@
       is that it works on classes (it's "class function"), without needing
       at actual instance. }
     class function ClassX3DType: string; virtual;
-
-    { Seeks Self and parent nodes (from VRML1Parents and ParentFields,
-      recursively) for given node name.
-
-      In other words, this is similar to TryNodeByName or NodeByName,
-      but it goes "upward" in graph hierarchy. Note that this
-      never restricts itself only to "active" graph part
-      ("active" as defined by @link(Traverse))
-      because you really can't detect what is the "active"
-      part of the graph when going upward.
-
-      @raises(EX3DNotFound
-        FindParentByName raises this exception when node is not found.)
-
-      @groupBegin }
-    function TryFindParentByName(const FindName: string): TX3DNode;
-    function FindParentByName(const FindName: string): TX3DNode;
-    { @groupEnd }
-
-    { Looks for a given Node in parents (and self), recursively.
-      Similar to TryFindParentByName. Returns @true only if found. }
-    function HasParentNode(Node: TX3DNode): boolean;
-
-    { Search immediate parents of this node for a node with given FindName.
-      Returns @nil if not found. }
-    function TryFindDirectParentByName(const FindName: string): TX3DNode;
-
-    { Some nodes are present only in specific VRML/X3D version.
-      This functions decides it.
-
-      For example some nodes can only work in VRML < 2.0,
-      some others only in VRML >= 2.0. There are even some pairs
-      of nodes: for example TConeNode_1 works with VRML < 2.0,
-      TConeNode works with VRML >= 2.0.
-
-      NodesManager will use this.
-
-      Default implementation of this function returns always @true.
-      Generally, I don't try to set this too aggresively ---
-      in other words, for all cases when it's sensible, I allow
-      nodes to be used in every VRML/X3D version, even when official
-      specification doesn't. This means that when reading VRML 1.0
-      files actually a large part of VRML 2.0 is allowed too,
-      and also while reading VRML 2.0 many constructs from VRML 1.0
-      (officially no longer present in VRML 2.0) are allowed too.
-      I'm trying to support what I call a "sum of VRML 1.0 and 2.0".
-
-      In practice I only use this function when various VRML/X3D versions
-      specify the same node name but
-
-      @unorderedList(
-        @item(With different fields.
-
-          For example Cone and Cylinder have slightly different fields,
-          due to the fact that VRML 2.0 resigned from using TSFBitMask fields.)
-
-        @item(With different behavior.
-
-          For example definitions of Sphere for VRML 1.0
-          and 2.0 are practically equal. However, the behavior from where
-          to take texture and material info is different --- in VRML 1.0
-          we take last Texture2, Material etc. nodes, while in VRML 2.0
-          we look in parent Shape's "appearance" field. So once again
-          two different Sphere classes are needed.)
-      ) }
-    class function ForVRMLVersion(const Version: TX3DVersion): boolean;
-      virtual;
-
-    { Enumerates all children nodes (recursively),
-      allowing you to decide for each node to replace or remove it.
-
-      So this is something like EnumerateNodes,
-      except that it allows you to remove the nodes. It always
-      enumerates all nodes, not only active (e.g. it enumerates all
-      Switch node children, not only the chosen one).
-
-      Note that (unlike regular EnumerateNodes) @bold(this doesn't
-      report Self to Func !). Which is natural, since this may remove
-      nodes by normal VRML1ChildRemove calls, so it needs to know ParentNode
-      of the removed node.
-
-      For each node Func will be called, with ParentNode and Node set.
-      If you change the Node to something else, then the old node will
-      be removed and new Node inserted in the same place.
-      If new Node is @nil, then only the old node will be removed.
-
-      Nodes are traversed in depth-first search. Node is first reported
-      to Func, and then (if it's not replaced) we descend into this Node.
-
-      @returns The number of removed (and possibly replaced) nodes. }
-    function EnumerateReplaceChildren(
-      Func: TEnumerateReplaceNodesFunction): Cardinal;
-
-    { Removes all children (and their children, recursively) with
-      node names matchig Wildcard. You can use * and ? special chars
-      in the Wildcard.
-      @returns The number of removed nodes. }
-    function RemoveChildrenWithMatchingName(
-      const Wildcard: string; IgnoreCase: Boolean): Cardinal;
 
     { Create a deep copy of this node and all it's children.
 
@@ -650,8 +511,7 @@ procedure TX3DNode.FreeIfUnused;
 begin
   if (Self <> nil) and
      (FVRML1Parents.Count = 0) and
-     (FParentFields.Count = 0) and
-     (KeepExisting = 0) then
+     (FParentFields.Count = 0) then
   begin
     { For FPC <= 2.2.2:
       This is written as "Self.Destroy" to actually do the desctruction,
@@ -663,16 +523,6 @@ begin
       between "Self.Destroy" and "Destroy" below. }
     Self.Destroy;
   end;
-end;
-
-procedure TX3DNode.KeepExistingBegin;
-begin
-  Inc(FKeepExisting);
-end;
-
-procedure TX3DNode.KeepExistingEnd;
-begin
-  Dec(FKeepExisting);
 end;
 
 procedure TX3DNode.VRML1ChildAdd(Index: Integer; child: TX3DNode);
@@ -694,17 +544,6 @@ begin
   FVRML1Children.Delete(i);
   OldChild.FVRML1Parents.Remove(Self);
   OldChild.FreeIfUnused;
-end;
-
-function TX3DNode.VRML1ChildExtract(I: Integer): TX3DNode;
-begin
-  Result := FVRML1Children[i];
-  FVRML1Children.Delete(i);
-  Result.FVRML1Parents.Remove(Self);
-
-  { VRML1ChildRemove now does
-      OldChild.FreeIfUnused;
-    but ExtractChild doesn't do it. }
 end;
 
 procedure TX3DNode.SetVRML1Child(I: Integer; Value: TX3DNode);
@@ -804,43 +643,6 @@ begin
   Result := FParentFields.Count;
 end;
 
-function TX3DNode.DirectEnumerateAll(
-  Func: TEnumerateChildrenFunction): Pointer;
-var
-  I, J: Integer;
-  SF: TSFNode;
-begin
-  Result := nil;
-
-  for I := 0 to VRML1ChildrenCount - 1 do
-  begin
-    Result := Func(Self, VRML1Children[I]);
-    if Result <> nil then Exit;
-  end;
-
-  if FFieldsSFNode <> nil then
-    for I := 0 to FFieldsSFNode.Count - 1 do
-    begin
-      SF := TSFNode(FFieldsSFNode[I]);
-      if (SF.Value <> nil) and not SF.WeakLink then
-      begin
-        Result := Func(Self, SF.Value);
-        if Result <> nil then Exit;
-      end;
-    end;
-
-  { Use InternalItems for an extra epsilon of speed. }
-
-  if PrototypeInstance then
-  begin
-    if PrototypeInstanceHelpers <> nil then
-    begin
-      Result := Func(Self, PrototypeInstanceHelpers);
-      if Result <> nil then Exit;
-    end;
-  end;
-end;
-
 function TX3DNode.X3DType: string;
 begin
  result := ClassX3DType;
@@ -901,102 +703,6 @@ type
       Result := nil;
   end;
 
-{ TX3DNode.TryFindNodeState/Transform ----------------------------------------- }
-
-
-function TX3DNode.TryFindParentByName(const FindName: string): TX3DNode;
-var
-  I: integer;
-begin
-  if X3DName = FindName then
-    result := Self else
-  begin
-    result := nil;
-
-    for I := 0 to VRML1ParentsCount - 1 do
-    begin
-      result := VRML1Parents[I].TryFindParentByName(FindName);
-      if result <> nil then exit;
-    end;
-
-    for I := 0 to ParentFieldsCount - 1 do
-    begin
-      result := ParentFieldsNode[I].TryFindParentByName(FindName);
-      if result <> nil then exit;
-    end;
-  end;
-end;
-
-function TX3DNode.FindParentByName(const FindName: string): TX3DNode;
-begin
-  result := TryFindParentByName(FindName);
-  if Result = nil then
-    raise Exception.CreateFmt('Node name "%s" not found in parents', [FindName]);
-end;
-
-function TX3DNode.TryFindDirectParentByName(const FindName: string): TX3DNode;
-var
-  I: Integer;
-begin
-  for I := 0 to VRML1ParentsCount - 1 do
-  begin
-    Result := VRML1Parents[I];
-    if Result.X3DName = FindName then Exit;
-  end;
-
-  for I := 0 to ParentFieldsCount - 1 do
-  begin
-    Result := ParentFieldsNode[I];
-    if Result.X3DName = FindName then Exit;
-  end;
-
-  Result := nil;
-end;
-
-function TX3DNode.HasParentNode(Node: TX3DNode): boolean;
-var
-  I: integer;
-begin
-  if Self = Node then
-    result := true else
-  begin
-    for i := 0 to VRML1ParentsCount - 1 do
-      if VRML1Parents[i].HasParentNode(Node) then Exit(true);
-
-    for i := 0 to ParentFieldsCount - 1 do
-      if ParentFieldsNode[i].HasParentNode(Node) then Exit(true);
-
-    result := False;
-  end;
-end;
-
-type
-  TIsNodePresentHelper = class
-    SeekNode: TX3DNode;
-    function Callback(Node: TX3DNode): Pointer;
-  end;
-
-  function TIsNodePresentHelper.Callback(Node: TX3DNode): Pointer;
-  begin
-    if Node = SeekNode then
-      Result := Node { doesn't matter what, anything non-nil } else
-      Result := nil;
-  end;
-
-type
-  TNodesCountHelper = class
-    Counter: integer;
-    procedure CountNode(node: TX3DNode);
-  end;
-
-  procedure TNodesCountHelper.CountNode(node: TX3DNode);
-  begin Inc(Counter) end;
-
-class function TX3DNode.ForVRMLVersion(const Version: TX3DVersion): boolean;
-begin
-  Result := true;
-end;
-
 procedure TX3DNode.RemoveParentField(Field: TX3DField);
 begin
   FreeIfUnused;
@@ -1005,66 +711,6 @@ end;
 procedure TX3DNode.AddParentField(Field: TX3DField);
 begin
   FParentFields.Add(Field);
-end;
-
-class function TX3DNode.VRML1ChildrenSaveToStream: boolean;
-begin
-  Result := true;
-end;
-
-function TX3DNode.EnumerateReplaceChildren(
-  Func: TEnumerateReplaceNodesFunction): Cardinal;
-var
-  I, J: Integer;
-  SF: TSFNode;
-  NewNode: TX3DNode;
-begin
-  { I don't use EnumerateNodes since I have to enumerate them myself,
-    since they may be removed during enumeration.
-    The code below mimics TX3DNode.DirectEnumerateAll implementation,
-    but it takes into account that nodes may be removed. }
-
-  Result := 0;
-
-  I := 0;
-  while I < VRML1ChildrenCount do
-  begin
-    NewNode := VRML1Children[I];
-    Func(Self, NewNode);
-    if NewNode <> VRML1Children[I] then
-    begin
-      VRML1ChildRemove(I);
-      Inc(Result);
-      if NewNode <> nil then
-      begin
-        VRML1ChildAdd(I, NewNode);
-        Inc(I);
-      end;
-    end else
-    begin
-      Result := Result + VRML1Children[I].EnumerateReplaceChildren(Func);
-      Inc(I);
-    end;
-  end;
-
-  if FFieldsSFNode <> nil then
-    for I := 0 to FFieldsSFNode.Count - 1 do
-    begin
-      SF := TSFNode(FFieldsSFNode[I]);
-      if (SF.Value <> nil) and not SF.WeakLink then
-      begin
-        NewNode := SF.Value;
-        Func(Self, NewNode);
-        if NewNode <> SF.Value then
-        begin
-          SF.Value := NewNode;
-          Inc(Result);
-        end else
-        begin
-          Result := Result + SF.Value.EnumerateReplaceChildren(Func);
-        end;
-      end;
-    end;
 end;
 
   type
@@ -1080,19 +726,6 @@ end;
     if IsWild(Node.X3DName, Wildcard, IgnoreCase) then
       Node := nil;
   end;
-
-function TX3DNode.RemoveChildrenWithMatchingName(
-  const Wildcard: string; IgnoreCase: Boolean): Cardinal;
-var
-  Helper: TRemoveChildrenWithMatchingNameHelper;
-begin
-  Helper := TRemoveChildrenWithMatchingNameHelper.Create;
-  try
-    Helper.Wildcard := Wildcard;
-    Helper.IgnoreCase := IgnoreCase;
-    Result := EnumerateReplaceChildren({$ifdef CASTLE_OBJFPC}@{$endif} Helper.DoIt);
-  finally FreeAndNil(Helper) end;
-end;
 
 class function TX3DNode.URNMatching(const URN: string): boolean;
 begin
