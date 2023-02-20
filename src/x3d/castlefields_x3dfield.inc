@@ -160,12 +160,6 @@
       is @false. }
     procedure SaveToStreamValue; virtual; abstract;
 
-    { Save method of SaveToStreamValue. May assume things that
-      SaveToStreamValue may issume, for example: if this is used at all,
-      then at least field value is not default (so there is a need to write
-      this field) and such. }
-    function SaveToXmlValue: TSaveToXmlMethod; virtual;
-
     { Call this inside overriden Assign methods.
       I don't want to place this inside TX3DField.Assign, since I want
       "inherited" in Assign methods to cause exception. }
@@ -285,7 +279,6 @@
       It doesn't actually save anything if field value is defined
       and equals default value. }
     procedure SaveToStream; override;
-    function SaveToXml: TSaveToXmlMethod; override;
 
     { Does current field value came from expanding "IS" clause.
       If yes, then saving this field to stream will only save it's "IS" clauses,
@@ -717,28 +710,6 @@ end;
 procedure TX3DField.SaveToStream;
 begin
   FieldSaveToStream;
-end;
-
-function TX3DField.SaveToXmlValue: TSaveToXmlMethod;
-begin
-  Result := sxAttribute;
-end;
-
-function TX3DField.SaveToXml: TSaveToXmlMethod;
-begin
-  { Detect sxNone for XML encoding, this allows better output in many cases,
-    also avoids <fieldValue> inside <ProtoInstance> when the field value actually
-    doesn't have to be specified.
-    When FieldSaveToStream saves field value? FieldSaveToStream checks
-
-     (not ValueFromIsClause) and
-     (FieldSaveWhenDefault or (not EqualsDefaultValue))
-
-    SaveToStream calls FieldSaveToStream with default FieldSaveWhenDefault = false. }
-
-  if (not ValueFromIsClause) and (not EqualsDefaultValue) then
-    Result := SaveToXmlValue else
-    Result := sxNone;
 end;
 
 function TX3DField.EqualsDefaultValue: boolean;

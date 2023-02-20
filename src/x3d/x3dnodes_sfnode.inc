@@ -47,7 +47,6 @@
     procedure DestructionNotification(Node: TX3DNode);
   strict protected
     procedure SaveToStreamValue; override;
-    function SaveToXmlValue: TSaveToXmlMethod; override;
   public
     { Construct a field allowing any children class.
       Suitable only for special cases. For example, in instantiated prototypes,
@@ -338,14 +337,6 @@ end;
 
 procedure TSFNode.SaveToStreamValue;
 begin
-end;
-
-function TSFNode.SaveToXmlValue: TSaveToXmlMethod;
-begin
-  { NULL can only be encoded as an attribute in XML encoding }
-  if Value = nil then
-    Result := sxAttribute else
-    Result := sxChildElement;
 end;
 
 function TSFNode.EqualsDefaultValue: boolean;

@@ -72,12 +72,6 @@
 
     { Save to stream. }
     procedure SaveToStream; virtual; abstract;
-
-    { How is this saved to X3D XML encoding. This determines when
-      SaveToStream is called. It also cooperates with some SaveToStream
-      implementations, guiding how the item is actually saved.
-      By default it is sxChildElement. }
-    function SaveToXml: TSaveToXmlMethod; virtual;
   end;
 
   TX3DFileItemList = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TObjectList<TX3DFileItem>)
@@ -98,11 +92,6 @@ constructor TX3DFileItem.Create;
 begin
   inherited;
   FPositionInParent := -1;
-end;
-
-function TX3DFileItem.SaveToXml: TSaveToXmlMethod;
-begin
-  Result := sxChildElement;
 end;
 
 { TX3DFileItemList --------------------------------------------------------- }

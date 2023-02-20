@@ -15,8 +15,6 @@
 
 {$ifdef read_interface}
 
-  TSaveToXmlMethod = (sxNone, sxAttribute, sxAttributeCustomQuotes, sxChildElement);
-
   { Possible things that happen when given field is changed.
     Used by TX3DField.ExecuteChanges. }
   TX3DChange = (

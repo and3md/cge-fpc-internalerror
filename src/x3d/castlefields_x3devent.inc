@@ -49,7 +49,6 @@
     procedure Parse(Lexer: TX3DLexer);
 
     procedure SaveToStream; override;
-    function SaveToXml: TSaveToXmlMethod; override;
 
     { If this event is an exposed event belonging to some field,
       this references parent field. Otherwise it's @nil. }
@@ -131,11 +130,6 @@ end;
 procedure TX3DEvent.SaveToStream;
 begin
   { saves nothing. IS clauses are saved separately by SaveToStreamIsClauses }
-end;
-
-function TX3DEvent.SaveToXml: TSaveToXmlMethod;
-begin
-  Result := sxNone;
 end;
 
 procedure TX3DEvent.Send(Field: TX3DField);
