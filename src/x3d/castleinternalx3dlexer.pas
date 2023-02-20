@@ -370,17 +370,10 @@ implementation
 uses X3DFields;// remove this X3DFields (X3DLoadInternalUtils was here before) include to get rid of internal error
 
 const
-  { utf8 specific constants below }
-  X3DLineTerm = [#10, #13];
-
   X3DTokenNames: array [TX3DToken] of string = (
     'keyword', 'name',
     '"{"', '"}"', '"["', '"]"', '"("', '")"', '"|"', '","', '"."', '":"',
     'float', 'integer', 'string', 'end of stream');
-
-var
-  { Log all read tokens. Useful for debugging lexer. }
-  LogTokens: boolean = false;
 
 function ArrayPosX3DKeywords(const s: string; out Index: TX3DKeyword): boolean;
 var
@@ -979,9 +972,6 @@ end;
 
 function StringToX3DClassic(const s: string;
   const SurroundWithQuotes: boolean): string;
-const
-  Patterns: array [0..1] of string = ('\', '"');
-  PatValues: array [0..1] of string = ('\\', '\"');
 begin
   { use soMatchCase for speed }
   if SurroundWithQuotes then
@@ -990,18 +980,12 @@ begin
 end;
 
 function StringToX3DXml(const s: string): string;
-const
-  Patterns: array [0..6] of string = ('&', '"', '''', '<', '>', #10, #13);
-  PatValues: array [0..6] of string = ('&amp;', '&quot;', '&apos;', '&lt;', '&gt;', '&#xA;', '&#xD;');
 begin
   { use soMatchCase for speed }
   Result := '"' + s + '"';
 end;
 
 function StringToX3DXmlMulti(const s: string): string;
-const
-  Patterns: array [0..7] of string = ('&', '"', '''', '<', '>', #10, #13, '\');
-  PatValues: array [0..7] of string = ('&amp;', '\&quot;', '&apos;', '&lt;', '&gt;', '&#xA;', '&#xD;', '\\');
 begin
   { use soMatchCase for speed }
   Result := '"' + s + '"';
