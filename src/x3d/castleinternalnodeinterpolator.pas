@@ -333,28 +333,6 @@ begin
       TX3DRootNode(Result).Profile := (Model1 as TX3DRootNode).Profile;
       TX3DRootNode(Result).Components.Assign((Model1 as TX3DRootNode).Components);
     end;
-
-    { TODO: for TX3DUnknownNode, we should fill here Result.Fields.
-      Also for TX3DPrototypeNode. }
-
-    for I := 0 to Model1.FieldsCount - 1 do
-    begin
-      if Model1.Fields[I] is TSFNode then
-      begin
-        SFNodeLerp(
-          (Result.Fields[I] as TSFNode),
-          (Model1.Fields[I] as TSFNode),
-          (Model2.Fields[I] as TSFNode));
-      end else
-      if Model1.Fields[I].CanAssignLerp then
-      begin
-        Result.Fields[I].AssignLerp(A, Model1.Fields[I], Model2.Fields[I]);
-      end else
-      begin
-        { These fields cannot be interpolated.
-          So just copy to Result.Fields[I]. }
-      end;
-    end;
   except
     FreeAndNil(Result);
     raise;
