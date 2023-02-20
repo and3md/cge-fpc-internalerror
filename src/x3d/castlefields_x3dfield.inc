@@ -30,28 +30,7 @@
     procedure SetExposed(Value: boolean);
     function GetExposedEvents(InEvent: boolean): TX3DEvent;
   strict protected
-    function SendsByEvent: boolean;
-
-    { Class of the fields allowed in the exposed events of this field.
-      This should usually be using ClassType of this object,
-      and this is the default implementation of this method in TX3DField.
-
-      You can override this to return some ancestor (from which, and to which,
-      you can assign) if your TX3DField descendant
-      doesn't change how the @code(Assign) method works.
-      E.g. TSFTextureUpdate class, that wants to be fully compatible with normal
-      TSFString. }
     class function ExposedEventsFieldClass: TX3DFieldClass; virtual;
-
-    { Handle exposed input event. In TX3DField class, this does everything
-      usually needed --- assigns value, sends an output event, notifies
-      @link(Changed).
-
-      You can override this for some special purposes. For special needs,
-      you do not even need to call @code(inherited) in overriden versions.
-      This is suitable e.g. for cases when TimeSensor.set_startTime or such
-      must be ignored. }
-    procedure ExposedEventReceive(Event: TX3DEvent; Value: TX3DField); virtual;
   public
     constructor Create(const AExposed: boolean);
 
@@ -210,29 +189,9 @@ begin
   Result := FExposedEvents[false];
 end;
 
-procedure TX3DField.ExposedEventReceive(Event: TX3DEvent; Value: TX3DField);
-var
-  ValuePossiblyChanged: boolean;
-begin
-  Assert(Exposed);
-  Assert(Event = FExposedEvents[true]);
-  Assert(Value is ExposedEventsFieldClass);
-  { This is trivial handling of exposed events: just set our value,
-    and call out event. }
-
-  AssignValue(Value);
-
-  FExposedEvents[false].Send(Value);
-end;
-
-function TX3DField.SendsByEvent: boolean;
-begin
-  Result := Exposed ;
-end;
-
 procedure TX3DField.Send(Value: TX3DField);
 begin
-  if SendsByEvent then
+  if Exposed then
   begin
     EventIn.Send(Value);
   end else
