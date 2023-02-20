@@ -14,9 +14,6 @@
 }
 
 {$ifdef read_interface}
-
-  TAllowedChildren = (acAll, acClasses, acInterface);
-
   { VRML/X3D field holding a reference to a single node.
     It's defined in this unit, not in X3DFields, since it uses
     TX3DNode definition. NULL value of the field is indicated by
@@ -34,8 +31,6 @@
   private
     FValue: TX3DNode;
     FParentNode: TX3DNode;
-    AllowedChildren: TAllowedChildren;
-    AllowedChildrenInterface: TGUID;
     FDefaultValue: TX3DNode;
     FDefaultValueExists: boolean;
     FWeakLink: boolean;
@@ -86,9 +81,6 @@
     property ParentNode: TX3DNode read FParentNode;
 
     class function CreateEvent: TX3DEvent; override;
-
-    function ChildAllowed(Child: TX3DNode): boolean;
-    function CurrentChildAllowed: boolean;
 
     procedure Send(const AValue: TX3DNode); overload;
 
@@ -146,8 +138,6 @@ begin
     but casted to TX3DNode }
   FParentNode := AParentNode;
 
-  AllowedChildren := acClasses;
-
   Value := AValue;
 end;
 
@@ -158,21 +148,6 @@ begin
   { To delete Self from DefaultValue.FParentFields, and eventually free DefaultValue. }
   DefaultValue := nil;
   inherited;
-end;
-
-function TSFNode.ChildAllowed(Child: TX3DNode): boolean;
-begin
-  case AllowedChildren of
-    acAll      : Result := true;
-    acClasses  : Result := (Child = nil);
-    acInterface: Result := (Child = nil) or Supports(Child, AllowedChildrenInterface);
-    else raise Exception.Create('AllowedChildren?');
-  end;
-end;
-
-function TSFNode.CurrentChildAllowed: boolean;
-begin
-  Result := ChildAllowed(Value);
 end;
 
 procedure TSFNode.WarningIfUnusedWeakLink;
