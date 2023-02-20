@@ -45,29 +45,6 @@
     function GetFields(const Index: Integer): TX3DField;
     function GetEvents(const Index: Integer): TX3DEvent;
   protected
-    { Are VRML 1.0 children allowed.
-      This condition is checked in VRML1ChildAdd, so it's strictly
-      impossible to add a node that is not allowed.
-
-      Note that in some special cases VRML1ChildrenAllowed and
-      VRML1ChildrenParsingAllowed values may be changed during object lifetime.
-      Currently, this may concern TX3DUnknownNode.
-
-      Default @false. }
-    VRML1ChildrenAllowed: boolean;
-
-    { VRML 1.0 children allowed to be added during parsing.
-      This is used only by *Inline nodes for now, that do not allow
-      reading children during parsing but may get new children
-      in memory. So their VRML1ChildrenParsingAllowed must be empty,
-      but VRML1ChildrenAllowed must allow all.
-
-      When VRML1ChildrenAllowed is @false then VRML1ChildrenParsingAllowed should
-      also be @false.
-
-      Default @false. }
-    VRML1ChildrenParsingAllowed: boolean;
-
     { Should SaveToStream save our VRML1Children.
       In this class default implementation returns @true,
       this is what you will want in 99% of cases.
@@ -607,9 +584,6 @@
 constructor TX3DNode.Create(const AX3DName, ABaseUrl: string);
 begin
   inherited Create;
-  VRML1ChildrenAllowed := false;
-  VRML1ChildrenParsingAllowed := false;
-
   FX3DName := AX3DName;
   FBaseUrl := ABaseUrl;
 
