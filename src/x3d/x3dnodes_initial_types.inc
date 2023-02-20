@@ -16,7 +16,6 @@
 {$ifdef read_interface}
 
   { Forward declarations } { }
-  TX3DNodeList = class;
   TX3DNode = class;
   TX3DRootNode = class;
   TSFNode = class;

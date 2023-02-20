@@ -101,29 +101,6 @@
     destructor Destroy; override;
   end;
 
-  TX3DNodeList = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TObjectList<TX3DNode>)
-    { Find node by name, @nil if not found.
-
-      For empty node name, always returns @nil. This follows the definition
-      of @link(TX3DNode.X3DName):
-      empty means that node has no name, so it should not be found
-      by searches by name, ever.
-
-      @seealso(IndexOfName Returns the node index. This is sometimes more
-        flexible (you can always quickly get actual node knowing the index,
-        by Items[Index], but not the other way around). It is also sometimes
-        less comfortable (often you're not interested in node index).) }
-    function FindName(const Name: string): TX3DNode;
-
-    { Find index of a node with given name, -1 if not found. }
-    function IndexOfName(const Name: string): Integer;
-
-    procedure AddIfNotExists(const Node: TX3DNode);
-    function Equals(SecondValue: TObject): boolean; {$ifdef TOBJECT_HAS_EQUALS} override; {$endif}
-    procedure Assign(const Source: TX3DNodeList);
-    procedure Assign(const Source: array of TX3DNode);
-  end;
-
 {$endif read_interface}
 
 {$ifdef read_implementation}
@@ -304,65 +281,5 @@ begin
 end;
 
 { TX3DNodeList ------------------------------------------------------------- }
-
-function TX3DNodeList.FindName(const Name: string): TX3DNode;
-var
-  I: Integer;
-begin
-  if Name = '' then
-    Exit(nil);
-
-  for I := 0 to Count - 1 do
-  begin
-    Result := Items[I];
-    if Result.X3DName = Name then
-      Exit;
-  end;
-  Result := nil;
-end;
-
-function TX3DNodeList.IndexOfName(const Name: string): Integer;
-begin
-  if Name = '' then
-    Exit(-1);
-
-  for Result := 0 to Count - 1 do
-    if Items[Result].X3DName = Name then
-      Exit;
-  Result := -1;
-end;
-
-procedure TX3DNodeList.AddIfNotExists(const Node: TX3DNode);
-begin
-  if IndexOf(Node) = -1 then
-    Add(Node);
-end;
-
-function TX3DNodeList.Equals(SecondValue: TObject): boolean;
-var
-  I: Integer;
-begin
-  Result :=
-    (SecondValue <> nil) and
-    (SecondValue is TX3DNodeList) and
-    (TX3DNodeList(SecondValue).Count = Count);
-
-  if Result then
-    for I := 0 to Count - 1 do
-      if Items[I] <> TX3DNodeList(SecondValue)[I] then
-        Exit(false);
-end;
-
-procedure TX3DNodeList.Assign(const Source: TX3DNodeList);
-begin
-  Clear;
-  AddRange(Source);
-end;
-
-procedure TX3DNodeList.Assign(const Source: array of TX3DNode);
-begin
-  Clear;
-  AddRange(Source);
-end;
 
 {$endif read_implementation}

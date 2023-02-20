@@ -30,8 +30,6 @@ type
 
   TNodeInterpolator = class
   strict private
-    { Helpers for Load implementation. }
-    LoadToX3D_KeyNodes: TX3DNodeList; static;
     class procedure LoadToX3D_GetKeyNodeWithTime(const Index: Cardinal;
       out KeyNode: TX3DRootNode; out Time: Single);
   public
@@ -43,13 +41,6 @@ type
     type
       { Key X3D nodes read from castle-anim-frames. }
       TAnimation = class
-        { The nodes and associated times read from castle-anim-frames.
-          The list objects are owned (created, destroyed) by this TAnimation instance.
-          The nodes inside KeyNodes are not -- it's the caller responsibility
-          to free or pass them as appropriate (or just call
-          @link(FreeKeyNodesContents) to easily free them).
-          @groupBegin }
-        KeyNodes: TX3DNodeList;
         { @groupEnd }
         Name: string;
         ScenesPerTime: Cardinal;
@@ -70,23 +61,6 @@ type
         These are like TAnimation, but sometimes with additional
         interpolated nodes added in between. }
       TBakedAnimation = class
-        { The nodes for every time step.
-          This is usually more than just "key" nodes, it's filled with intermediate
-          interpolated nodes created by BakeToSequence.
-
-          Just like TAnimation.KeyNodes, the nodes list instance is owned by
-          this TBakedAnimation instance, but it's contents (actual X3D nodes) is not.
-          That is, Nodes.OwnsObjects is @false.
-          Make sure to free (or pass along) the nodes as necessary.
-          In the simplest case, you can call FreeNodesContents,
-          but usually you will pass the nodes furher to LoadToX3D.
-
-          This list is never empty after BakeToSequence call,
-          as you cannot create a sequence from an empty list.
-          The list contains only TX3DRootNode instances.
-        }
-        Nodes: TX3DNodeList;
-
         TimeBegin, TimeEnd: Single;
         Name: string;
         Loop, Backwards: boolean;
@@ -418,25 +392,15 @@ end;
 constructor TNodeInterpolator.TAnimation.Create;
 begin
   inherited;
-  KeyNodes := TX3DNodeList.Create(false);
 end;
 
 destructor TNodeInterpolator.TAnimation.Destroy;
 begin
-  FreeAndNil(KeyNodes);
   inherited;
 end;
 
 procedure TNodeInterpolator.TAnimation.FreeKeyNodesContents;
-var
-  I: Integer;
 begin
-  for I := 0 to KeyNodes.Count - 1 do
-  begin
-    KeyNodes[I].Free;
-    KeyNodes[I] := nil;
-  end;
-  KeyNodes.Clear;
 end;
 
 { TAnimationList ------------------------------------------------------------- }
@@ -454,12 +418,10 @@ end;
 constructor TNodeInterpolator.TBakedAnimation.Create;
 begin
   inherited;
-  Nodes := TX3DNodeList.Create(false);
 end;
 
 destructor TNodeInterpolator.TBakedAnimation.Destroy;
 begin
-  FreeAndNil(Nodes);
   inherited;
 end;
 
@@ -472,12 +434,6 @@ procedure TNodeInterpolator.TBakedAnimation.FreeNodesContents;
 var
   I: Integer;
 begin
-  for I := 0 to Nodes.Count - 1 do
-  begin
-    Nodes[I].Free;
-    Nodes[I] := nil;
-  end;
-  Nodes.Clear;
 end;
 
 { TBakedAnimationList ------------------------------------------------------------- }
@@ -504,7 +460,6 @@ var
   LastKeyNode, NewKeyNode: TX3DRootNode;
   LastTime, NewTime: Single;
   NodesIndex: Integer;
-  Nodes: TX3DNodeList;
 begin
   ScenesPerTime := Round(ScenesPerTime * 1);
 
@@ -515,10 +470,6 @@ begin
     { KeyNodes[0] goes to Nodes[0], that's easy }
     GetKeyNodeWithTime(0, NewKeyNode, NewTime);
 
-    Nodes := Result.Nodes;
-
-    Nodes.Count := 1;
-    Nodes[0] := NewKeyNode;
     LastNodesIndex := 0;
     LastTime := NewTime;
     LastKeyNode := NewKeyNode;
@@ -543,9 +494,6 @@ begin
         end;
       end;
 
-      Nodes.Count := Nodes.Count +
-        Max(1, Round((NewTime - LastTime) * ScenesPerTime));
-
       if StructurallyEqual then
       begin
         { Try to merge it with LastKeyNode.
@@ -555,8 +503,6 @@ begin
         begin
           { In this case don't waste memory, simply reuse Nodes[LastNodesIndex]. }
           FreeAndNil(NewKeyNode);
-          for NodesIndex := LastNodesIndex + 1 to Nodes.Count - 1 do
-            Nodes[NodesIndex] := Nodes[LastNodesIndex];
         end else
         begin
           ;
@@ -566,14 +512,10 @@ begin
         { We cannot interpolate between last and new node.
           So just duplicate last node until Nodes.Count - 2,
           and at Nodes.Last insert new node. }
-        for NodesIndex := LastNodesIndex + 1 to Nodes.Count - 2 do
-          Nodes[NodesIndex] := Nodes[LastNodesIndex];
-        Nodes[Nodes.Count - 1] := NewKeyNode;
         LastKeyNode := NewKeyNode;
       end;
 
       LastTime := NewTime;
-      LastNodesIndex := Nodes.Count - 1;
     end;
 
     { calculate TimeEnd at this point }
@@ -631,9 +573,6 @@ class function TNodeInterpolator.LoadAnimFramesToKeyNodes(const URL: string): TA
           raise Exception.CreateFmt('Unknown attribute of <animation> element: "%s"',
             [Attr.Name]);
       end;
-
-      if Result.KeyNodes.Count = 0 then
-        raise Exception.Create('At least one <frame> is required within <animation> element');
     except
       { in case of trouble, clear the partial KeyNodes contents }
       Result.FreeKeyNodesContents;
@@ -655,7 +594,7 @@ end;
 class procedure TNodeInterpolator.LoadToX3D_GetKeyNodeWithTime(const Index: Cardinal;
   out KeyNode: TX3DRootNode; out Time: Single);
 begin
-  KeyNode := LoadToX3D_KeyNodes[Index] as TX3DRootNode;
+  KeyNode := nil;
 end;
 
 class function TNodeInterpolator.LoadToX3D(const Animations: TAnimationList): TX3DRootNode;
@@ -671,10 +610,6 @@ begin
       for I := 0 to Animations.Count - 1 do
       begin
         Animation := Animations[I];
-        LoadToX3D_KeyNodes := Animation.KeyNodes;
-        BakedAnimation := BakeToSequence(
-          {$ifdef CASTLE_OBJFPC}@{$endif} LoadToX3D_GetKeyNodeWithTime,
-          Animation.KeyNodes.Count, Animation.ScenesPerTime, Animation.Epsilon);
         BakedAnimation.Name := Animation.Name;
         BakedAnimation.Loop := Animation.Loop;
         BakedAnimation.Backwards := Animation.Backwards;
