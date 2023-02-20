@@ -812,7 +812,7 @@ end;
 
 procedure TX3DField.AssignValueRaiseInvalidClass(Source: TX3DField);
 begin
-  raise EX3DFieldAssignInvalidClass.CreateFmt('Cannot assign VRML/X3D field ' +
+  raise Exception.CreateFmt('Cannot assign VRML/X3D field ' +
     '%s (%s) from %s (%s)',
     [        'X3DName',        X3DType,
       'Source.X3DName', Source.X3DType]);
@@ -865,7 +865,7 @@ begin
   I := IndexOfName(AName);
   if I <> -1 then
     Result := Items[I] else
-    raise EX3DNotFound.CreateFmt('Field name "%s" not found', [AName]);
+    raise Exception.CreateFmt('Field name "%s" not found', [AName]);
 end;
 
 function TX3DFieldList.IndexOfExposedEvent(const EventName: string;

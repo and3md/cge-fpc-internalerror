@@ -170,7 +170,7 @@ begin
   I := IndexOfName(AName);
   if I <> -1 then
     Result := Items[I] else
-    raise EX3DNotFound.CreateFmt('Event name "%s" not found', [AName]);
+    raise Exception.CreateFmt('Event name "%s" not found', [AName]);
 end;
 
 {$endif read_implementation}

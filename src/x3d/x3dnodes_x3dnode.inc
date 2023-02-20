@@ -1264,7 +1264,7 @@ function TX3DNode.FindNode(FindClass: TX3DNodeClass; OnlyActive: boolean): TX3DN
 begin
   result := TryFindNode(FindClass, OnlyActive);
   if Result = nil then
-    raise EX3DNotFound.CreateFmt('Node class "%s" not found', [FindClass.ClassName]);
+    raise Exception.CreateFmt('Node class "%s" not found', [FindClass.ClassName]);
 end;
 
 type
@@ -1300,7 +1300,7 @@ function TX3DNode.FindNodeByName(
 begin
   result := TryFindNodeByName(FindClass, FindName, OnlyActive);
   if Result = nil then
-    raise EX3DNotFound.CreateFmt('Node name "%s" not found', [FindName]);
+    raise Exception.CreateFmt('Node name "%s" not found', [FindName]);
 end;
 
 { TX3DNode.TryFindNodeState/Transform ----------------------------------------- }
@@ -1333,7 +1333,7 @@ function TX3DNode.FindParentByName(const FindName: string): TX3DNode;
 begin
   result := TryFindParentByName(FindName);
   if Result = nil then
-    raise EX3DNotFound.CreateFmt('Node name "%s" not found in parents', [FindName]);
+    raise Exception.CreateFmt('Node name "%s" not found in parents', [FindName]);
 end;
 
 function TX3DNode.TryFindDirectParentByName(const FindName: string): TX3DNode;

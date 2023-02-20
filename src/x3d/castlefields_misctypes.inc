@@ -15,30 +15,6 @@
 
 {$ifdef read_interface}
 
-  { For PasDoc: below is a trick to convince PasDoc that EX3DError is a class.
-
-    Otherwise, PasDoc doesn't understand it, and places EX3DError in
-    the "Class Hierarchy" (since it's an ancestor of some other classes....)
-    but in the incorrect place (not descending from Exception, despite
-    external_class_hierarchy.txt.)
-    That's because original EX3DError is in unparsed by PasDoc (internal)
-    CastleInternalX3DLexer unit. }
-  { Any error related to VRML/X3D. }
-  {$ifdef PASDOC}
-  EX3DError = class(Exception);
-  {$else}
-  //EX3DError = CastleInternalX3DLexer.EX3DError;
-  //EX3DError = class(Exception);
-  {$endif}
-
-  EX3DFieldAssign = class(EX3DError);
-  EX3DFieldAssignInvalidClass = class(EX3DFieldAssign);
-  { Raised by various X3D methods searching for X3D items (nodes, fields,
-    events and such) when given item cannot be found. }
-  EX3DNotFound = class(EX3DError);
-
-  EInvalidNurbs = class(EX3DError);
-
   TSaveToXmlMethod = (sxNone, sxAttribute, sxAttributeCustomQuotes, sxChildElement);
 
   { Possible things that happen when given field is changed.
