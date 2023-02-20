@@ -20,7 +20,7 @@
   { X3D node. Every VRML/X3D node class descends from this. }
   TX3DNode = class(TX3DFileItem)
   private
-    FFields, FFieldsSFNode, FFieldsMFNode: TX3DFieldList;
+    FFields: TX3DFieldList;
 
     //ATest:Integer; //add to get internal error
     function GetFields(const Index: Integer): TX3DField;
@@ -90,9 +90,6 @@ destructor TX3DNode.Destroy;
 var
   I: Integer;
 begin
-  FreeAndNil(FFieldsSFNode);
-  FreeAndNil(FFieldsMFNode);
-
   { First free Fields and Events, before freeing InterfaceDeclarations.
     Reason: Fields and Events may contains references to InterfaceDeclarations
     items (since parsing added them there by PostAddInterfaceDeclaration(IDecl)).
@@ -139,14 +136,6 @@ end;
 procedure TX3DNode.AddField(const Value: TX3DField);
 begin
   FFields.Add(Value);
-
-  { add the field also to FFieldsSFNode or FFieldsMFNode }
-  if Value is TSFNode then
-  begin
-    if FFieldsSFNode = nil then
-      FFieldsSFNode := TX3DFieldList.Create(false);
-    FFieldsSFNode.Add(Value);
-  end else
 end;
 
 function TX3DNode.IndexOfField(const AName: string): Integer;
