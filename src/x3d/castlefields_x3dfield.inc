@@ -54,7 +54,6 @@
   TX3DField = class(TX3DFileItem)
   strict private
     FExposedEvents: array [boolean] of TX3DEvent;
-    FChangesAlways: TX3DChanges;
 
     // keep booleans together, to pack them together in memory
     FExposed: boolean;
@@ -455,47 +454,6 @@
       In this class, this always returns @false. }
     function CanAssignLerp: boolean; virtual;
 
-    { Notify ParentNode.Scene that the value of this field changed. }
-    procedure Changed;
-
-    { What always happens when the value of this field changes.
-
-      This is included in the @link(ExecuteChanges) method result. So instead of
-      using this property, you could always override @link(ExecuteChanges)
-      method. But often it's easier to use the property.
-
-      By default this is an empty set. This is suitable for
-      things that aren't *directly* an actual content (but only an
-      intermediate value to change other stuff). This includes
-      all metadata fields and nodes, all fields in event utilities,
-      Script node, interpolators...
-
-      See TX3DChange for possible values. }
-    property ChangesAlways: TX3DChanges read FChangesAlways write FChangesAlways;
-
-    { What happens when the value of this field changes.
-      This is called, exactly once, by TCastleSceneCore.InternalChangedField
-      to determine what must be done when we know that value of this field changed.
-
-      In overridden descendants, this can also do something immediately.
-      Overriding this is similar to registering your callback by
-      @link(TX3DEvent.AddNotification EventOut.AddNotification), with two additional benefits:
-
-      @orderedList(
-        @item(This method may be not called (although no guarantees)
-          when the actual field value did not change.
-          In contrast, the event notification is always fired,
-          even when you send the same value to an exposed field,
-          because VRML/X3D events and routes must be fired anyway.)
-
-        @item(This is useful also for fields that are not exposed,
-          and can be changed only by ObjectPascal code.)
-      )
-
-      So overridding this is closer to "do something when field value changes"
-      than registering notification by @link(TX3DEvent.AddNotification EventOut.AddNotification). }
-    function ExecuteChanges: TX3DChanges; virtual;
-
     { Set the value of the field, notifying the scenes and events engine.
       This sets the value of this field in the nicest possible way for
       any possible TCastleSceneCore (with events on or off) containing the node
@@ -622,23 +580,6 @@ begin
   AssignValue(Value);
 
   FExposedEvents[false].Send(Value);
-
-  { Tests:
-  if not ValuePossiblyChanged then
-    writeln('ignored field ', Name, ' change, since values the same'); }
-  if ValuePossiblyChanged and
-    // do not send Changed if it will be send later by InternalAffectedPartial
-    not ((PartialReceived <> nil) and PartialReceived.ToBeApplied) then
-    Changed;
-end;
-
-procedure TX3DField.Changed;
-begin
-end;
-
-function TX3DField.ExecuteChanges: TX3DChanges;
-begin
-  Result := ChangesAlways;
 end;
 
 function TX3DField.SendsByEvent: boolean;
@@ -647,19 +588,15 @@ begin
 end;
 
 procedure TX3DField.Send(Value: TX3DField);
-var
-  ValuePossiblyChanged: boolean;
 begin
   if SendsByEvent then
   begin
     EventIn.Send(Value);
   end else
   begin
-    ValuePossiblyChanged := not FastEqualsValue(Value);
     { Call AssignValue regardless of ValuePossiblyChanged.
       Reason: AssignValue also removes "IS" clause. }
     AssignValue(Value);
-    if ValuePossiblyChanged then Changed;
   end;
 end;
 
