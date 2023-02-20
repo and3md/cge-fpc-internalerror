@@ -39,11 +39,7 @@ function NodesLerp(const A: Single; Model1, Model2: TX3DNode): TX3DNode;
 
   procedure SFNodeLerp(Target, Field1, Field2: TSFNode);
   begin
-    if (not Field1.WeakLink) and
-       (not Field2.WeakLink) then
-      Target.Value := NodesLerp(A, Field1.Value, Field2.Value)
-    else
-      Target.Value := Field1.Value;
+    Target.Value := NodesLerp(A, Field1.Value, Field2.Value)
   end;
 begin
   if Model1 = Model2 then
