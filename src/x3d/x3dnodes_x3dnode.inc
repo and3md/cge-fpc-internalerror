@@ -21,15 +21,12 @@
   TX3DNode = class(TX3DFileItem)
   private
     FX3DName: string;
-    FVRML1Parents: TX3DNodeList;
     FParentFields: TX3DFieldList;
     FImports, FExports: TX3DFileItemList;
     FFields, FFieldsSFNode, FFieldsMFNode: TX3DFieldList;
     FEvents: TX3DEventList;
 
     //ATest:Integer; //add to get internal error
-
-    function GetVRML1Parent(i: integer): TX3DNode;
     function GetParentFieldsItem(Index: Integer): TX3DField;
     function GetParentFieldsNodeItem(Index: Integer): TX3DNode;
     procedure RemoveParentField(Field: TX3DField);
@@ -82,15 +79,6 @@
     { Search by name for given event (exposed by some field or not).
       @nil if not found. }
     function AnyEvent(const AName: string): TX3DEvent;
-
-    { All VRML 1.0 parent nodes. VRML1Parents is a reverse of
-      VRML1Children --- it lists all the nodes where we are on VRML1Children
-      list.
-
-      @groupBegin }
-    property VRML1Parents [i: integer] :TX3DNode read GetVRML1Parent;
-    function VRML1ParentsCount: integer;
-    { @groupEnd }
 
     { All SFNode and MFNode fields where this node is referenced.
       This is somewhat analogous for VRML1Parents, but for VRML 2.0.
@@ -232,7 +220,6 @@ begin
   inherited Create;
   FX3DName := AX3DName;
 
-  FVRML1Parents := TX3DNodeList.Create(false);
   FParentFields := TX3DFieldList.Create(false);
   FFields := TX3DFieldList.Create(false);
   FEvents := TX3DEventList.Create(false);
@@ -275,7 +262,6 @@ begin
     FreeAndNil(FFields);
   end;
 
-  FreeAndNil(FVRML1Parents);
   FreeAndNil(FParentFields);
 
   inherited;
@@ -284,7 +270,6 @@ end;
 procedure TX3DNode.FreeIfUnused;
 begin
   if (Self <> nil) and
-     (FVRML1Parents.Count = 0) and
      (FParentFields.Count = 0) then
   begin
     { For FPC <= 2.2.2:
@@ -297,16 +282,6 @@ begin
       between "Self.Destroy" and "Destroy" below. }
     Self.Destroy;
   end;
-end;
-
-function TX3DNode.GetVRML1Parent(i: integer): TX3DNode;
-begin
-  result := FVRML1Parents[i];
-end;
-
-function TX3DNode.VRML1ParentsCount: integer;
-begin
-  result := FVRML1Parents.Count
 end;
 
 procedure TX3DNode.FreeRemovingFromAllParents;

@@ -274,7 +274,6 @@ procedure TSFNode.WarningIfUnusedWeakLink;
 begin
   if WeakLink and
      (Value <> nil) and
-     (Value.FVRML1Parents.Count = 0) and
      (Value.FParentFields.Count = 0) then
   begin
     FValue.FreeIfUnused; // we know it will be freed now
