@@ -66,10 +66,6 @@
       @nil if not found. }
     function Field(const AName: string): TX3DField;
 
-    { Search by name for given field or event (exposed by some field or not).
-      @nil if not found. }
-    function FieldOrEvent(const AName: string): TX3DFileItem;
-
     { Search by name for given event (exposed by some field or not).
       @nil if not found. }
     function AnyEvent(const AName: string): TX3DEvent;
@@ -277,33 +273,6 @@ begin
   if I <> -1 then
     Result := FFields[I] else
     Result := nil; { not found }
-end;
-
-function TX3DNode.FieldOrEvent(const AName: string): TX3DFileItem;
-var
-  I: Integer;
-  ResultEvent: TX3DEvent;
-begin
-  I := FFields.IndexOfName(AName);
-  if I <> -1 then
-    Exit(FFields[I]);
-
-  { I use helper ResultEvent below, instead of passing
-    "TX3DEvent(Result)" as last param: don't know why,
-    but with FPC 2.2.0 this cast may fail (even though it shouldn't
-    be checked at all?), testcase:
-      view3dscene www.web3d.org/x3d/content/examples/Basic/CAD/CADGeometryPrototypes.x3d
-  }
-
-  I := FFields.IndexOfExposedEvent(AName, ResultEvent);
-  if I <> -1 then
-    Exit(ResultEvent);
-
-  I := FEvents.IndexOfName(AName);
-  if I <> -1 then
-    Exit(Events[I]);
-
-  Result := nil; { not found }
 end;
 
 function TX3DNode.AnyEvent(const AName: string): TX3DEvent;
