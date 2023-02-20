@@ -187,7 +187,6 @@ implementation
 {$warnings off}
 
 uses
-  Math,
   StrUtils;
 
 {$warnings on}
