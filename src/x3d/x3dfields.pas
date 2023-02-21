@@ -85,14 +85,6 @@ type
     { Create TX3DEvent descendant suitable as exposed event for this field. }
     class function CreateEvent: TX3DEvent; virtual;
 
-    procedure AssignLerp(const A: Double; Value1, Value2: TX3DField); virtual;
-
-    { @abstract(Is AssignLerp usable on this field type?)
-
-      @italic(Descendants implementors notes):
-      In this class, this always returns @false. }
-    function CanAssignLerp: boolean; virtual;
-
     procedure Send(Value: TX3DField);
   end;
 
@@ -125,13 +117,7 @@ type
   public
     Value: TItem;
 
-    DefaultValue: TItem;
-    DefaultValueExists: boolean;
-
     constructor Create(const AExposed: boolean; const AValue: TItem);
-
-    procedure AssignLerp(const A: Double; Value1, Value2: TX3DField); override;
-    function CanAssignLerp: boolean; override;
     procedure Send(const AValue: TItem); overload;
 
     class function CreateEvent: TX3DEvent; override;
@@ -214,16 +200,6 @@ begin
   end;
 end;
 
-procedure TX3DField.AssignLerp(const A: Double; Value1, Value2: TX3DField);
-begin
-  { do nothing, CanAssignLerp is false }
-end;
-
-function TX3DField.CanAssignLerp: boolean;
-begin
-  Result := false;
-end;
-
 { TX3DEvent ----------------------------------------------------------------- }
 
 constructor TX3DEvent.Create(const AFieldClass: TX3DFieldClass);
@@ -250,16 +226,6 @@ begin
   inherited Create(AExposed);
 
   Value := AValue;
-end;
-
-procedure TSFGenericVector.AssignLerp(const A: Double; Value1, Value2: TX3DField);
-begin
-  Value := TItem.Lerp(A, (Value1 as TSFGenericVector).Value, (Value2 as TSFGenericVector).Value);
-end;
-
-function TSFGenericVector.CanAssignLerp: boolean;
-begin
-  Result := true;
 end;
 
 class function TSFGenericVector.CreateEvent: TX3DEvent;
