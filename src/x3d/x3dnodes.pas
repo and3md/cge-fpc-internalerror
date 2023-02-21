@@ -73,13 +73,11 @@ type
     property ParentNode: TX3DNode read FParentNode;
 
     class function CreateEvent: TX3DEvent; override;
-
-    procedure Send(const AValue: TX3DNode); overload;
   end;
 
   // removing this helper removes internal error on fixes branch fpc 3.2
   TSFNodeEventHelper = class helper for TSFNodeEvent
-    procedure Send(const Value: TX3DNode); overload;
+    procedure Test(const Value: TX3DNode);
   end;
 
   { A top-level VRML/X3D node }
@@ -171,21 +169,9 @@ begin
   Result := TSFNodeEvent.Create;
 end;
 
-procedure TSFNode.Send(const AValue: TX3DNode);
-var
-  FieldValue: TSFNode;
-begin
-  { We construct using CreateUndefined constructor,to have AllowedChildren = acAll }
-  { AExposed = false below, because not needed otherwise. }
-  FieldValue := TSFNode.Create(ParentNode, false);
-  try
-    FieldValue.Value := AValue;
-  finally FreeAndNil(FieldValue) end;
-end;
-
 { TSFNodeEventHelper --------------------------------------------------------- }
 
-procedure TSFNodeEventHelper.Send(const Value: TX3DNode);
+procedure TSFNodeEventHelper.Test(const Value: TX3DNode);
 begin
   {if (ParentNode <> nil) and
      (TX3DNode(ParentNode).Scene <> nil) then

@@ -114,7 +114,6 @@ type
     Value: TItem;
 
     constructor Create(const AExposed: boolean; const AValue: TItem);
-    procedure Send(const AValue: TItem); overload;
 
     class function CreateEvent: TX3DEvent; override;
   end;
@@ -216,19 +215,6 @@ class function TSFGenericVector.CreateEvent: TX3DEvent;
 begin
   Result := TEvent.Create;
 end;
-
-procedure TSFGenericVector.Send(const AValue: TItem);
-var
-  FieldValue: TSFGenericVector;
-begin
-  FieldValue := TSFGenericVector(
-    TX3DFieldClass(ClassType).Create(false));
-  try
-    FieldValue.Value := AValue;
-    Send(FieldValue);
-  finally FreeAndNil(FieldValue) end;
-end;
-
 
 finalization
 
