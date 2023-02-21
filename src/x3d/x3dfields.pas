@@ -28,8 +28,6 @@ interface
 uses Classes, SysUtils, Generics.Collections,
   CastleInternalX3DLexer;
 
-{$define read_interface}
-
 type
   { Base class for any item within VRML/X3D file: a node, a field, a route,
     a prototype etc. We need a common base class for all such things
@@ -139,16 +137,10 @@ type
     class function CreateEvent: TX3DEvent; override;
   end;
 
-
-{$undef read_interface}
-
 implementation
 
 uses Generics.Defaults,
   X3DNodes;
-
-{$define read_implementation}
-
 
 { TX3DFileItemList --------------------------------------------------------- }
 
@@ -207,8 +199,6 @@ begin
 end;
 
 procedure TX3DField.SetExposed(Value: boolean);
-var
-  I: Integer;
 begin
   if Value <> Exposed then
   begin

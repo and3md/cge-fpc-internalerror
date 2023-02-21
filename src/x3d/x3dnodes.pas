@@ -23,11 +23,9 @@ unit X3DNodes;
 
 interface
 
-uses SysUtils, Generics.Collections, Classes,
+uses SysUtils, Classes,
   CastleInternalX3DLexer, X3DFields,
   CastleMaterialProperties;
-
-{$define read_interface}
 
 type
   TX3DNode = class;
@@ -95,12 +93,7 @@ type
       read FHasForceVersion write FHasForceVersion default false;
   end;
 
-
-{$undef read_interface}
-
 implementation
-
-{$define read_implementation}
 
 { TX3DNode ------------------------------------------------------------------ }
 
