@@ -44,7 +44,7 @@ begin
   if Model1 = Model2 then
     Exit(Model1);
 
-  Result := TX3DNodeClass(Model1.ClassType).Create;
+  Result := TX3DNode.Create;
   try
     if Result is TX3DRootNode then
     begin

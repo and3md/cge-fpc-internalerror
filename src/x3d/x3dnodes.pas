@@ -28,10 +28,7 @@ uses SysUtils, Classes,
   CastleMaterialProperties;
 
 type
-  TX3DNode = class;
   TX3DRootNode = class;
-
-  TX3DNodeClass = class of TX3DNode;
 
   { X3D node. Every VRML/X3D node class descends from this. }
   TX3DNode = class(TX3DFileItem)

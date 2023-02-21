@@ -25,17 +25,13 @@ unit X3DFields;
 
 interface
 
-uses Classes, SysUtils, Generics.Collections,
-  CastleInternalX3DLexer;
+uses Classes, SysUtils, CastleInternalX3DLexer;
 
 type
   { Base class for any item within VRML/X3D file: a node, a field, a route,
     a prototype etc. }
   TX3DFileItem = class
   end;
-
-  TX3DField = class;
-  TX3DEvent = class;
 
   TX3DField = class(TX3DFileItem)
   end;
