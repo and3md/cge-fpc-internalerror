@@ -51,24 +51,6 @@ type
   TX3DEvent = class;
 
   TX3DField = class(TX3DFileItem)
-  strict private
-    FExposedEvents: array [boolean] of TX3DEvent;
-
-    FExposed: boolean;
-
-    procedure SetExposed(Value: boolean);
-    function GetExposedEvents(InEvent: boolean): TX3DEvent;
-  public
-    constructor Create(const AExposed: boolean);
-
-    destructor Destroy; override;
-
-    property Exposed: boolean read FExposed write SetExposed default false;
-
-    { These are the set_xxx and xxx_changed events exposed by this field.
-      @nil if Exposed is @false. }
-    property ExposedEvents [InEvent: boolean]: TX3DEvent
-      read GetExposedEvents;
   end;
 
   TX3DFieldList = class(specialize TObjectList<TX3DField>)
@@ -95,42 +77,5 @@ procedure TX3DFileItemList.Add(Item: TX3DFileItem);
 begin
   inherited Add(Item);
 end;
-
-{ TX3DField ------------------------------------------------------------- }
-
-constructor TX3DField.Create(const AExposed: boolean);
-begin
-  inherited Create;
-
-  { Set Exposed by the property, to force FExposedEvents initialization }
-  FExposed := false;
-  Exposed := AExposed;
-end;
-
-destructor TX3DField.Destroy;
-begin
-  FreeAndNil(FExposedEvents[false]);
-  FreeAndNil(FExposedEvents[true]);
-  inherited;
-end;
-
-function TX3DField.GetExposedEvents(InEvent: boolean): TX3DEvent;
-begin
-  Result := FExposedEvents[InEvent];
-end;
-
-procedure TX3DField.SetExposed(Value: boolean);
-begin
-  if Value <> Exposed then
-  begin
-    FExposed := Value;
-    if Exposed then
-    begin
-      FreeAndNil(FExposedEvents[false]);
-      FreeAndNil(FExposedEvents[true]);
-    end;
-  end;
-end;
-
 
 end.
