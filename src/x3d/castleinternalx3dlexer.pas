@@ -161,43 +161,6 @@ const
     'inputOnly', 'outputOnly', 'inputOutput', 'initializeOnly'
     );
 
-{ String encoded for VRML/X3D classic, surrounded by double quotes.
-  You can use this when generating VRML/X3D content by hand.
-
-  Simply put, this just adds
-  double quotes around and prepends backslash to all " and \ inside.
-  Fortunately, no other characters (including newlines) need to be quoted
-  in any special way for VRML/X3D.
-  For example:
-
-  @longCode(#
-    StringToX3DClassic('foo') = '"foo"'
-    StringToX3DClassic('say "yes"') = '"say \"yes\""'
-  #) }
-function StringToX3DClassic(const s: string;
-  const SurroundWithQuotes: boolean = true): string;
-
-{ String encoded for X3D XML, surrounded by double quotes.
-  You can use this when generating VRML/X3D content by hand.
-
-  Simply put, this just adds double quotes around and replaces
-  all special characters (quotes, double quotes and more)
-  with appropriate XML entities &xxx;. }
-function StringToX3DXml(const s: string): string;
-
-{ String encoded for X3D XML, surrounded by double quotes, to be used
-  as part of MFString.
-
-  In addition to what StringToX3DXml does, this additionally
-  adds backslash before &quot; (double quotes), and doubles existing backslashes.
-  Otherwise XML reader
-  may not tell the difference between double quotes delimiting single string
-  item and double quotes inside, as it has to (and DOM units do) treat
-  " and &quot; exactly the same. X3D XML encoding spec shows example
-  confirming this is correct,
-  @code(<Text string='"He said, \&quot;Immel did it!\&quot;"' />). }
-function StringToX3DXmlMulti(const s: string): string;
-
 implementation
 
 uses X3DFields;// remove this X3DFields (X3DLoadInternalUtils was here before) include to get rid of internal error
@@ -274,29 +237,6 @@ constructor EX3DClassicReadError.Create(Lexer: TX3DLexer; const s: string);
 begin
   inherited Create(Format('Error at line %d column %d: ',
     [111, 1111]) + S);
-end;
-
-{ global funcs  ------------------------------------------------------------------ }
-
-function StringToX3DClassic(const s: string;
-  const SurroundWithQuotes: boolean): string;
-begin
-  { use soMatchCase for speed }
-  if SurroundWithQuotes then
-    Result := '"' + s + '"' else
-    Result :=       s;
-end;
-
-function StringToX3DXml(const s: string): string;
-begin
-  { use soMatchCase for speed }
-  Result := '"' + s + '"';
-end;
-
-function StringToX3DXmlMulti(const s: string): string;
-begin
-  { use soMatchCase for speed }
-  Result := '"' + s + '"';
 end;
 
 end.
