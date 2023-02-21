@@ -106,18 +106,6 @@ type
     constructor Create;
   end;
 
-  { X3D field containing a vector. }
-  generic TSFGenericVector<
-    TItem,
-    TEvent> = class(TX3DField)
-  public
-    Value: TItem;
-
-    constructor Create(const AExposed: boolean; const AValue: TItem);
-
-    class function CreateEvent: TX3DEvent; override;
-  end;
-
 implementation
 
 uses Generics.Defaults,
@@ -202,20 +190,5 @@ begin
   inherited Create(TSFNode);
 end;
 
-{ TSFGenericVector ----------------------------------------------------------- }
-
-constructor TSFGenericVector.Create(const AExposed: boolean; const AValue: TItem);
-begin
-  inherited Create(AExposed);
-
-  Value := AValue;
-end;
-
-class function TSFGenericVector.CreateEvent: TX3DEvent;
-begin
-  Result := TEvent.Create;
-end;
-
-finalization
 
 end.
