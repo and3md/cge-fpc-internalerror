@@ -36,11 +36,82 @@ type
 
   TX3DNodeClass = class of TX3DNode;
 
-  {$I x3dnodes_x3dnode.inc}
-  {$I x3dnodes_sfnode.inc}
+  { X3D node. Every VRML/X3D node class descends from this. }
+  TX3DNode = class(TX3DFileItem)
+  private
+    FFields: TX3DFieldList;
+
+    //ATest:Integer; //add to get internal error
+    function GetFields(const Index: Integer): TX3DField;
+  protected
+    procedure CreateNode; virtual;
+  public
+    property Fields [Index: Integer]: TX3DField read GetFields;
+    function FieldsCount: Integer;
+    procedure AddField(const Value: TX3DField);
+
+    constructor Create; virtual;
+    destructor Destroy; override;
+  end;
+
+
+  { VRML/X3D field holding a reference to a single node.
+    It's defined in this unit, not in X3DFields, since it uses
+    TX3DNode definition. NULL value of the field is indicated by
+    Value field = nil. }
+  TSFNode = class(TX3DField)
+  private
+    FValue: TX3DNode;
+    FParentNode: TX3DNode;
+
+    procedure SetValue(AValue: TX3DNode);
+  public
+    constructor Create(const AParentNode: TX3DNode;
+      const AExposed: boolean; const AValue: TX3DNode = nil); overload;
+    { Constructor that allows as children any implementor of given interface. }
+    destructor Destroy; override;
+    property Value: TX3DNode read FValue write SetValue;
+
+    property ParentNode: TX3DNode read FParentNode;
+
+    class function CreateEvent: TX3DEvent; override;
+
+    procedure Send(const AValue: TX3DNode); overload;
+  end;
+
+  // removing this helper removes internal error on fixes branch fpc 3.2
+  TSFNodeEventHelper = class helper for TSFNodeEvent
+    procedure Send(const Value: TX3DNode); overload;
+  end;
+
 
   { Nodes from standard X3D components }
-  {$I x3dnodes_standard_grouping.inc}
+  { A top-level VRML/X3D node. This is what you get by loading 3D model from file.
+
+    It is declared as a descendant of VRML/X3D >= 2.0 Group node,
+    but it's used with all VRML/X3D versions (including VRML 1.0 and Inventor).
+    This makes things simple (previously we had two separate TX3DRootNode_1
+    and TX3DRootNode, which was complicating stuff).
+    Children (for all VRML/X3D versions) are inside FdChildren field.
+
+    This way VRML/X3D files may have many nodes at the top level
+    (which is a standard feature of VRML/X3D >= 2.0, but we also allow it for
+    VRML 1.0 as a commonly used extension). It may also have prototypes,
+    routes etc. at the root level.
+
+    This also allows us to record in one place some information that
+    is returned by the parser. Like parsed VRML/X3D version, X3D profile,
+    some namespace information (exported names and such). }
+  TX3DRootNode = class(TX3DNode)
+  strict private
+    FHasForceVersion: boolean;
+  public
+    ForceVersion: TX3DVersion;
+
+    property HasForceVersion: boolean
+      read FHasForceVersion write FHasForceVersion default false;
+  end;
+
 
 {$undef read_interface}
 
@@ -48,11 +119,106 @@ implementation
 
 {$define read_implementation}
 
-{$I x3dnodes_x3dnode.inc}
-{$I x3dnodes_sfnode.inc}
+{ TX3DNode ------------------------------------------------------------------ }
+
+constructor TX3DNode.Create;
+begin
+  inherited Create;
+  FFields := TX3DFieldList.Create(false);
+  CreateNode;
+end;
+
+destructor TX3DNode.Destroy;
+var
+  I: Integer;
+begin
+  if FFields <> nil then
+  begin
+    for I := 0 to FFields.Count - 1 do
+    begin
+      FFields[I].Free;
+      FFields[I] := nil;
+    end;
+    FreeAndNil(FFields);
+  end;
+
+  inherited;
+end;
+
+procedure TX3DNode.CreateNode;
+begin
+end;
+
+function TX3DNode.GetFields(const Index: Integer): TX3DField;
+begin
+  Result := FFields[Index];
+end;
+
+function TX3DNode.FieldsCount: Integer;
+begin
+  Result := FFields.Count;
+end;
+
+procedure TX3DNode.AddField(const Value: TX3DField);
+begin
+  FFields.Add(Value);
+end;
+
+{ TSFNode --------------------------------------------------------------------- }
+constructor TSFNode.Create(const AParentNode: TX3DNode;
+  const AExposed: boolean; const AValue: TX3DNode);
+begin
+  inherited Create(AExposed);
+
+  { FParentNode is just a copy of inherited (TX3DFieldOrEvent) FParentNode,
+    but casted to TX3DNode }
+  FParentNode := AParentNode;
+
+  Value := AValue;
+end;
+
+destructor TSFNode.Destroy;
+begin
+  { To delete Self from Value.FParentFields, and eventually free Value. }
+  Value := nil;
+  inherited;
+end;
+
+procedure TSFNode.SetValue(AValue: TX3DNode);
+begin
+  if FValue <> AValue then
+    FValue := AValue;
+end;
+
+class function TSFNode.CreateEvent: TX3DEvent;
+begin
+  Result := TSFNodeEvent.Create;
+end;
+
+procedure TSFNode.Send(const AValue: TX3DNode);
+var
+  FieldValue: TSFNode;
+begin
+  { We construct using CreateUndefined constructor,to have AllowedChildren = acAll }
+  { AExposed = false below, because not needed otherwise. }
+  FieldValue := TSFNode.Create(ParentNode, false);
+  try
+    FieldValue.Value := AValue;
+    Send(FieldValue);
+  finally FreeAndNil(FieldValue) end;
+end;
+
+{ TSFNodeEventHelper --------------------------------------------------------- }
+
+procedure TSFNodeEventHelper.Send(const Value: TX3DNode);
+begin
+  {if (ParentNode <> nil) and
+     (TX3DNode(ParentNode).Scene <> nil) then
+    Send(Value, TX3DNode(ParentNode).Scene.NextEventTime);}
+end;
+
 
 { Nodes from standard X3D components }
-{$I x3dnodes_standard_grouping.inc}
 
 { unit init/fini ------------------------------------------------------------ }
 
