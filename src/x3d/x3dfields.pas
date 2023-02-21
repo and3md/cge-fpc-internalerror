@@ -20,7 +20,7 @@ unit X3DFields;
 
 interface
 
-uses Classes, SysUtils, DOM, Generics.Collections,
+uses Classes, SysUtils, Generics.Collections,
   CastleInternalX3DLexer;
 
 {$define read_interface}
