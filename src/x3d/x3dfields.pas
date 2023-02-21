@@ -30,31 +30,14 @@ uses Classes, SysUtils, Generics.Collections,
 
 type
   { Base class for any item within VRML/X3D file: a node, a field, a route,
-    a prototype etc. We need a common base class for all such things
-    to store PositionInParent.
-
-    About ancestry: TX3DFieldOrEvent make use of Assign mechanism
-    and so need to descend from TPersistent. TX3DNode make use
-    of interfaces and so must descend from something like
-    TNonRefCountedInterfacedXxx. These are the only reasons, for now,
-    why this descends from TNonRefCountedInterfacedPersistent. }
+    a prototype etc. }
   TX3DFileItem = class
   end;
 
-  TX3DFileItemList = class(specialize TObjectList<TX3DFileItem>)
-  public
-    procedure Add(Item: TX3DFileItem); reintroduce;
-  end;
-
   TX3DField = class;
-  TX3DFieldList = class;
   TX3DEvent = class;
 
   TX3DField = class(TX3DFileItem)
-  end;
-
-  TX3DFieldList = class(specialize TObjectList<TX3DField>)
-  public
   end;
 
   { X3D event. }
@@ -70,12 +53,5 @@ type
 implementation
 
 uses X3DNodes;
-
-{ TX3DFileItemList --------------------------------------------------------- }
-
-procedure TX3DFileItemList.Add(Item: TX3DFileItem);
-begin
-  inherited Add(Item);
-end;
 
 end.
