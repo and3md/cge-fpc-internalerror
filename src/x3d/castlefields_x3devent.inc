@@ -25,8 +25,6 @@
 
     property FieldClass: TX3DFieldClass read FFieldClass;
 
-    procedure Parse(Lexer: TX3DLexer);
-
     procedure Send(Field: TX3DField); overload;
   end;
 
@@ -40,10 +38,6 @@ constructor TX3DEvent.Create(const AFieldClass: TX3DFieldClass);
 begin
   inherited Create;
   FFieldClass := AFieldClass;
-end;
-
-procedure TX3DEvent.Parse(Lexer: TX3DLexer);
-begin
 end;
 
 procedure TX3DEvent.Send(Field: TX3DField);

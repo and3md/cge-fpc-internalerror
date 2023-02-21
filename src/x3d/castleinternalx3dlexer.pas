@@ -29,9 +29,6 @@ type
     Major, Minor: Integer;
   end;
 
-  TX3DLexer = class
-  end;
-
 implementation
 
 uses X3DFields;// remove this X3DFields (X3DLoadInternalUtils was here before) include to get rid of internal error

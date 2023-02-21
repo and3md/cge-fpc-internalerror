@@ -36,8 +36,6 @@
 
     destructor Destroy; override;
 
-    procedure Parse(Lexer: TX3DLexer);
-
     property Exposed: boolean read FExposed write SetExposed default false;
 
     { These are the set_xxx and xxx_changed events exposed by this field.
@@ -140,10 +138,6 @@ begin
       FreeAndNil(FExposedEvents[true]);
     end;
   end;
-end;
-
-procedure TX3DField.Parse(Lexer: TX3DLexer);
-begin
 end;
 
 procedure TX3DField.AssignLerp(const A: Double; Value1, Value2: TX3DField);
