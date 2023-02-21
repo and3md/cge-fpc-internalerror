@@ -29,26 +29,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="src/x3d/castlefields_x3devent.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/castlefields_x3devent_descendants.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/castlefields_x3dfield.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/castlefields_x3dfileitem.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/castlefields_x3dsinglefield_descendants.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="src/x3d/castleinternalnodeinterpolator.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="CastleInternalNodeInterpolator"/>
@@ -73,18 +53,6 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="X3DNodes"/>
       </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dnodes_sfnode.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dnodes_standard_grouping.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="src/x3d/x3dnodes_x3dnode.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -93,7 +61,7 @@
       <Filename Value="x3dMin"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="$(ProjOutDir);src/files;src/castlescript;src/fonts;src/x3d"/>
+      <IncludeFiles Value="$(ProjOutDir);src/files;src/castlescript;src/fonts"/>
       <OtherUnitFiles Value="src/castlescript;src/x3d"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
