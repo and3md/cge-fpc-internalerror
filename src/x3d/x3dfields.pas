@@ -84,8 +84,6 @@ type
 
     { Create TX3DEvent descendant suitable as exposed event for this field. }
     class function CreateEvent: TX3DEvent; virtual;
-
-    procedure Send(Value: TX3DField);
   end;
 
   TX3DFieldList = class(specialize TObjectList<TX3DField>)
@@ -101,8 +99,6 @@ type
     constructor Create(const AFieldClass: TX3DFieldClass);
 
     property FieldClass: TX3DFieldClass read FFieldClass;
-
-    procedure Send(Field: TX3DField); overload;
   end;
 
   TSFNodeEvent = class(TX3DEvent)
@@ -168,12 +164,6 @@ begin
   Result := FExposedEvents[false];
 end;
 
-procedure TX3DField.Send(Value: TX3DField);
-begin
-  if Exposed then
-    EventIn.Send(Value);
-end;
-
 class function TX3DField.ExposedEventsFieldClass: TX3DFieldClass;
 begin
   Result := TX3DFieldClass(ClassType);
@@ -206,12 +196,6 @@ constructor TX3DEvent.Create(const AFieldClass: TX3DFieldClass);
 begin
   inherited Create;
   FFieldClass := AFieldClass;
-end;
-
-procedure TX3DEvent.Send(Field: TX3DField);
-begin
-  Assert(Field <> nil);
-  Assert(Field is FieldClass);
 end;
 
 constructor TSFNodeEvent.Create;

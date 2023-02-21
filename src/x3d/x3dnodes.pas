@@ -180,7 +180,6 @@ begin
   FieldValue := TSFNode.Create(ParentNode, false);
   try
     FieldValue.Value := AValue;
-    Send(FieldValue);
   finally FreeAndNil(FieldValue) end;
 end;
 
