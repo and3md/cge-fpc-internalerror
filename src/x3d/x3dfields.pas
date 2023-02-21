@@ -16,7 +16,12 @@
 { X3D fields (TX3DField and many descendants). }
 unit X3DFields;
 
-{$I ../base/castleconf.inc}
+{$mode objfpc}
+{$H+}
+{$macro on}
+{$writeableconst off}
+{$modeswitch advancedrecords}
+
 
 interface
 

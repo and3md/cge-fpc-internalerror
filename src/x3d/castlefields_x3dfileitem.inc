@@ -27,7 +27,7 @@
   TX3DFileItem = class
   end;
 
-  TX3DFileItemList = class({$ifdef CASTLE_OBJFPC}specialize{$endif} TObjectList<TX3DFileItem>)
+  TX3DFileItemList = class(specialize TObjectList<TX3DFileItem>)
   public
     procedure Add(Item: TX3DFileItem); reintroduce;
   end;

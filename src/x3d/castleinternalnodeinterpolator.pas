@@ -17,7 +17,11 @@
   able to animate a sequence of any X3D scenes. }
 unit CastleInternalNodeInterpolator;
 
-{$I ../base/castleconf.inc}
+{$mode objfpc}
+{$H+}
+{$macro on}
+{$writeableconst off}
+{$modeswitch advancedrecords}
 
 interface
 

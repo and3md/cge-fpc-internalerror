@@ -161,7 +161,11 @@
 
 unit X3DNodes;
 
-{$I  ../base/castleconf.inc}
+{$mode objfpc}
+{$H+}
+{$macro on}
+{$writeableconst off}
+{$modeswitch advancedrecords}
 
 interface
 

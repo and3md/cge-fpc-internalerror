@@ -17,7 +17,12 @@
   global MaterialProperties collection). }
 unit CastleMaterialProperties;
 
-{$I castleconf.inc}
+{$mode objfpc}
+{$H+}
+{$macro on}
+{$writeableconst off}
+{$modeswitch advancedrecords}
+
 
 interface
 

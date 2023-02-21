@@ -16,7 +16,12 @@
 { VRML/X3D classic lexer (TX3DLexer). }
 unit CastleInternalX3DLexer;
 
-{$I ../base/castleconf.inc}
+{$mode objfpc}
+{$H+}
+{$macro on}
+{$writeableconst off}
+{$modeswitch advancedrecords}
+
 
 interface
 

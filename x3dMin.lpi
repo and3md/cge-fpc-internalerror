@@ -85,10 +85,6 @@
         <Filename Value="src/x3d/x3dnodes_x3dnode.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
-      <Unit>
-        <Filename Value="src/base/castleconf.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -97,7 +93,7 @@
       <Filename Value="x3dMin"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="$(ProjOutDir);src/base;src/files;src/castlescript;src/fonts;src/x3d"/>
+      <IncludeFiles Value="$(ProjOutDir);src/files;src/castlescript;src/fonts;src/x3d"/>
       <OtherUnitFiles Value="src/castlescript;src/x3d"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
