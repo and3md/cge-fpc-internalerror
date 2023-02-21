@@ -77,7 +77,7 @@ type
 
   // removing this helper removes internal error on fixes branch fpc 3.2
   TSFNodeEventHelper = class helper for TSFNodeEvent
-    procedure Test(const Value: TX3DNode);
+    procedure Test;
   end;
 
   { A top-level VRML/X3D node }
@@ -171,11 +171,8 @@ end;
 
 { TSFNodeEventHelper --------------------------------------------------------- }
 
-procedure TSFNodeEventHelper.Test(const Value: TX3DNode);
+procedure TSFNodeEventHelper.Test;
 begin
-  {if (ParentNode <> nil) and
-     (TX3DNode(ParentNode).Scene <> nil) then
-    Send(Value, TX3DNode(ParentNode).Scene.NextEventTime);}
 end;
 
 
