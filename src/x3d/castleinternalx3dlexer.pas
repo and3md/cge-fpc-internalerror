@@ -20,7 +20,7 @@ unit CastleInternalX3DLexer;
 
 interface
 
-uses SysUtils, Classes, Math;
+uses SysUtils, Classes;
 
 type
   TX3DEncoding = (xeClassic, xeXML);
