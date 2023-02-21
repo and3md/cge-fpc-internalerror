@@ -50,8 +50,6 @@ type
   TX3DFieldList = class;
   TX3DEvent = class;
 
-  TX3DFieldClass = class of TX3DField;
-
   TX3DField = class(TX3DFileItem)
   strict private
     FExposedEvents: array [boolean] of TX3DEvent;
@@ -60,8 +58,6 @@ type
 
     procedure SetExposed(Value: boolean);
     function GetExposedEvents(InEvent: boolean): TX3DEvent;
-  strict protected
-    class function ExposedEventsFieldClass: TX3DFieldClass; virtual;
   public
     constructor Create(const AExposed: boolean);
 
@@ -81,9 +77,6 @@ type
     function EventIn: TX3DEvent;
     function EventOut: TX3DEvent;
     { @groupEnd }
-
-    { Create TX3DEvent descendant suitable as exposed event for this field. }
-    class function CreateEvent: TX3DEvent; virtual;
   end;
 
   TX3DFieldList = class(specialize TObjectList<TX3DField>)
@@ -93,17 +86,11 @@ type
   { X3D event. }
   TX3DEvent = class(TX3DFileItem)
   strict private
-    FFieldClass: TX3DFieldClass;
+    AVariable: Integer; // just for keep strict private
     //ATest: Integer; // uncomment to get internal error
-  public
-    constructor Create(const AFieldClass: TX3DFieldClass);
-
-    property FieldClass: TX3DFieldClass read FFieldClass;
   end;
 
   TSFNodeEvent = class(TX3DEvent)
-  public
-    constructor Create;
   end;
 
 implementation
@@ -150,16 +137,6 @@ begin
   Result := FExposedEvents[false];
 end;
 
-class function TX3DField.ExposedEventsFieldClass: TX3DFieldClass;
-begin
-  Result := TX3DFieldClass(ClassType);
-end;
-
-class function TX3DField.CreateEvent: TX3DEvent;
-begin
-  Result := TX3DEvent.Create(ExposedEventsFieldClass);
-end;
-
 procedure TX3DField.SetExposed(Value: boolean);
 begin
   if Value <> Exposed then
@@ -167,26 +144,10 @@ begin
     FExposed := Value;
     if Exposed then
     begin
-      FExposedEvents[false] := CreateEvent;
-      FExposedEvents[true] := CreateEvent;
-
       FreeAndNil(FExposedEvents[false]);
       FreeAndNil(FExposedEvents[true]);
     end;
   end;
-end;
-
-{ TX3DEvent ----------------------------------------------------------------- }
-
-constructor TX3DEvent.Create(const AFieldClass: TX3DFieldClass);
-begin
-  inherited Create;
-  FFieldClass := AFieldClass;
-end;
-
-constructor TSFNodeEvent.Create;
-begin
-  inherited Create(TX3DField);
 end;
 
 
