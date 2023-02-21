@@ -36,12 +36,6 @@ type
     FField: TX3DField;
 
     //ATest:Integer; //add to get internal error
-  protected
-    procedure CreateNode; virtual;
-  public
-
-    constructor Create; virtual;
-    destructor Destroy; override;
   end;
 
 
@@ -63,36 +57,10 @@ type
 
 implementation
 
-{ TX3DNode ------------------------------------------------------------------ }
-
-constructor TX3DNode.Create;
-begin
-  inherited Create;
-  CreateNode;
-end;
-
-destructor TX3DNode.Destroy;
-begin
-  inherited;
-end;
-
-procedure TX3DNode.CreateNode;
-begin
-end;
-
 { TSFNodeEventHelper --------------------------------------------------------- }
 
 procedure TSFNodeEventHelper.Test;
 begin
 end;
-
-
-{ Nodes from standard X3D components }
-
-{ unit init/fini ------------------------------------------------------------ }
-
-initialization
-
-finalization
 
 end.
