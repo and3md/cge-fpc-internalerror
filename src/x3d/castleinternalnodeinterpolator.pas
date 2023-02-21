@@ -40,11 +40,6 @@ uses SysUtils;
   described by NodesMerge. This is also true if both Model1 and Model2
   are nil: then you can safely call this and it will return also nil. }
 function NodesLerp(const A: Single; Model1, Model2: TX3DNode): TX3DNode;
-
-  procedure SFNodeLerp(Target, Field1, Field2: TSFNode);
-  begin
-    Target.Value := NodesLerp(A, Field1.Value, Field2.Value)
-  end;
 begin
   if Model1 = Model2 then
     Exit(Model1);

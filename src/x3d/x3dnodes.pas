@@ -30,7 +30,6 @@ uses SysUtils, Classes,
 type
   TX3DNode = class;
   TX3DRootNode = class;
-  TSFNode = class;
 
   TX3DNodeClass = class of TX3DNode;
 
@@ -52,28 +51,6 @@ type
     destructor Destroy; override;
   end;
 
-
-  { VRML/X3D field holding a reference to a single node.
-    It's defined in this unit, not in X3DFields, since it uses
-    TX3DNode definition. NULL value of the field is indicated by
-    Value field = nil. }
-  TSFNode = class(TX3DField)
-  private
-    FValue: TX3DNode;
-    FParentNode: TX3DNode;
-
-    procedure SetValue(AValue: TX3DNode);
-  public
-    constructor Create(const AParentNode: TX3DNode;
-      const AExposed: boolean; const AValue: TX3DNode = nil); overload;
-    { Constructor that allows as children any implementor of given interface. }
-    destructor Destroy; override;
-    property Value: TX3DNode read FValue write SetValue;
-
-    property ParentNode: TX3DNode read FParentNode;
-
-    class function CreateEvent: TX3DEvent; override;
-  end;
 
   // removing this helper removes internal error on fixes branch fpc 3.2
   TSFNodeEventHelper = class helper for TSFNodeEvent
@@ -136,37 +113,6 @@ end;
 procedure TX3DNode.AddField(const Value: TX3DField);
 begin
   FFields.Add(Value);
-end;
-
-{ TSFNode --------------------------------------------------------------------- }
-constructor TSFNode.Create(const AParentNode: TX3DNode;
-  const AExposed: boolean; const AValue: TX3DNode);
-begin
-  inherited Create(AExposed);
-
-  { FParentNode is just a copy of inherited (TX3DFieldOrEvent) FParentNode,
-    but casted to TX3DNode }
-  FParentNode := AParentNode;
-
-  Value := AValue;
-end;
-
-destructor TSFNode.Destroy;
-begin
-  { To delete Self from Value.FParentFields, and eventually free Value. }
-  Value := nil;
-  inherited;
-end;
-
-procedure TSFNode.SetValue(AValue: TX3DNode);
-begin
-  if FValue <> AValue then
-    FValue := AValue;
-end;
-
-class function TSFNode.CreateEvent: TX3DEvent;
-begin
-  Result := TSFNodeEvent.Create;
 end;
 
 { TSFNodeEventHelper --------------------------------------------------------- }

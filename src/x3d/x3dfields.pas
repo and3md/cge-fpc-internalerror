@@ -187,7 +187,7 @@ end;
 
 constructor TSFNodeEvent.Create;
 begin
-  inherited Create(TSFNode);
+  inherited Create(TX3DField);
 end;
 
 
