@@ -23,7 +23,7 @@ interface
 uses SysUtils, Classes;
 
 type
-  TX3DEncoding = (xeClassic, xeXML);
+  TX3DEncoding = (xeClassic, xeXML); // remove this to get rid of exeption in trunk fpc
 
   TX3DVersion = object
     Major, Minor: Integer;
