@@ -69,14 +69,6 @@ type
       @nil if Exposed is @false. }
     property ExposedEvents [InEvent: boolean]: TX3DEvent
       read GetExposedEvents;
-
-    { Exposed events of this field. @nil if this field is not exposed.
-      EventIn is always equivalent to ExposedEvents[true],
-      EventOut is always equivalent to ExposedEvents[false].
-      @groupBegin }
-    function EventIn: TX3DEvent;
-    function EventOut: TX3DEvent;
-    { @groupEnd }
   end;
 
   TX3DFieldList = class(specialize TObjectList<TX3DField>)
@@ -125,16 +117,6 @@ end;
 function TX3DField.GetExposedEvents(InEvent: boolean): TX3DEvent;
 begin
   Result := FExposedEvents[InEvent];
-end;
-
-function TX3DField.EventIn: TX3DEvent;
-begin
-  Result := FExposedEvents[true];
-end;
-
-function TX3DField.EventOut: TX3DEvent;
-begin
-  Result := FExposedEvents[false];
 end;
 
 procedure TX3DField.SetExposed(Value: boolean);
