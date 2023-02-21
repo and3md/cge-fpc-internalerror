@@ -108,8 +108,7 @@ type
 
 implementation
 
-uses Generics.Defaults,
-  X3DNodes;
+uses X3DNodes;
 
 { TX3DFileItemList --------------------------------------------------------- }
 
